@@ -2316,7 +2316,8 @@ export default {
             columnType: data.COLUMNTYPE ? data.COLUMNTYPE : '',
             dataSourceName: data.DATASOURCE_NAME ? data.DATASOURCE_NAME : '',
             resultColumnIndex: data.RESULT_COLUMN_INDEX ? data.RESULT_COLUMN_INDEX : '',
-            resultTableIndex: data.RESULT_TABLE_INDEX ? data.RESULT_TABLE_INDEX : ''
+            resultTableIndex: data.RESULT_TABLE_INDEX ? data.RESULT_TABLE_INDEX : '',
+            isSecret: data.IS_SECRET
           }
           delete this.tableConfigDataObj[tempID] // 先删除已经存在的数据
           this.currentTableConfigRowObj = tempNodeObj // 更新当前选择行的数据

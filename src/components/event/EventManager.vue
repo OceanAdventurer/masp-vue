@@ -297,7 +297,7 @@ export default {
           isShowMore: true, // 是否显示更多按钮
           isShowMoreForNode: true, // 子节点是否显示更多按钮
           isShowEdit: true,
-          isShowDelete: data.CREATE_USER && that.userInfo.userName.toUpperCase() === data.CREATE_USER.toUpperCase(), // 子节点删除
+          isShowDelete: data.CREATE_USER && that.userInfo && that.userInfo.userName.toUpperCase() === data.CREATE_USER.toUpperCase(), // 子节点删除
           isShowMoreForCatalog: true // 目录是否显示更多按钮
         },
         on: { // 绑定方法 data node store type是当前节点信息

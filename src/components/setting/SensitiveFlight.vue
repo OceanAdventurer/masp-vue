@@ -83,7 +83,7 @@ export default {
   data () {
     return {
       filtersForm: { // 筛选条件集合
-        flighDate: this.$moment().startOf('day'), //航班日期默认为当天
+        flightDate: this.$moment().startOf('day'), //航班日期默认为当天
         flightNo: '',
         depAirport: '',
         arrAirport: '',
@@ -116,29 +116,8 @@ export default {
     }
   },
   created () {
-      this.filtersForm.flighDate = new Date() //航班日期默认为当天
-      this.$refs.filtersRef.resetField('filtersForm.flightDate', '2023-02-22')
-    // console.log(this.$store.getters.userInfo.isAdmin, 'admin---test') //是否管理员
   },
-  // watch: {
-  //   userKeyword: function (val) {
-  //     this.$axios.get('userRight/getUserRoleList').then(response => {
-  //       let resultData = response.data.result.data
-  //       if (resultData.length > 0) {
-  //         resultData.map((item, index) => {
-  //           item.id = index + 1
-  //           if (item['ROLE_NAME'] === '') {
-  //             item['ROLE_NAME'] = '无数据'
-  //           }
-  //         })
-  //       }
-  //       this.roleTableData = resultData.filter(s => s.LOGIN_NAME.toLowerCase().indexOf(val.toLowerCase()) >= 0)
-  //     })
-  //   }
-  // },
   mounted () {
-    // this.filtersForm.flighDate = this.$moment().startOf('day').format('YYYY-MM-DD') //航班日期默认为当天
-    this.setDefaultDate()
     this.queryTableInfo()
   },
   methods: {
@@ -148,18 +127,12 @@ export default {
     tableRowClassName ({row, rowIndex}) { // 表格行样式
       return 'table-row-class-name'
     },
-    setDefaultDate (val) {
-      // this.filtersForm.flighDate = val //航班日期默认为当天
-      // this.$set(this.filtersForm, 'flighDate', this.$moment().startOf('day').format('YYYY-MM-DD'))
-      // this.queryTableInfo()
-      // console.log(this.filtersForm.flighDate, 'this.filtersForm.flighDate--test')
-    },
     handleCurrentChange (val) { // 点击页码进行的操作
       console.log(`当前页: ${val}`)
       this.currentPage = val
       this.queryTableInfo()
     },
-    setSecret (row, e) {
+    setSecret (row, e) { // 设置是否隐私
       this.$store.commit('SHOW_LOADING', '加载中...')
       this.$axios({
         url: '/flightControl/updateHiddenById',
@@ -184,7 +157,7 @@ export default {
           this.$store.commit('HIDE_LOADING', '加载中！')
         })
     },
-    queryTableInfo (val) {
+    queryTableInfo (val) { // 查询航班数据
       this.$refs['filtersRef'].validate(valid => {
          if (valid) { // 查询table数据
             const {flightDate, flightNo, arrAirport, depAirport, tailNo} = this.filtersForm
@@ -193,7 +166,7 @@ export default {
               url: '/flightControl/searchFlight',
               method: 'get',
               params: {
-                flightDate,
+                flightDate: this.$moment(flightDate).format('YYYY-MM-DD'),
                 flightNo,
                 arrAirport,
                 depAirport,
@@ -227,28 +200,6 @@ export default {
             return false
           }
       })
-    },
-    showRoleDialog (type, value) { // 页面不同位置打开dialog的按钮；type:类型，value：值
-      console.log('showRoleDialog@@@@@:', type, value)
-      let typeDataObj = { // 打开dialog不同类型的对象
-        'addRole': '增加角色权限',
-        'updateRole': '修改角色权限',
-        'updateUserRole': '修改用户角色权限'
-      }
-      if (type === 'updateUserRole') {
-        this.currentUserId = value['TO_ID'] // 赋值当前选中的用户编号，修改角色权限时使用
-      }
-      if (this.currentUserId === '' && type === 'updateUserRole') {
-        this.$message({
-          message: '用户编号为空，无法修改！',
-          type: 'warning'
-        })
-        return false
-      }
-      this.roleSelectValue = value.TR_ID
-      this.dialogTitle = typeDataObj[type] // 设置dialog标题
-      this.dialogFlag = type // 设置dialog的标识
-      this.visibleRoleDialog = true // 显示dialog
     }
   }
 }
@@ -259,10 +210,11 @@ export default {
 }
 .sensitive_flight .el-form .airport {
   margin-left: 20px;
-
+}
+.sensitive_flight .el-form .el-row:first-child .el-col:first-child .el-date-editor.el-input.el-input--prefix.el-input--suffix.el-date-editor--date {
+  width: 100%;
 }
 .sensitive_flight .el-form .airport .el-form-item div.el-form-item__content .el-input{
-  /* display: flex; */
   width: 45%;
 
 }
@@ -274,19 +226,5 @@ export default {
 }
 .w30 {
   width: 30%;
-}
-.role-permissions-input i {
-  position: relative;
-  left: -40px;
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-}
-.role-dialog >>> .el-dialog__header {
-  border-bottom: 1px solid #DDDDDD;
-}
-.no-role-data {
-  margin-top: 10;
 }
 </style>
