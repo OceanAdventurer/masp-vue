@@ -70,6 +70,21 @@ module.exports = {
         include: [resolve('src')] // 只对项目根目录下的src 目录中的文件采用 babel-loader
         // include: [resolve('src'), resolve('node_modules/webpack-dev-server/client')] // 只对项目根目录下的src 目录中的文件采用 babel-loader
       }, */
+      // {
+      //   test: /\.m?vue?js$/,
+      //   exclude: /(node_modules|bower_components)/, // 要排除node_modules文件夹，我们不需要再次给模块里面js进行编译，因为，都是别人编译好后发布的
+      //   use: {
+      //     loader: "babel-loader",
+      //     options: {
+      //       // options选项里面配置的必须要写上
+      //       presets: ["@babel/preset-env"],
+      //       plugins: [
+      //         "@babel/plugin-transform-runtime",
+      //         "@babel/plugin-proposal-class-properties",
+      //       ],
+      //     },
+      //   },
+      // },
       {
         test: /\.vue$/,
         use: ['happypack/loader?id=vue'],

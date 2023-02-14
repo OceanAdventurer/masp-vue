@@ -146,7 +146,7 @@ export default {
               message: '操作成功',
               type: 'success'
             })
-            this.queryTableInfo()
+            // this.queryTableInfo()
           } else {
             this.$message.error('操作失败，请稍后重试！')
           }

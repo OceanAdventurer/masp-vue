@@ -95,7 +95,7 @@ export default {
       localStorage.setItem('currentSystem', name)
       if (val.slice(0, 4) === 'http') {
         window.location.href = val
-        // window.location.href = 'http://localhost:8080//csap/index.html#/home'
+        // window.location.href = 'http://localhost:8080/csap/index.html#/home'
       } else {
         if (val.search(':') !== -1) {
           let data = window.location.protocol + '//' + val
