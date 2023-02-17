@@ -36,7 +36,7 @@
         :cell-style="{padding:'0px'}"
         :header-row-style="{height:'38px'}"
         :header-cell-style="{padding:'0px'}"
-        :data="roleTableData"
+        :data="flightTableData"
         height="100%"
         style="width: 100%"
         highlight-current-row
@@ -84,35 +84,21 @@ export default {
     return {
       filtersForm: { // 筛选条件集合
         flightDate: this.$moment().startOf('day'), //航班日期默认为当天
-        flightNo: '',
-        depAirport: '',
-        arrAirport: '',
-        tailNo: ''
+        flightNo: '', // 航班号
+        depAirport: '', // 起飞机场
+        arrAirport: '', // 降落机场
+        tailNo: '' // 机尾号
       },
-      filtesRules: {
+      filtesRules: { // 必填规则
         flightDate: [
           { required: true, message: '请选择航班日期', trigger: 'blur' }
         ]
       },
-      starts: [],
-      lands: [], //落地机场
       userKeyword: '', // 用户搜索关键字
       currentPage: 1, // 当前页码
       pageSize: 20, // 每页显示数量
-      roleTableData: [], // 用户角色数据
-      visibleRoleDialog: false, // 是否显示dialog
-      dialogTitle: '权限', // dialog的标题
-      dialogFlag: '', // dialog的操作标识
-      roleInputValue: '', // 角色名字默认值
-      checkAll: false, // 是否全选权限标识
-      checkRolesData: [], // 权限复选框所有数据
-      checkedRoles: [], // 默认选中权限的数据
-      isIndeterminate: true, // checkbox不确定状态，负责控制样式
-      roleSelectValue: '', // 角色下拉框的默认数据
-      roleChooseData: [], // 角色对应权限的默认数据
-      roleLabelToValueObj: {}, // 角色列表中名称和值对应的对象
-      currentUserId: '', // 表格中选中的用户编号
-      total: 0
+      flightTableData: [], // 用户角色数据
+      total: 0 // 总页数
     }
   },
   created () {
@@ -184,7 +170,7 @@ export default {
                     item.is_hidden = false
                   }
                 })
-                this.roleTableData = content
+                this.flightTableData = content
                 this.pageSize = pageSize
                 this.currentPage = pageNo
                 this.total = recordCount

@@ -1,3 +1,5 @@
+// 飞行纪录视图
+
 <template>
   <div class="analysisView df df-fd-r df-jc-fs df-ai-fs df-f1">
     <div class="left-menu df df-fd-c df-jc-fs df-ai-fs">

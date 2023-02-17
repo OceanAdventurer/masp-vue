@@ -303,11 +303,11 @@ export default {
     },
     handleSelect (key, keyPath) {
       console.log('key', key)
-      if (key === 'safetyMonitor') {
+      if (key === 'safetyMonitor') { // 安全监控
         window.open('/csap/user/ssoDMS?type=3', '_blank')
-      } else if (key === 'modelRuntimeMenu') {
+      } else if (key === 'modelRuntimeMenu') { // 模型运营区
         window.open('/csap/user/ssoDMS?type=1', '_blank')
-      } else if (key === 'edgeComputing') {
+      } else if (key === 'edgeComputing') { // 数据挖掘
         window.open('/csap/user/ssoDMS?type=2', '_blank')
       } else {
         this.activeIndex = key

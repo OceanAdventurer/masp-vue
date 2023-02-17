@@ -119,16 +119,6 @@ export default {
       }
       this.settingTabsValue = activeName
       this.settingTabs = tabs.filter(tab => tab.name !== targetName)
-      this.changeCategorySetting()
-    },
-    changeCategorySetting () {
-      let hideMenuObj = {}
-      hideMenuObj.setting_analysis_parameter_category = true
-      hideMenuObj.setting_create_catalog = false
-      hideMenuObj.setting_create_next_catalog = false
-      hideMenuObj.setting_edit_catalog = false
-      hideMenuObj.setting_remove_catalog = false
-      this.$bus.$emit('openHeaderMenuItem', 'setting_category', hideMenuObj, {}) // 修改二级菜单
     },
     clickSettingTab (vc) { // 点击tab标签获取实例
       var hideMenuObj = { // 不显示二级菜单的数据；如果需要不显示某些二级菜单，在这里请把二级菜单的键值设置false；如果都显示，则下面的方法直接传空对象即为：{}
