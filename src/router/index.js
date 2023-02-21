@@ -7,6 +7,7 @@ import DM from 'components/datamining/Data_mining'
 import result from 'components/datamining/modeingResult/baseresult.vue'
 import LoginChose from 'components/base/LoginChose'
 import UserManage from 'components/UserManagement/UserManage'
+import DataVerification from 'components/dataCombTool/DataVerification'
 
 Vue.use(Router)
 const router = new Router({
@@ -41,6 +42,10 @@ const router = new Router({
       path: '/userManage',
       name: 'UserManage',
       component: UserManage
+    }, {
+      path: '/dataVerification',
+      name: 'dataVerification',
+      component: DataVerification
     }
   ]
 })
