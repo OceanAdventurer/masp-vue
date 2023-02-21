@@ -83,11 +83,19 @@
             数据挖掘
           </el-menu-item>
         </el-submenu>
-
-        <el-menu-item index="edgeComputing" v-if="menuListObj.analysis">
-          <i class="el-icon-date"></i>
-          <span slot="title">外部数据边缘计算</span>
-        </el-menu-item>
+        <el-submenu index="edgeComputingGroup" class="cm-triangle" v-if="menuListObj.weather === true || menuListObj.weather === true">
+          <template slot="title">
+            <i class="el-icon-date "></i>
+            <span slot="title">外部数据边缘计算</span>
+          </template>
+          <div x-arrow="" class="cm-popper__arrow" style="left: 65px;"></div>
+          <el-menu-item index="weather" v-if="menuListObj.weather">
+            天气
+          </el-menu-item>
+          <el-menu-item index="air_route" v-if="menuListObj.airRoute">
+            空管-航路
+          </el-menu-item>
+        </el-submenu>
 
 <!--
         <el-menu-item index="analysis" v-if="menuListObj.analysis">
@@ -188,6 +196,9 @@ export default {
         event: true,
         analysis: true,
         dataMining: true,
+        edgeComputing: true,
+        weather: true,
+        airRoute: true,
         setting: true,
         todoList: true,
         app: true
@@ -227,6 +238,7 @@ export default {
     this.getUserInfo()
   },
   mounted () { // 处理dom加载完后的事情
+    console.log(this.menuListObj, 'menuListObj----test')
     const that = this
     this.$bus.$on('showSettingCategoryDefault', (status) => { // 接收点击左侧导航显示头部一级菜单效果
       this.showSettingCategoryDefault = status
@@ -307,24 +319,27 @@ export default {
         window.open('/csap/user/ssoDMS?type=3', '_blank')
       } else if (key === 'modelRuntimeMenu') { // 模型运营区
         window.open('/csap/user/ssoDMS?type=1', '_blank')
-      } else if (key === 'edgeComputing') { // 数据挖掘
-        window.open('/csap/user/ssoDMS?type=2', '_blank')
       } else {
         this.activeIndex = key
         this.openNavMenuItem(key)
       }
+      // else if (key === 'edgeComputing') { // 外部数据边缘计算
+      //   window.open('/csap/user/ssoDMS?type=2', '_blank')
+      // }
     },
 
     openNavMenuItem (name) { // 头部一级菜单显示效果
       console.log('openNavMenuItem:~~~', name)
       this.navMenu = name // 激活左边导航菜单
+      console.log(this.headerTwoData, 'headerTwoData---test')
       this.headerMenu = this.headerTwoData[this.navMenu][0].parent + '_' + this.headerTwoData[this.navMenu][0].enName // 激活头部一级导航菜单
+      console.log(this.headerMenu, 'headerMenu---test')
       this.headerTwoValue = this.getHeaderTwoValue() // 点击头部一级菜单时赋值二级菜单值
       if (this.navMenu === 'setting') { // 如果点击的是设置，显目录配置的默认菜单
         this.showSettingCategoryDefault = true // 目录配置显示默认菜单
       } else if (this.navMenu === 'dataTable') {
         this.$bus.$emit('datatableMenu')
-      } else if (this.navMenu === 'dataMining') {
+      } else if (this.navMenu === 'dataMining') { // 数据挖掘
         this.$bus.$emit('dataMiningMenu')
       } else if (this.navMenu === 'paramTwo') {
         this.$bus.$emit('paramTwoMenu')
@@ -335,6 +350,11 @@ export default {
       } else if (this.navMenu === 'analysis') {
         this.showSettingCategoryDefault = false
         this.$bus.$emit('analysisMenu')
+      } else if (this.navMenu === 'weather') { // 外部数据边缘计算-天气
+        // this.showSettingCategoryDefault = false
+        this.$bus.$emit('weatherMenu')
+      } else if (this.navMenu === 'airControl') { // 外部数据边缘计算-空管—航路
+        this.$bus.$emit('airControlMenu')
       } else { // 点击的是其他菜单则隐藏，否则会导致二级菜单不出来
         this.showSettingCategoryDefault = false // 隐藏
       }
@@ -402,14 +422,14 @@ export default {
       })
 
       if (this.$util.isNotEmptyObject(tempListObj)) {
-        let tempMenuList = this.menuListObj
-        for (let t in tempMenuList) { // 修改data中menuList的默认数据
-          if (tempListObj[t]) {
-            this.menuListObj[t] = true
-          } else {
-            this.menuListObj[t] = false
-          }
-        }
+        // let tempMenuList = this.menuListObj
+        // for (let t in tempMenuList) { // 修改data中menuList的默认数据
+        //   if (tempListObj[t]) {
+        //     this.menuListObj[t] = true
+        //   } else {
+        //     this.menuListObj[t] = false
+        //   }
+        // }
 
         if (tempListObj.analysis) { // 显示默认的菜单
           this.navMenu = 'analysis'

@@ -33,6 +33,12 @@ export const menuData = {
     safetyMonitor: [ // 左侧设置菜单数据
       { enName: 'monitor', zhName: '安全监控', parent: 'safetyMonitor', isShow: true }
     ],
+    weather: [ // 外部数据边缘计算-天气
+      { enName: 'index', zhName: '天气', parent: 'weather', isShow: true }
+    ],
+    airControl: [ // 外部数据边缘计算-空管-航路
+      { enName: 'control', zhName: '空管-航路', parent: 'airControl', isShow: true }
+    ],
     setting: [ // 左侧设置菜单数据
       { enName: 'set', zhName: '权限设置', parent: 'setting', isShow: true },
       { enName: 'category', zhName: '目录配置', parent: 'setting', isShow: true }

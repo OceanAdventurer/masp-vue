@@ -37,6 +37,8 @@
       <!-- <ChangeLogTab v-show="navMenuValue === 'changeLog'" id="changeLogContent"></ChangeLogTab> -->
       <TodoListTab v-show="navMenuValue === 'todoList'" id="todoListContent"></TodoListTab>
       <AppTab v-show="navMenuValue === 'app'" id="appContent"></AppTab>
+      <Weather  v-show="navMenuValue === 'weather'" id="weatherContent"></Weather>
+      <AirControl  v-show="navMenuValue === 'airControl'" id="airControlContent"></AirControl>
     </div>
   </div>
 </template>
@@ -54,6 +56,9 @@
   // const ChangeLogTab = () => import('components/changeLogList/ChangeLogTab')
   const TodoListTab = () => import('components/todolist/TodoListTab')
   const AppTab = () => import('components/app/AppTab')
+  const Weather = () => import('components/extDataCal/Weather')
+  // const Weather = () => import('components/extDataCal/Tab')
+  const AirControl = () => import('components/extDataCal/AirControl')
 
   export default {
     data () {
@@ -80,7 +85,9 @@
       EventTab,
       // ChangeLogTab,
       TodoListTab,
-      AppTab
+      AppTab,
+      Weather,
+      AirControl
     },
     created () {
       console.log('xxx', menu.menuData.headerData)
