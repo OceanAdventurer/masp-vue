@@ -1,6 +1,8 @@
-// 外部数据边缘计算
+// 外部数据边缘计算-空管-航路
 <template>
-  <iframe src="/csap/user/ssoDMS?type=2" frameborder="0" class="ext_data_cal"></iframe>
+  <div class="air_control">
+    <iframe src="/csap/user/ssoDMS?type=2" frameborder="0" class="air_control_content" scroll="no"></iframe>
+  </div>
 </template>
 <script>
 
@@ -10,6 +12,7 @@ export default {
     return {}
   },
   created () {
+    this.addTable({enName: 'control', zhName: '空管-航路', isClosable: false, parent: 'airControl'})
     this.$bus.$on('AirControlMenu', () => {
       this.getMenueByenName(this.activeName)
     })

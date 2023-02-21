@@ -1,4 +1,4 @@
-// 外部数据边缘计算
+// 外部数据边缘计算-天气
 <template>
   <div class="weather_header_tab w100 h100" v-if="Tabs.length > 0">
     <!-- <el-tabs v-model="tabValue" style="height:100%" type="card">
@@ -13,7 +13,7 @@
       > -->
         <!-- <div class='weatherContainer w100 h100'> -->
           <!-- test -->
-          <iframe src="/csap/user/ssoDMS?type=2" class="weatherContent w100 h100"></iframe>
+          <iframe src="/csap/user/ssoDMS?type=2" class="weatherContent w100 h100" scrolling='no'></iframe>
         <!-- </div> -->
       <!-- </el-tab-pane> -->
     <!-- </el-tabs> -->

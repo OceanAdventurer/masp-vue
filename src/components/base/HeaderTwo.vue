@@ -57,7 +57,6 @@
   const TodoListTab = () => import('components/todolist/TodoListTab')
   const AppTab = () => import('components/app/AppTab')
   const Weather = () => import('components/extDataCal/Weather')
-  // const Weather = () => import('components/extDataCal/Tab')
   const AirControl = () => import('components/extDataCal/AirControl')
 
   export default {

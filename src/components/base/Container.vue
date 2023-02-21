@@ -92,7 +92,7 @@
           <el-menu-item index="weather" v-if="menuListObj.weather">
             天气
           </el-menu-item>
-          <el-menu-item index="air_route" v-if="menuListObj.airRoute">
+          <el-menu-item index="airControl" v-if="menuListObj.airRoute">
             空管-航路
           </el-menu-item>
         </el-submenu>
