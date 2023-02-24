@@ -12,7 +12,7 @@ module.exports = {
     assetsSubDirectory: 'static',
 
     // 编译发布的根目录，可配置为资源服务器域名或 CDN 域名
-    assetsPublicPath: '/csap/',
+    assetsPublicPath: '/pm/',
     // assetsPublicPath: '/',
 
     // dev服务器使用http-proxy-middleware进行代理,定义代理规则
@@ -85,7 +85,7 @@ module.exports = {
     assetsSubDirectory: 'static',
 
     // 此属性定义的是静态资源的公开路径，也就是真正的引用路径。值修改成‘./’ 不用启动服务器直接访问
-    assetsPublicPath: '/csap/',
+    assetsPublicPath: '/pm/',
     // assetsPublicPath: '/',
 
     // 此属性定义是否在生产环境生成souremap，sourcemap是用来debug编译文件的，通过映射到编译前文件来实现

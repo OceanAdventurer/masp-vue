@@ -62,7 +62,12 @@
           <el-row>
               <el-col :span=4>
                   <el-form-item label="开始时间" prop="startLine">
-                      <el-input type='number' class="numberOnly" v-model.number="frequencyForm.startLine" placeholder="请输入开始时间"></el-input>
+                      <el-input
+                        type='number'
+                        class="numberOnly"
+                        @mousewheel.native.prevent
+                        v-model.number="frequencyForm.startLine"
+                        placeholder="请输入开始时间"></el-input>
                   </el-form-item>
               </el-col>
               <el-col :span=4>
@@ -72,6 +77,7 @@
                         type='number'
                         min='1'
                         class="numberOnly"
+                        @mousewheel.native.prevent
                         v-model.number="frequencyForm.endLine"
                         placeholder="请输入结束时间"></el-input>
                   </el-form-item>
@@ -101,13 +107,13 @@
               </el-col>
           </el-row>
         </el-form>
-            <!-- :height="tableHeight" -->
+            <!-- height='620' -->
         <div class="frequency_table" v-show="frequencyData.length > 0">
           <el-table
             :data="frequencyData"
             :key='toggleIndex'
             :row-class-name="tableRowClass"
-            height='620'
+            :max-height="tableHeight"
             @header-click="removeCol">
             <el-table-column
               label="时间"
@@ -184,18 +190,30 @@ export default {
       flightTableData: [], // 航班数据
       rowKey: '',
       toggleIndex: 0,
-      tableHeight: `calc(100% - 54px)`
+      tableHeight: 600
     }
   },
   created () {
     // console.log(this.$route, 'route----test')
+    window.addEventListener('resize', this.getHeight)
   },
   mounted () {
     // const {query} = this.$route
     // this.filtersForm.modelId = 10357
     this.queryLibraryList()
+    this.$nextTick(()=> {
+      let height = window.innerHeight - 58
+      this.tableHeight = height
+    })
   },
   methods: {
+    getHeight() {
+      this.$nextTick(() => {
+        // window.innerHeight 浏览器窗口的可见高度，下面的 220 是除了table最大高度的剩余空间。
+        let height = window.innerHeight - 58;
+        this.tableHeight = height;
+      })
+    },
     headerRowClassName ({row, rowIndex}) { // 表格头部样式
       return 'header-row-class-name'
     },
@@ -247,6 +265,14 @@ export default {
       }
     },
     removeCol (val) { // 点击表格头部删除列
+      let numList = ['1', '2', '3', '4', '时间']
+      let flag = numList.some(item => {
+        return item === val.label
+      })
+      if (flag) {
+        numList = null
+        return
+      }
       const list = this.frequencyForm.paramName
       if (list.length > 1) {
         this.frequencyForm.paramName = (list.length > 0) && list.filter(item => item !== val.label) || []
@@ -400,6 +426,9 @@ export default {
         }
         return newObj
     }
+  },
+  destroyed () {
+    window.removeEventListener('resize', this.getHeight)
   }
 }
 </script>
@@ -415,7 +444,7 @@ export default {
   border-right: 1px solid rgb(211, 211, 211);
 }
 .data_verification .flight_info .right {
-  width: calc(100% - 344px); /* .left 宽度340，留4像素做右边padding */
+  width: calc(100% - 340px); /* .left 宽度340，留4像素做右边padding */
   height: 100%;
   padding-left: 4px;
   /* border: 1px solid #EBEEF5; */
@@ -441,20 +470,26 @@ export default {
 .data_verification .el-form.frequency_query input.el-input__inner {
   width: auto;
 }
-.data_verification .right .frequency_table .el-table {
-  height: 100%;
+.data_verification .right .frequency_table {
+  height: calc(100% - 58px);
 }
-.data_verification .el-table.el-table--fit.el-table--border.el-table--group.el-table--scrollable-y.el-table--enable-row-hover .el-table__body-wrapper  {
-  height: 100%;
+.data_verification .right .frequency_table .el-table {
+  height: 100%!important;
+}
+.data_verification .el-table .el-ble__body-wrapper {
+  height: calc(100% - 76px)!important;
+}
+.data_verification .el-table .el-table__body {
+  height: 100%!important;
 }
 .data_verification .el-form .el-row .el-form-item {
   margin-bottom: 10px;
 }
-.data_verification .flight_info .center {
-  /* border: 1px solid #EBEEF5;
-  margin: 0 10px; */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
 }
-.numberOnly input[type='number'] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 </style>

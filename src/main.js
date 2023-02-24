@@ -16,7 +16,7 @@ import 'echarts/extension-src/dataTool'
 // 让ajax携带cookie
 axios.defaults.withCredentials = true
 // 请求接口全局默认地址
-axios.defaults.baseURL = '/csap'
+axios.defaults.baseURL = '/pm'
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
   // 在发送请求之前做某事

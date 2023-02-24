@@ -86,7 +86,7 @@ const devWebpackConfig = merge(baseWebpackConfig, { // 通过merge方法合并we
     new CopyWebpackPlugin([ { from: path.join(cesiumSource, 'ThirdParty/Workers'), to: config.dev.assetsSubDirectory + '/cesium/ThirdParty/Workers' } ]),
     new webpack.DefinePlugin({
         // cesium--配置
-        CESIUM_BASE_URL: JSON.stringify('/csap/static/cesium/')
+        CESIUM_BASE_URL: JSON.stringify('/pm/static/cesium/')
     }),
 
     new HappyPack({
