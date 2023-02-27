@@ -49,7 +49,7 @@
         <div class="detail">
           <div>
           <!-- <div v-show="frequencyData.length>0"> -->
-            <p>{{frequencyForm.paramName[0]}}详情：</p>
+            <p>{{frequencyForm.paramName[0]}}详情</p>
             <p>最大值：{{max}}</p>
             <p>最小值：{{min}}</p>
             <p>中位值：{{mid}}</p>
@@ -61,6 +61,26 @@
       <div class="right">
         <el-form ref="frequencyFilters" class='frequency_query' :model= "frequencyForm" :rules="frequencyRules" label-width="80px">
           <el-row>
+              <el-col :span=13>
+                  <el-form-item label="参数名称" prop="paramName">
+                    <el-select
+                      v-model="frequencyForm.paramName"
+                      filterable
+                      multiple
+                      remote
+                      reserve-keyword
+                      placeholder="请输入关键词"
+                      @change="changeParams"
+                      :remote-method="remoteMethod">
+                      <el-option
+                        v-for="item in options"
+                        :key="item"
+                        :label="item"
+                        :value="item">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+              </el-col>
               <el-col :span=4>
                   <el-form-item label="开始时间" prop="startLine">
                       <el-input
@@ -81,26 +101,6 @@
                         @mousewheel.native.prevent
                         v-model.number="frequencyForm.endLine"
                         placeholder="请输入结束时间"></el-input>
-                  </el-form-item>
-              </el-col>
-              <el-col :span=13>
-                  <el-form-item label="参数名称" prop="paramName">
-                    <el-select
-                      v-model="frequencyForm.paramName"
-                      filterable
-                      multiple
-                      remote
-                      reserve-keyword
-                      placeholder="请输入关键词"
-                      @change="changeParams"
-                      :remote-method="remoteMethod">
-                      <el-option
-                        v-for="item in options"
-                        :key="item"
-                        :label="item"
-                        :value="item">
-                      </el-option>
-                    </el-select>
                   </el-form-item>
               </el-col>
               <el-col :span=2 style="margin-left: 10px">
@@ -459,9 +459,9 @@ export default {
   display: flex;
 }
 .data_verification .flight_info .detail {
-  width: 130px;
+  width: 148px;
   height: 420px;
-  padding-left: 5px;
+  padding: 0 4px;
 }
 .data_verification .flight_info .detail p:first-child {
   font-weight: 700;

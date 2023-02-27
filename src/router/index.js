@@ -43,8 +43,8 @@ const router = new Router({
       name: 'UserManage',
       component: UserManage
     }, {
-      path: '/dataVerification',
-      name: 'dataVerification',
+      path: '/dataVerify',
+      name: 'dataVerify',
       component: DataVerification
     }
   ]
