@@ -49,6 +49,7 @@
         <div class="detail">
           <div>
           <!-- <div v-show="frequencyData.length>0"> -->
+            <p>{{frequencyForm.paramName[0]}}详情：</p>
             <p>最大值：{{max}}</p>
             <p>最小值：{{min}}</p>
             <p>中位值：{{mid}}</p>
@@ -131,9 +132,6 @@
               :key="index"
               :label="col.label"
             >
-              <template slot-scope="scope">
-                <i>{{scope.row.label}}</i>
-              </template>
               <el-table-column
                 v-for="(column,idx) in col.propName"
                 :key="idx"
@@ -142,7 +140,7 @@
                   <template slot-scope="scope">
                     <div class="row-icon-group">
                       <div>
-                        {{scope.row[idx]}}
+                        {{scope.row[dp[index]+idx]}}
                       </div>
                     </div>
                   </template>
@@ -190,7 +188,8 @@ export default {
       flightTableData: [], // 航班数据
       rowKey: '',
       toggleIndex: 0,
-      tableHeight: 600
+      tableHeight: 600,
+      dp:[]
     }
   },
   created () {
@@ -314,33 +313,37 @@ export default {
             this.min = min
             this.startRowIndex = this.frequencyForm.startLine
             this.endRowIndex = this.frequencyForm.endLine
-            const arr = [data && data.data || []]
-            const list = this.getCopyData(arr[0])
+            let arr = data && data.data || []
+            const list = this.getCopyData(arr) 
             if (list.length > 0) {
-              let contentList = list.splice(2) // list1去除title的数组列表 list[0]则是title list[1]是桢数
-              this.frequencyData = contentList
-              let arr2 = []
-              let obj = {}
+               this.frequencyData = list.splice(2) // list1去除title的数组列表 list[0]则是title list[1]是桢数
+              let map = new Map()
               list[0].forEach((item, index) => {
-                let val = list[0][index]
-                if (arr2.indexOf(list[0][index]) === -1) {
-                  arr2.push(list[0][index])
-                }
-                if (!obj[val]) {
-                  obj[val] = 1
+                if (map.has(item)) {
+                    map.get(item).push(list[1][index]);
                 } else {
-                  obj[val]++
+                    let subTitle = [];
+                    subTitle.push(list[1][index]);
+                    map.set(item,subTitle);
                 }
               })
-              let titleArr = []
-              arr2.forEach((item, index) => {
-                titleArr.push({
-                  'label': item,
-                  'propName': new Array(obj[item])
-                })
+              // 清空数组
+              this.tableHeader = [];
+              let jump = [0];
+              map.forEach((val,key) => {
+                  let obj = {}
+                  obj.label = key
+                  obj.propName = map.get(key)
+                  this.tableHeader.push(obj)
               })
-              this.tableHeader = titleArr
-              arr2 = null
+              // 记录每个子标题的长度
+              // 总共有dp.length个title
+              // 每个表头下的子表头对应dp[i]
+              for (let i = 1; i < this.tableHeader.length; i++) {
+                  jump[i] = jump[i-1] + this.tableHeader[i-1].propName.length
+              }
+              this.dp = jump
+              console.log(this.tableHeader, 'tableHeader-----test');
             }
           }
         }).catch(err => {
@@ -458,7 +461,10 @@ export default {
 .data_verification .flight_info .detail {
   width: 130px;
   height: 420px;
-  padding-left: 10px;
+  padding-left: 5px;
+}
+.data_verification .flight_info .detail p:first-child {
+  font-weight: 700;
 }
 .data_verification .flight_info .flight_table {
   width: 180px;
