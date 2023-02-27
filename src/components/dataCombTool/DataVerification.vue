@@ -110,12 +110,12 @@
         </el-form>
             <!-- height='620' -->
         <div class="frequency_table" v-show="frequencyData.length > 0">
+            <!-- @header-click="removeCol" -->
           <el-table
             :data="frequencyData"
             :key='toggleIndex'
             :row-class-name="tableRowClass"
-            :max-height="tableHeight"
-            @header-click="removeCol">
+            :max-height="tableHeight">
             <el-table-column
               label="时间"
               width="150">
