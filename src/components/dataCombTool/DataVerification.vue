@@ -1,25 +1,23 @@
 
 <template>
-  <div class="data_verification pos-a w100 h100 df df-fd-c">
-    <div class="flight_info">
+  <div class="data_verification w100 h100">
+    <Loading v-show="showLoading"></Loading>
+    <div class="flight_info w100 h100">
       <div class="left">
         <el-form ref="filtersRef" :model= "filtersForm" :rules="filtersRules" label-width="80px">
-            <el-row>
-                <el-col :span=14>
-                    <el-form-item label="版本库" prop="modelId">
-                      <el-select v-model="filtersForm.modelId" filterable placeholder="请选择版本库">
-                      <el-option
-                        v-for="item in versionLibraryList"
-                        :key="item.ID"
-                        :value="item.ID">
-                      </el-option>
-                    </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col :span=2 :offset="1">
-                    <el-button type='primary' icon="el-icon-search" @click="queryTableInfo">搜索</el-button>
-                </el-col>
-            </el-row>
+          <el-row>
+            <el-col :span=14>
+              <el-form-item label="版本库" prop="modelId">
+                <el-select v-model="filtersForm.modelId" @change='queryTableInfo' filterable placeholder="请选择版本库">
+                  <el-option
+                    v-for="item in versionLibraryList"
+                    :key="item.ID"
+                    :value="item.ID">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
         <div class="flight_no">
           <div class="flight_table">
@@ -58,7 +56,7 @@
         </div>
         </div>
       </div>
-      <div class="right">
+      <div class="right h100">
         <el-form ref="frequencyFilters" class='frequency_query' :model= "frequencyForm" :rules="frequencyRules" label-width="80px">
           <el-row>
               <el-col :span=13>
@@ -82,35 +80,35 @@
                   </el-form-item>
               </el-col>
               <el-col :span=4>
-                  <el-form-item label="开始时间" prop="startLine">
-                      <el-input
-                        type='number'
-                        class="numberOnly"
-                        @mousewheel.native.prevent
-                        v-model.number="frequencyForm.startLine"
-                        placeholder="请输入开始时间"></el-input>
-                  </el-form-item>
+                <el-form-item label="开始时间" prop="startLine">
+                  <el-input
+                    type='number'
+                    class="numberOnly"
+                    @mousewheel.native.prevent
+                    v-model.number="frequencyForm.startLine"
+                    placeholder="请输入开始时间"></el-input>
+                </el-form-item>
               </el-col>
               <el-col :span=4>
-                        <!-- onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode || event.which)))|| event.which === 8" -->
-                  <el-form-item label="结束时间" prop="endLine">
-                      <el-input
-                        type='number'
-                        min='1'
-                        class="numberOnly"
-                        @mousewheel.native.prevent
-                        v-model.number="frequencyForm.endLine"
-                        placeholder="请输入结束时间"></el-input>
-                  </el-form-item>
+                <!-- onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode || event.which)))|| event.which === 8" -->
+                <el-form-item label="结束时间" prop="endLine">
+                  <el-input
+                    type='number'
+                    min='1'
+                    class="numberOnly"
+                    @mousewheel.native.prevent
+                    v-model.number="frequencyForm.endLine"
+                    placeholder="请输入结束时间"></el-input>
+                </el-form-item>
               </el-col>
               <el-col :span=2 style="margin-left: 10px">
-                  <el-button type='primary' icon="el-icon-search" @click="checkDetail()">筛选</el-button>
+                <el-button type='primary' icon="el-icon-search" @click="checkDetail()">筛选</el-button>
               </el-col>
           </el-row>
         </el-form>
-            <!-- height='620' -->
+          <!-- height='620' -->
         <div class="frequency_table" v-show="frequencyData.length > 0">
-            <!-- @header-click="removeCol" -->
+          <!-- @header-click="removeCol" -->
           <el-table
             :data="frequencyData"
             :key='toggleIndex'
@@ -137,33 +135,34 @@
                 :key="idx"
                 :label="idx+1+''"
                 >
-                  <template slot-scope="scope">
-                    <div class="row-icon-group">
-                      <div>
-                        {{scope.row[dp[index]+idx]}}
-                      </div>
+                <template slot-scope="scope">
+                  <div class="row-icon-group">
+                    <div>
+                      {{scope.row[dp[index]+idx]}}
                     </div>
-                  </template>
+                  </div>
+                </template>
               </el-table-column>
             </el-table-column>
           </el-table>
-      </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
 /* eslint-disable */
+import { mapState } from 'vuex'
+const Loading = () => import('components/base/Loading')
 export default {
   name: 'DataVerification',
   data () {
     return {
       filtersForm: { // 筛选条件集合
-        modelId: '' // 版本库字段
+        modelId: this.$route.query.modelId || '' // 版本库字段
       },
       options: [],
       versionLibraryList: [], // 版本库列表，后端获取
-      paramNameList: [], // 某版本库下的参数名称列表
       filtersRules: { // 必填规则
         modelId: [
           { required: true, message: '请选择版本库', trigger: 'change' }
@@ -172,7 +171,7 @@ export default {
       frequencyForm: { // 频率筛选条件
         startLine: 500,
         endLine: 1000,
-        paramName: []
+        paramName: this.$route.query.paramName ? [this.$route.query.paramName] : []
       },
       frequencyRules: { // 必填规则
         paramName: [
@@ -192,14 +191,22 @@ export default {
       dp:[]
     }
   },
+  computed: {
+    ...mapState(['showLoading'])
+  },
+  components: {
+    Loading
+  },
   created () {
-    // console.log(this.$route, 'route----test')
     window.addEventListener('resize', this.getHeight)
   },
-  mounted () {
-    // const {query} = this.$route
+  async mounted () {
+    const {query} = this.$route
     // this.filtersForm.modelId = 10357
     this.queryLibraryList()
+    if (query.modelId) {
+      this.queryTableInfo()
+    }
     this.$nextTick(()=> {
       let height = window.innerHeight - 58
       this.tableHeight = height
@@ -280,7 +287,7 @@ export default {
         this.$message.warning('至少选择一个参数')
       }
     },
-    checkDetail (row, type) { // 查询数据
+    checkDetail (row) { // 查询数据
       if (row) {
         this.rowKey = row.ROWKEY
       }
@@ -306,6 +313,10 @@ export default {
           if (res.status === 200) {
             this.toggleIndex++
             const {data = {}} = res
+            if (data.message == "参数不存在") {
+              this.$message.error(data.message)
+              return
+            }
             const {avg = 0, max = 0, mid = 0, min = 0} = data
             this.avg = avg
             this.max = max
@@ -316,38 +327,43 @@ export default {
             let arr = data && data.data || []
             const list = this.getCopyData(arr) 
             if (list.length > 0) {
-               this.frequencyData = list.splice(2) // list1去除title的数组列表 list[0]则是title list[1]是桢数
+              this.frequencyData = list.splice(2) // list1去除title的数组列表 list[0]则是title list[1]是桢数
               let map = new Map()
               list[0].forEach((item, index) => {
                 if (map.has(item)) {
-                    map.get(item).push(list[1][index]);
+                  map.get(item).push(list[1][index]);
                 } else {
-                    let subTitle = [];
-                    subTitle.push(list[1][index]);
-                    map.set(item,subTitle);
+                  let subTitle = [];
+                  subTitle.push(list[1][index]);
+                  map.set(item,subTitle);
                 }
               })
               // 清空数组
               this.tableHeader = [];
               let jump = [0];
               map.forEach((val,key) => {
-                  let obj = {}
-                  obj.label = key
-                  obj.propName = map.get(key)
-                  this.tableHeader.push(obj)
+                let obj = {}
+                obj.label = key
+                obj.propName = map.get(key)
+                this.tableHeader.push(obj)
               })
               // 记录每个子标题的长度
               // 总共有dp.length个title
               // 每个表头下的子表头对应dp[i]
               for (let i = 1; i < this.tableHeader.length; i++) {
-                  jump[i] = jump[i-1] + this.tableHeader[i-1].propName.length
+                jump[i] = jump[i-1] + this.tableHeader[i-1].propName.length
               }
               this.dp = jump
-              console.log(this.tableHeader, 'tableHeader-----test');
             }
+          } else {
+            this.frequencyData = []
+            this.tableHeader = []
+            this.$message.error(res.message)
           }
         }).catch(err => {
           console.log(err)
+          this.frequencyData = []
+          this.tableHeader = []
           this.$message.error('请求响应失败，请稍后重试！')
           this.$store.commit('HIDE_LOADING', '加载中！')
         })
@@ -405,6 +421,9 @@ export default {
                 const {data = []} = res
                 this.flightTableData = data
                 this.rowKey = data[0].ROWKEY
+                if (this.$route.query.modelId && this.frequencyForm.paramName) {
+                  this.checkDetail()
+                }
               }
               this.$store.commit('HIDE_LOADING', '加载中！')
             }).catch(err => {
@@ -436,21 +455,22 @@ export default {
 }
 </script>
 <style scoped>
+.w100 {
+  width: 100%;
+}
+.h100 {
+  height: 100%;
+}
 .data_verification .flight_info {
   display: flex;
-  width: 100%;
-  height: 100%;
-  /* border-top: 1px solid #3a6bb9; */
 }
 .data_verification .flight_info .left {
   padding-left: 4px;
-  border-right: 1px solid rgb(211, 211, 211);
 }
 .data_verification .flight_info .right {
   width: calc(100% - 340px); /* .left 宽度340，留4像素做右边padding */
-  height: 100%;
   padding-left: 4px;
-  /* border: 1px solid #EBEEF5; */
+  border-left: 1px solid rgb(211, 211, 211);
 }
 .data_verification .el-form {
   padding-top: 4px;
@@ -469,6 +489,9 @@ export default {
 .data_verification .flight_info .flight_table {
   width: 180px;
   height: 420px;
+}
+.data_verification .flight_info .flight_table .table-row-class-name td div{
+  cursor: pointer;
 }
 .data_verification .el-form.frequency_query .el-select {
   width: 100%;
@@ -497,5 +520,11 @@ input::-webkit-inner-spin-button {
 }
 input[type='number'] {
   -moz-appearance: textfield;
+}
+.data_verification .el-button--primary.is-active, .el-button--primary:active,
+.data_verification .el-button--primary:focus {
+  background-color: #2A436F;
+  border-color: #2A436F;
+  background: #2A436F;
 }
 </style>
