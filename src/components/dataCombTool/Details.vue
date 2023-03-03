@@ -37,6 +37,7 @@
           <el-table
             :row-style="{height:'38px'}"
             :cell-style="{height:'38px'}"
+            :cell-class-name="getCellClassName"
             :header-row-style="{height:'38px'}"
             :header-cell-style="{padding:'0px'}"
             :data="paramTableData"
@@ -48,12 +49,11 @@
             :row-class-name="tableRowClassName">
             <el-table-column prop="NAME_IN_CSV" label="参数名" width="180"></el-table-column>
             <el-table-column prop="CHINESE_NAME" label="中文名"></el-table-column>
-            <el-table-column prop="DESCRIPTION" label="描述" show-overflow-tooltip>
+            <el-table-column prop="DESCRIPTION" class="desc" label="描述" width="180">
             </el-table-column>
             <el-table-column
               v-for="(col, idx) in filtersForm.modelId"
               :key='idx' :label="col+''"
-              show-overflow-tooltip
               width="90">
               <template slot-scope="scope">
                 <div class="row-icon-group icon_bind" v-if='scope.row[col] && scope.row[col].gpId'>
@@ -179,6 +179,13 @@ export default {
     // this.filtersForm.paramName = 'RAL*'
   },
   methods: {
+    getCellClassName({column}) {
+      if (column.label === '描述') {
+        return 'desc'
+      } else {
+        return ''
+      }
+    },
     headerRowClassName ({row, rowIndex}) { // 表格头部样式
       return 'header-row-class-name'
     },
@@ -490,35 +497,43 @@ export default {
 .data_verification .table_container .table_content .table_wrapper .el-table {
   height: 100%;
 }
-.data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper {
+/* .data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper {
   overflow: auto;
-}
-.data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper .el-table__body .el-table__row td .cell {
+} */
+.data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper .el-table__body .el-table__row td.desc .cell {
   overflow-x: scroll;
   word-break: break-all;
   white-space: pre;
   text-overflow: unset;
   height: 38px;
   line-height: 38px!important;
+}
+.data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper .el-table__body .el-table__row td .cell {
+  /* overflow-x: scroll;
+  word-break: break-all;
+  white-space: pre;
+  text-overflow: unset;
+  height: 38px;
+  line-height: 38px!important; */
   /* overflow: hidden; tooltip样式，配合show-overflow-tooltip属性使用 */
   /* white-space: nowrap; tooltip样式，配合show-overflow-tooltip属性使用 */
   /* text-overflow: ellipsis; tooltip样式，配合show-overflow-tooltip属性使用 */
 }
 .data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper .el-table__body .el-table__row td .cell:hover {
-  line-height: 38px!important;
+  /* line-height: 38px!important; */
 }
-.el-table .el-table__body tr:hover div.row-icon-group,
+/* .el-table .el-table__body tr:hover div.row-icon-group,
  .table-row-class-name.current-row div.row-icon-group {
   line-height: 38px!important;
   white-space: nowrap;
   display: block;
-}
-.el-table .el-table__body div.row-icon-group {
+} */
+/* .el-table .el-table__body div.row-icon-group {
   white-space: nowrap;
 }
  .table-row-class-name.current-row div.row-icon-group {
   line-height: 38px!important;
   white-space: nowrap;
   display: block;
-}
+} */
 </style>

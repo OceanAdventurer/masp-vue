@@ -468,7 +468,7 @@ export default {
   padding-left: 4px;
 }
 .data_verification .flight_info .right {
-  width: calc(100% - 340px); /* .left 宽度340，留4像素做右边padding */
+  width: calc(100% - 345px); /* .left 宽度340，留4像素做右边padding */
   padding-left: 4px;
   border-left: 1px solid rgb(211, 211, 211);
 }
