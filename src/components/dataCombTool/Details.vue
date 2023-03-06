@@ -47,14 +47,14 @@
             border
             :header-row-class-name="headerRowClassName"
             :row-class-name="tableRowClassName">
-            <el-table-column prop="NAME_IN_CSV" label="参数名" width="180"></el-table-column>
-            <el-table-column prop="CHINESE_NAME" label="中文名"></el-table-column>
-            <el-table-column prop="DESCRIPTION" class="desc" label="描述" width="180">
+            <el-table-column prop="NAME_IN_CSV" label="参数名" show-overflow-tooltip min-width="180"></el-table-column>
+            <el-table-column prop="CHINESE_NAME" label="中文名" min-width="140"></el-table-column>
+            <el-table-column prop="DESCRIPTION" show-overflow-tooltip label="描述" min-width="120">
             </el-table-column>
             <el-table-column
               v-for="(col, idx) in filtersForm.modelId"
               :key='idx' :label="col+''"
-              width="90">
+              min-width="100">
               <template slot-scope="scope">
                 <div class="row-icon-group icon_bind" v-if='scope.row[col] && scope.row[col].gpId'>
                     <!-- <div>{{scope.row[col].gpId}}</div> -->
@@ -100,7 +100,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="GP_NAME" label="参数名"></el-table-column>
-            <el-table-column prop="ID" label="ID"></el-table-column>
+            <el-table-column prop="ID" label="ID" width="280"></el-table-column>
             <el-table-column  v-for="(col, idx) in filtersForm.modelId" :key='idx' :label="col+''">
               <template slot-scope="scope">
                 <div class="row-icon-group">
@@ -116,7 +116,8 @@
               <span>{{selectedData.name}}详情</span>
             </div>
             <div class="text item">
-              单位：{{selectedData.UNIT}}
+              <p>ID：{{selectedData.gpId}}</p>
+              <p>单位：{{selectedData.UNIT}}</p>
             </div>
           </el-card>
         </div>
@@ -234,7 +235,7 @@ export default {
         this.$store.commit('HIDE_LOADING', '加载中！')
       })
     },
-    checkDetail (row, col, cell, e) { // 查询参数详情
+    checkDetail (row, col, cell, e) { // 点击单元格查询参数详情
       const {modelId} = this.filtersForm
       const {NAME_IN_CSV:name} = row
       let label = Number(col.label) || '' // 版本库名称
@@ -313,6 +314,9 @@ export default {
       })
     },
     queryTableInfo (val) { // 查询参数列表数据
+      if (this.filtersForm.modelId.length === 0) {
+        this.resetTableInfo() // 清空所有数据
+      }
       this.$refs['filtersRef'].validate(valid => {
          if (valid) { // 查询table数据
             let para = this.filtersForm.modelId.join(',')
@@ -346,6 +350,15 @@ export default {
             return false
           }
       })
+    },
+    resetTableInfo () {
+      this.paramTableData = []
+      this.engineeringTableData = []
+      this.slectedModel = ''
+      this.slectedPara = ''
+      this.paramDetailList = []
+      this.pparName = ''
+      this.selectedData = {}
     },
     queryEngineeringTable(parmas) { // 查询工程参数列表
       this.$store.commit('SHOW_LOADING', '加载中...')
@@ -536,4 +549,18 @@ export default {
   white-space: nowrap;
   display: block;
 } */
+/* 整个滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}/* 滚动条上的滚动滑块 */
+::-webkit-scrollbar-thumb {
+    background-color: rgba(173, 171, 171, 0.5);
+    border-radius: 20px;
+}
+/* 滚动条轨道 */
+::-webkit-scrollbar-track {
+    background-color: rgba(173, 171, 171, 0);
+}
+
 </style>
