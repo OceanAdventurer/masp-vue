@@ -52,6 +52,23 @@
             <p>最小值：{{min}}</p>
             <p>中位值：{{mid}}</p>
             <p>平均值：{{avg}}</p>
+            <h6>众数信息：</h6>
+            <p class='style'><span>值：{{fir.label}}</span><span>次数：{{fir.value}}</span></p>
+            <p class='style'><span>值：{{sec.label}}</span><span>次数：{{sec.value}}</span></p>
+            <p class='style'><span>值：{{thir.label}}</span><span>次数：{{thir.value}}</span></p>
+            <p class='style'><span>值：{{forth.label}}</span><span>次数：{{forth.value}}</span></p>
+            <p class='style'><span>值：{{fifth.label}}</span><span>次数：{{fifth.value}}</span></p>
+            <!-- <p v-for="(item, idx) in numsList"
+              :key='idx'>
+              {{item}}
+              值：{{item.label}}，次数：{{item.value}}
+            </p> -->
+            <!-- <el-table :data="numsList">
+              <el-table-column label="值" prop='label'>
+              </el-table-column>
+              <el-table-column label="次数" prop='value'>
+              </el-table-column>
+            </el-table> -->
           </div>
         </div>
         </div>
@@ -183,6 +200,12 @@ export default {
       max: null, // 最大值
       mid: null, // 中位值
       min: null, // 最小值
+      numsList: [], // 众数信息
+      fir: {},
+      sec: {},
+      thir: {},
+      forth: {},
+      fifth: {},
       frequencyData: [], // 频率表格数据
       flightTableData: [], // 航班数据
       rowKey: '',
@@ -317,11 +340,28 @@ export default {
               this.$message.error(data.message)
               return
             }
-            const {avg = 0, max = 0, mid = 0, min = 0} = data
+            const {avg = 0, max = 0, mid = 0, min = 0, thickestValue1 = '',
+            thickestValue2 = '', thickestValue3 = '', thickestValue4 = '',
+            thickestValue5 = ''} = data
             this.avg = avg
             this.max = max
             this.mid = mid
             this.min = min
+            let dataList = [thickestValue1, thickestValue2, thickestValue3, thickestValue4, thickestValue5]
+            let numsList = []
+
+            this.fir = {label: this.getLabel(thickestValue1, ':'), value: this.getValue(thickestValue1, ':')}
+            this.sec = {label: this.getLabel(thickestValue2, ':'), value: this.getValue(thickestValue2, ':')}
+            this.thir = {label: this.getLabel(thickestValue3, ':'), value: this.getValue(thickestValue3, ':')}
+            this.forth = {label: this.getLabel(thickestValue4, ':'), value: this.getValue(thickestValue4, ':')}
+            this.fifth = {label: this.getLabel(thickestValue5, ':'), value: this.getValue(thickestValue5, ':')}
+            dataList.forEach((item, index) => {
+              numsList.push({
+                label: this.getLabel(item, ':'),
+                value: this.getValue(item, ':')
+              })
+            })
+            console.log(numsList, 'numsList----test');
             this.startRowIndex = this.frequencyForm.startLine
             this.endRowIndex = this.frequencyForm.endLine
             let arr = data && data.data || []
@@ -370,6 +410,12 @@ export default {
       } else {
         this.$message.warning('至少选择一个参数')
       }
+    },
+    getLabel (a, b) {
+      return a.substring(0, a.indexOf(b))
+    },
+    getValue (a, b) {
+      return a.substring(a.indexOf(b)+1)
     },
     queryLibraryList () { // 查询版本库列表
       this.$store.commit('SHOW_LOADING', '加载中...')
@@ -482,6 +528,10 @@ export default {
   width: 148px;
   height: 420px;
   padding: 0 4px;
+}
+.data_verification .flight_info .detail .style span {
+  display: inline-block;
+  width: 48%;
 }
 .data_verification .flight_info .detail p:first-child {
   font-weight: 700;

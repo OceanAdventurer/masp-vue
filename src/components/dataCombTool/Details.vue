@@ -4,7 +4,7 @@
     <Loading v-show="showLoading"></Loading>
     <el-form ref="filtersRef" :model= "filtersForm" :rules="filtersRules" label-width="80px">
       <el-row>
-        <el-col :span=10>
+        <el-col :span=8>
           <el-form-item label="版本库" prop="modelId">
             <el-select
               v-model="filtersForm.modelId"
@@ -21,9 +21,27 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span=6>
-          <el-form-item label="参数名" prop="paramName">
+        <el-col :span=9>
+          <el-form-item label="查询字段" prop="paramName" class='fixCol'>
+            <el-select v-model="filtersForm.searchNames" multiple placeholder="请选择字段名">
+              <el-option
+                v-for="item in queryNameList"
+                :key="item.value"
+                :value="item.label">
+              </el-option>
+            </el-select>
             <el-input v-model="filtersForm.paramName" placeholder="请输入参数名"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span=4>
+          <el-form-item label="匹配范围" prop="matchRange">
+            <el-select v-model="filtersForm.matchRange" value-key='label' placeholder="请选择匹配范围">
+              <el-option
+                v-for="item in matchOptions"
+                :key="item.value"
+                :value="item.label">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span=2 :offset="1">
@@ -42,14 +60,15 @@
             :header-cell-style="{padding:'0px'}"
             :data="paramTableData"
             height="100%"
+            stripe
             @cell-click='checkDetail'
             fit
             border
             :header-row-class-name="headerRowClassName"
             :row-class-name="tableRowClassName">
-            <el-table-column prop="NAME_IN_CSV" label="参数名" show-overflow-tooltip min-width="180"></el-table-column>
-            <el-table-column prop="CHINESE_NAME" label="中文名" min-width="140"></el-table-column>
-            <el-table-column prop="DESCRIPTION" show-overflow-tooltip label="描述" min-width="120">
+            <el-table-column prop="NAME_IN_CSV" label="参数名" show-overflow-tooltip min-width="80"></el-table-column>
+            <el-table-column prop="CHINESE_NAME" label="中文名" show-overflow-tooltip min-width="80"></el-table-column>
+            <el-table-column prop="DESCRIPTION" label="描述" min-width="120">
             </el-table-column>
             <el-table-column
               v-for="(col, idx) in filtersForm.modelId"
@@ -58,7 +77,7 @@
               <template slot-scope="scope">
                 <div class="row-icon-group icon_bind" v-if='scope.row[col] && scope.row[col].gpId'>
                     <!-- <div>{{scope.row[col].gpId}}</div> -->
-                  <el-button @click.stop='handleBinding(scope, "unconnect")' icon='el-icon-scissors'>解绑</el-button>
+                  <el-button @click.stop='clickShowDia(scope, "unconnect")' icon='el-icon-scissors'>解绑</el-button>
                 </div>
                 <div class="row-icon-group icon_bind" v-else-if='scope.row[col] && scope.row[col].paramId'>
                   <el-button @click.stop='handleBinding(scope)' icon='el-icon-connection'>绑定</el-button>
@@ -81,7 +100,18 @@
           </el-card>
         </div>
       </div>
-      <h6>工程参数信息</h6>
+    <el-form ref="gpFiltersRef" :model= "gpFiltersForm" label-width="100px">
+      <el-row>
+        <el-col :span=6>
+          <el-form-item label="工程参数名" prop="gpParamName">
+            <el-input v-model="gpFiltersForm.gpParamName" placeholder="请输入工程参数名"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span=2 :offset="1">
+          <el-button type='primary' icon="el-icon-search" @click="queryGpTableInfo">搜索</el-button>
+        </el-col>
+      </el-row>
+    </el-form>
       <div class="table_content gp_table">
         <div class="table_wrapper">
           <el-table
@@ -90,6 +120,7 @@
             :key='toggleIndex'
             fit
             border
+            stripe
             highlight-current-row
             @row-click='handleSelectionChange'
             @current-change="handleCurrentChange"
@@ -100,7 +131,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="GP_NAME" label="参数名"></el-table-column>
-            <el-table-column prop="ID" label="ID" width="280"></el-table-column>
+            <el-table-column prop="GP_CHINESE_NAME" label="描述" width="280"></el-table-column>
             <el-table-column  v-for="(col, idx) in filtersForm.modelId" :key='idx' :label="col+''">
               <template slot-scope="scope">
                 <div class="row-icon-group">
@@ -116,13 +147,25 @@
               <span>{{selectedData.name}}详情</span>
             </div>
             <div class="text item">
-              <p>ID：{{selectedData.gpId}}</p>
+              <!-- <p>ID：{{selectedData.gpId}}</p> -->
               <p>单位：{{selectedData.UNIT}}</p>
             </div>
           </el-card>
         </div>
       </div>
     </div>
+    <!-- 取消绑定对话框 -->
+      <el-dialog
+        title="提示"
+        :close-on-click-modal="false"
+        :visible.sync="dialogVisible"
+        width="30%">
+        <span>是否确定解绑？</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="handleBinding(rowData, 'unconnect')">确 定</el-button>
+        </span>
+      </el-dialog>
   </div>
 </template>
 <script>
@@ -135,10 +178,28 @@ export default {
     return {
       filtersForm: { // 筛选条件集合
         modelId: [], // 版本库字段
-        paramName: '' // 参数名称
+        paramName: '', // 参数名称
+        searchNames: [], // 查询字段
+        matchRange: '模糊'
       },
+      gpFiltersForm: {
+        gpParamName: ''
+      },
+      dialogVisible: false,
+      rowData: {},
       options: [],
       versionLibraryList: [], // 版本库列表，后端获取
+      queryNameList: [
+        {label: '参数名', value: 'paramName'},
+        {label: '中文名', value: 'chName'},
+        {label: '描述', value: 'desc'}
+      ],
+      matchOptions: [
+        {label: '头部', value: 1},
+        {label: '尾部', value: 2},
+        {label: '精确', value: 3},
+        {label: '模糊', value: 4}
+      ],
       filtersRules: { // 必填规则
         modelId: [
           { required: true, message: '请选择版本库', trigger: 'change' }
@@ -146,6 +207,9 @@ export default {
         paramName: [
           { required: true, message: '请输入参数名', trigger: 'blur' }
         ],
+        matchRange: [
+          { required: true, message: '请选择匹配范围', trigger: 'change' }
+        ]
       },
       paramDetailList: [],
       pparName: null, // 参数名
@@ -204,6 +268,12 @@ export default {
         this.$message.warning('请选择一个参数')
       }
     },
+
+    clickShowDia(col) {
+      this.rowData = {}
+      this.dialogVisible = !this.dialogVisible
+      this.rowData = col
+    },
     handleBinding ({row, column}, unconnect) { // 进行绑定操作
       const {label, gpId, name} = this.selectedData
       if(!gpId && !unconnect) {
@@ -227,6 +297,7 @@ export default {
           this.selectedData = {}
           this.selectedRow = []
           this.selectedVal = ''
+          this.dialogVisible = false
           this.queryTableInfo()
         }
       }).catch(err => {
@@ -320,8 +391,17 @@ export default {
       this.$refs['filtersRef'].validate(valid => {
          if (valid) { // 查询table数据
             let para = this.filtersForm.modelId.join(',')
-            console.log(para, 'para-----test');
-            this.queryEngineeringTable(para)
+            let nameList = []
+            this.filtersForm.searchNames.forEach(item => {
+              this.queryNameList.forEach(name => {
+                if (item === name.label) {
+                  nameList.push(name.value)
+                }
+              })
+            })
+            let typeNum = this.filtersForm.matchRange === '头部' ? 1 : this.filtersForm.matchRange === '尾部' ? 2 :
+              this.filtersForm.matchRange === '精确' ? 3 : 4
+            let searchNames = nameList.join(',')
             this.$store.commit('SHOW_LOADING', '加载中...')
             this.$axios({
               baseURL: '/pm',
@@ -329,7 +409,9 @@ export default {
               method: 'get',
               params: {
                 pattern: this.filtersForm.paramName,
-                modelIds: para
+                modelIds: para,
+                searchNames,
+                type: typeNum
               }
             }).then(res => {
               if (res.status === 200) {
@@ -351,6 +433,39 @@ export default {
           }
       })
     },
+    queryGpTableInfo () {
+      this.$refs['gpFiltersRef'].validate(valid => {
+         if (valid) { // 查询table数据
+            let para = this.filtersForm.modelId.join(',')
+            console.log(para, 'para-----test');
+            this.$store.commit('SHOW_LOADING', '加载中...')
+            this.$axios({
+              baseURL: '/pm',
+              url: '/parameterMatching/getGpBindStatus',
+              method: 'get',
+              params: {
+                pattern: this.gpFiltersForm.gpParamName,
+                modelIds: para
+              }
+            }).then(res => {
+              if (res.status === 200) {
+                const {data = []} = res
+                this.engineeringTableData = data || []
+              } else {
+                this.engineeringTableData = []
+              }
+              this.$store.commit('HIDE_LOADING', '加载中！')
+            }).catch(err => {
+              console.log(err)
+              this.engineeringTableData = []
+              this.$store.commit('HIDE_LOADING', '加载中！')
+            })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+      })
+    },
     resetTableInfo () {
       this.paramTableData = []
       this.engineeringTableData = []
@@ -359,33 +474,6 @@ export default {
       this.paramDetailList = []
       this.pparName = ''
       this.selectedData = {}
-    },
-    queryEngineeringTable(parmas) { // 查询工程参数列表
-      this.$store.commit('SHOW_LOADING', '加载中...')
-      this.$axios({
-        baseURL: '/pm',
-        url: '/parameterMatching/getGpBindStatus',
-        method: 'get',
-        params: {
-          pattern: this.filtersForm.paramName,
-          modelIds: parmas
-        }
-      }).then(res => {
-        if (res.status === 200) {
-          const {data = []} = res
-          let list = data;
-          data.concat(list)
-          this.engineeringTableData = data || []
-        } else {
-          this.engineeringTableData = []
-        }
-        this.$store.commit('HIDE_LOADING', '加载中！')
-      }).catch(err => {
-        this.engineeringTableData = []
-        console.log(err)
-        // this.$message.error('请求响应失败，请稍后重试！')
-        this.$store.commit('HIDE_LOADING', '加载中！')
-      })
     },
     handleCurrentChange (val) { // 高亮选中行
       this.currentRow = val
@@ -434,16 +522,22 @@ export default {
 .data_verification .table_container .table_content {
   display: flex;
   height: calc(60% - 15px);
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   /* margin-bottom: 4px; */
 }
 .data_verification .table_container .table_content.gp_table {
   margin-bottom: 4px;
-  height: calc(40% - 12px);
+  height: calc(40% - 10px);
 }
 .data_verification .el-form .el-row .el-col .el-form-item {
   margin-bottom: 16px;
 }
+.data_verification .table_container .el-form .el-row .el-col .el-form-item {
+  margin-bottom: 5px; 
+}
+/* .data_verification .table_container .el-form .el-row {
+  background-color: rgba(48, 66, 108, 0.1);
+} */
 .data_verification .table_container .table_content .table_wrapper {
   height: 100%;
   width: calc(100% - 310px);
@@ -492,16 +586,27 @@ export default {
   background: #fff;
   color: #606266;
 }
-.row-icon-group:hover {
+/* .row-icon-group:hover {
   line-height: 38px!important;
-}
+} */
 </style>
 <style>
 .data_verification .el-table__body-wrapper td {
   /* height: 24px; */
 }
+.data_verification .el-form .el-row .el-col .fixCol .el-form-item__content {
+  display: flex;
+}
+.data_verification .el-form .el-row .el-col .fixCol .el-form-item__content .el-select {
+  flex: 3;
+  margin-right: 5px;
+}
+.data_verification .el-form .el-row .el-col .fixCol .el-form-item__content .el-input {
+  flex: 1;
+}
 .data_verification .el-table__body-wrapper {
   height: calc(100% - 38px)!important;
+  overflow: auto;
   /* height: 100%; */
 }
 .data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper .el-table__body .el-table__row td {
@@ -514,12 +619,12 @@ export default {
   overflow: auto;
 } */
 .data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper .el-table__body .el-table__row td.desc .cell {
-  overflow-x: scroll;
+  /* overflow-x: scroll;
   word-break: break-all;
   white-space: pre;
-  text-overflow: unset;
-  height: 38px;
-  line-height: 38px!important;
+  text-overflow: unset; */
+  /* height: 38px;
+  line-height: 38px!important; */
 }
 .data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper .el-table__body .el-table__row td .cell {
   /* overflow-x: scroll;
