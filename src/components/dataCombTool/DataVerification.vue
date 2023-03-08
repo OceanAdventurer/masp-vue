@@ -53,11 +53,11 @@
             <p>中位值：{{mid}}</p>
             <p>平均值：{{avg}}</p>
             <h6>众数信息：</h6>
-            <p class='style'><span>值：{{fir.label}}</span><span>次数：{{fir.value}}</span></p>
-            <p class='style'><span>值：{{sec.label}}</span><span>次数：{{sec.value}}</span></p>
-            <p class='style'><span>值：{{thir.label}}</span><span>次数：{{thir.value}}</span></p>
-            <p class='style'><span>值：{{forth.label}}</span><span>次数：{{forth.value}}</span></p>
-            <p class='style'><span>值：{{fifth.label}}</span><span>次数：{{fifth.value}}</span></p>
+            <p class='style'><span>值:{{fir.label}}</span><span>次数:{{fir.value}}</span></p>
+            <p class='style'><span>值:{{sec.label}}</span><span>次数:{{sec.value}}</span></p>
+            <p class='style'><span>值:{{thir.label}}</span><span>次数:{{thir.value}}</span></p>
+            <p class='style'><span>值:{{forth.label}}</span><span>次数:{{forth.value}}</span></p>
+            <p class='style'><span>值:{{fifth.label}}</span><span>次数:{{fifth.value}}</span></p>
             <!-- <p v-for="(item, idx) in numsList"
               :key='idx'>
               {{item}}
@@ -361,7 +361,6 @@ export default {
                 value: this.getValue(item, ':')
               })
             })
-            console.log(numsList, 'numsList----test');
             this.startRowIndex = this.frequencyForm.startLine
             this.endRowIndex = this.frequencyForm.endLine
             let arr = data && data.data || []
@@ -463,18 +462,30 @@ export default {
                 modelId: this.filtersForm.modelId
               }
             }).then(res => {
-              if (res.status === 200) {
                 const {data = []} = res
+              if (res.status === 200 && data.length > 0) {
                 this.flightTableData = data
                 this.rowKey = data[0].ROWKEY
-                if (this.$route.query.modelId && this.frequencyForm.paramName) {
+                if (this.$route.query.modelId || this.frequencyForm.paramName.length > 0) {
                   this.checkDetail()
                 }
+              } else {
+                this.avg = null
+                this.max = null
+                this.mid = null
+                this.min = null
+                this.fir = {}
+                this.sec = {}
+                this.thir = {}
+                this.forth = {}
+                this.fifth = {}
+                this.frequencyData = []
+                this.flightTableData = []
               }
               this.$store.commit('HIDE_LOADING', '加载中！')
             }).catch(err => {
               console.log(err)
-              this.$message.error('请求响应失败，请稍后重试！')
+              // this.$message.error('请求响应失败，请稍后重试！')
               this.$store.commit('HIDE_LOADING', '加载中！')
             })
           } else {
