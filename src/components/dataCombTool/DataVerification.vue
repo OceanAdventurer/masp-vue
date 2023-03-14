@@ -469,7 +469,8 @@ export default {
                 if (this.$route.query.modelId || this.frequencyForm.paramName.length > 0) {
                   this.checkDetail()
                 }
-              } else {
+              } else if (data.length === 0){
+                this.$message.info('航班数据为空')
                 this.avg = null
                 this.max = null
                 this.mid = null

@@ -4,7 +4,7 @@
     <Loading v-show="showLoading"></Loading>
     <el-form ref="filtersRef" :model= "filtersForm" :rules="filtersRules" label-width="80px">
       <el-row>
-        <el-col :span=8>
+        <el-col :span=12>
           <el-form-item label="版本库" prop="modelId">
             <el-select
               v-model="filtersForm.modelId"
@@ -21,9 +21,9 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span=9>
+        <el-col :span=6>
           <el-form-item label="查询字段" prop="paramName" class='fixCol'>
-            <el-select v-model="filtersForm.searchNames" multiple placeholder="请选择字段名">
+            <el-select v-model="filtersForm.searchNames" multiple placeholder="请选择字段">
               <el-option
                 v-for="item in queryNameList"
                 :key="item.value"
@@ -33,7 +33,7 @@
             <el-input v-model="filtersForm.paramName" placeholder="请输入参数名"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span=4>
+        <el-col :span=3>
           <el-form-item label="匹配范围" prop="matchRange">
             <el-select v-model="filtersForm.matchRange" value-key='label' placeholder="请选择匹配范围">
               <el-option
@@ -44,7 +44,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span=2 :offset="1">
+        <el-col :span=2 style="margin-left: 10px">
           <el-button type='primary' icon="el-icon-search" @click="queryTableInfo">搜索</el-button>
         </el-col>
       </el-row>
@@ -61,26 +61,28 @@
             :data="paramTableData"
             height="100%"
             stripe
-            @cell-click='checkDetail'
             fit
             border
             :header-row-class-name="headerRowClassName"
             :row-class-name="tableRowClassName">
-            <el-table-column prop="NAME_IN_CSV" label="参数名" show-overflow-tooltip min-width="80"></el-table-column>
-            <el-table-column prop="CHINESE_NAME" label="中文名" show-overflow-tooltip min-width="80"></el-table-column>
-            <el-table-column prop="DESCRIPTION" label="描述" min-width="120">
+            <el-table-column prop="NAME_IN_CSV" label="参数名" width="160" :resizable='false'></el-table-column>
+            <el-table-column prop="CHINESE_NAME" label="中文名" width="120" :resizable='false'></el-table-column>
+            <el-table-column prop="DESCRIPTION" label="描述" min-width="300">
             </el-table-column>
             <el-table-column
+              :resizable='false'
               v-for="(col, idx) in filtersForm.modelId"
               :key='idx' :label="col+''"
-              min-width="100">
+              min-width="150">
               <template slot-scope="scope">
                 <div class="row-icon-group icon_bind" v-if='scope.row[col] && scope.row[col].gpId'>
                     <!-- <div>{{scope.row[col].gpId}}</div> -->
                   <el-button @click.stop='clickShowDia(scope, "unconnect")' icon='el-icon-scissors'>解绑</el-button>
+                  <el-button @click.stop='checkDetail(scope)' icon='el-icon-info'>详情</el-button>
                 </div>
                 <div class="row-icon-group icon_bind" v-else-if='scope.row[col] && scope.row[col].paramId'>
-                  <el-button @click.stop='handleBinding(scope)' icon='el-icon-connection'>绑定</el-button>
+                  <el-button @click.stop='handleBinding(scope)' type="primary" icon='el-icon-connection'>绑定</el-button>
+                  <el-button @click.stop='checkDetail(scope)' icon='el-icon-info'>详情</el-button>
                 </div>
                 <div class="row-icon-group icon_bind" v-else-if='scope.row[col] && !scope.row[col].paramId'>
                 </div>
@@ -148,7 +150,7 @@
             </div>
             <div class="text item">
               <!-- <p>ID：{{selectedData.gpId}}</p> -->
-              <p>单位：{{selectedData.UNIT}}</p>
+              <p>描述：{{selectedData.GP_CHINESE_NAME}}</p>
             </div>
           </el-card>
         </div>
@@ -294,11 +296,12 @@ export default {
         this.$store.commit('HIDE_LOADING', '加载中！')
         if (res.status === 200) {
           this.$message.success("操作成功")
-          this.selectedData = {}
-          this.selectedRow = []
-          this.selectedVal = ''
+          // this.selectedData = {}
+          // this.selectedRow = []
+          // this.selectedVal = ''
           this.dialogVisible = false
           this.queryTableInfo()
+          this.queryGpTableInfo()
         }
       }).catch(err => {
         console.log(err)
@@ -306,10 +309,10 @@ export default {
         this.$store.commit('HIDE_LOADING', '加载中！')
       })
     },
-    checkDetail (row, col, cell, e) { // 点击单元格查询参数详情
+    checkDetail ({column, row}) { // 点击单元格查询参数详情
       const {modelId} = this.filtersForm
       const {NAME_IN_CSV:name} = row
-      let label = Number(col.label) || '' // 版本库名称
+      let label = Number(column.label) || '' // 版本库名称
       if (modelId.includes(label)) { // 判断当前选中的单元格是否是版本库列
         this.pparName = name
         this.slectedModel = label // 选中单元格验证所需参数
@@ -346,8 +349,8 @@ export default {
                 }
               }
               let arr = []
-              list.forEach(item => {
-                this.labelList.forEach(label => {
+              this.labelList.forEach(label => {
+                list.forEach(item => {
                   if (item.label === label.enName) {
                     arr.push({label: label.chName, value: item.value})
                   }
@@ -437,7 +440,6 @@ export default {
       this.$refs['gpFiltersRef'].validate(valid => {
          if (valid) { // 查询table数据
             let para = this.filtersForm.modelId.join(',')
-            console.log(para, 'para-----test');
             this.$store.commit('SHOW_LOADING', '加载中...')
             this.$axios({
               baseURL: '/pm',
@@ -480,11 +482,11 @@ export default {
     },
     handleSelectionChange (a, b) { // 选中工程参数某一行，进行绑定操作
       let label = b.labelName
-      const {GP_NAME: name, ID:gpId, UNIT} = a
+      const {GP_NAME: name, ID:gpId, GP_CHINESE_NAME} = a
       label = label === '单选' ? this.filtersForm.modelId[0] : label
       this.selectedVal = gpId
       this.selectedRow = this.engineeringTableData.filter((item) => item.gpId === gpId)
-      this.selectedData = {label, gpId, name, UNIT} 
+      this.selectedData = {label, gpId, name, GP_CHINESE_NAME} 
     }
   },
   destroyed () {}
@@ -500,6 +502,9 @@ export default {
 .data_verification {
   padding: 4px;
   box-sizing: border-box;
+}
+.data_verification .icon_bind {
+  display: flex;
 }
 .data_verification .icon_bind .el-button {
   width: 60px;
@@ -598,7 +603,7 @@ export default {
   display: flex;
 }
 .data_verification .el-form .el-row .el-col .fixCol .el-form-item__content .el-select {
-  flex: 3;
+  flex: 1;
   margin-right: 5px;
 }
 .data_verification .el-form .el-row .el-col .fixCol .el-form-item__content .el-input {

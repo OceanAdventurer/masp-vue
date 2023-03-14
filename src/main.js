@@ -3,8 +3,6 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
 import 'assets/css/common.css'
-import echarts from 'echarts'
-import 'echarts-gl'
 import axios from 'axios'
 import qs from 'qs'
 import moment from 'moment'
@@ -12,7 +10,6 @@ import store from 'store/index'
 import bus from 'assets/js/bus'
 import util from 'assets/js/util'
 import './mock' // simulation data
-import 'echarts/extension-src/dataTool'
 // 让ajax携带cookie
 axios.defaults.withCredentials = true
 // 请求接口全局默认地址
@@ -45,8 +42,6 @@ Vue.use(ElementUI)
 
 // 项目上线后不再提示警告
 Vue.config.productionTip = false
-// 引入echarts
-Vue.prototype.$echarts = echarts
 // 引入axios处理请求
 Vue.prototype.$axios = axios
 // 引入事件总线管理
