@@ -1,0 +1,1259 @@
+@charset "UTF-8";
+
+/*卡片式tab标签样式修改*/
+.el-tabs--card > .el-tabs__header {
+  padding: 0;
+  position: relative;
+  background: #DDDDDD;
+  margin: 0;
+  border-bottom: 1px solid #3A6BBA;
+  width: 100%;
+  height: 30px;
+  box-sizing: border-box;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__item {
+  padding: 8px 0;
+  background: #DDDDDD;
+  text-align: center;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  display: inline-block;
+  list-style: none;
+  font-weight: 500;
+  position: relative;
+  font-size: 12px;
+  color: #9B9B9B;
+  height: 30px;
+  line-height: 13px;
+  width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__nav {
+  /* border: 1px solid #DDDDDD; */
+  border: none;
+  border-bottom: none;
+  border-radius: 0;
+}
+
+.el-tabs--card .el-tabs__item.is-active {
+  color: #3A6BB9;
+  font-size:12px;
+}
+
+.el-tabs__item:hover {
+  color: #3A6BB9;
+  cursor: pointer;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__item {
+  border-top: 1px solid #BBBBBB;
+  border-bottom: 1px solid #3A6BBA;
+  border-left: 1px solid #BBBBBB;
+}
+.el-tabs--card > .el-tabs__header .el-tabs__item:last-child {
+  border-right: 1px solid #BBBBBB;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__item.is-active {
+  border-radius: 6px 6px 0 0;
+  border: 1px solid #3A6BBA;
+  background-color: #ffffff;
+  border-bottom: none;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__item.is-active.is-closable .el-icon-close,
+.el-tabs--card > .el-tabs__header .el-tabs__item.is-closable:hover .el-icon-close {
+  width: 16px;
+  height: 16px;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__item .el-icon-close {
+  font-size: 16px;
+  line-height: 16px;
+  position: absolute;
+  right: 10px;
+  top: 6px;
+}
+
+.el-tabs--card {
+  height: 100%;
+}
+
+.el-tabs--card > .el-tabs__content {
+  position: absolute;
+  top: 30px;
+  bottom: 0;
+  width: 100%;
+}
+
+.el-tabs__content > .el-tab-pane,
+.el-tabs__content > .el-tab-pane > div {
+  position: relative;
+  height: 100%;
+}
+
+.el-tabs .el-tabs__header {
+  padding: 0;
+  margin: 0;
+}
+
+.el-tabs--bottom .el-tabs__item.is-bottom:nth-child(2), .el-tabs--bottom .el-tabs__item.is-top:nth-child(2), .el-tabs--top .el-tabs__item.is-bottom:nth-child(2), .el-tabs--top .el-tabs__item.is-top:nth-child(2) {
+  padding-left: 0;
+}
+
+.el-tabs--bottom .el-tabs__item.is-bottom:last-child, .el-tabs--bottom .el-tabs__item.is-top:last-child, .el-tabs--top .el-tabs__item.is-bottom:last-child, .el-tabs--top .el-tabs__item.is-top:last-child {
+  padding-right: 0;
+}
+
+.el-tabs__active-bar {
+  background-color: #3A6BB9;
+}
+
+/*基本tab标签样式修改*/
+.basic-tab .el-tabs__item {
+  height: 30px;
+  line-height: 30px;
+}
+
+.basic-tab .el-tabs__nav-scroll {
+  margin-left: 20px;
+}
+
+/* .el-tabs__nav-wrap .el-tabs__nav-scroll{
+  height: 30px;
+} */
+/*tree样式修改*/
+.el-tree-node__expand-icon {
+  color: #2F4B77;
+  font-size: 12px;
+}
+
+.el-tree-node__expand-icon.is-leaf {
+  color: transparent;
+  cursor: default;
+}
+
+/*table样式修改ss*/
+.el-table {
+  color: #555555;
+  font-size: 12px;
+}
+
+.el-table th, .el-table tr {
+  background-color: transparent;
+}
+
+.el-table .header-row-class-name {
+  /* color: #2A436F; */
+  /* font-size: 12px; */
+  line-height: 16px;
+  height: 38px !important;
+}
+.el-table tr{
+  /* color: #2A436F; */
+  /* font-size: 12px; */
+  line-height: 16px;
+  height: 38px;
+}
+.el-table .cell {
+  line-height: normal !important;
+}
+.el-table .table-row-class-name {
+  background: #ffffff;
+}
+
+.el-table td, .el-table th.is-leaf {
+  border-bottom: 1px solid #DDDDDD;
+}
+
+.el-table td, .el-table th {
+  padding: 10px 0;
+}
+
+.el-table .el-table__body tr:hover > td {
+  /* background-color: #f3f1f1; */
+  background-color: #EBEEF5;
+}
+
+.el-table--striped .el-table__body tr.el-table__row--striped.current-row td,
+.el-table__body tr.current-row > td,
+.el-table__body tr.hover-row.current-row > td,
+.el-table__body tr.hover-row.el-table__row--striped.current-row > td,
+.el-table__body tr.hover-row.el-table__row--striped > td,
+.el-table__body tr.hover-row > td {
+  background-color: #f3f1f1;
+}
+
+.el-table .el-table__body tr:hover div.row-icon-group,
+.table-row-class-name.current-row div.row-icon-group { /*分析管理操作按钮*/
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+/*tree样式修改*/
+.el-tree {
+  color: #555555;
+}
+
+/*固定宽度tree出现左右滚动条*/
+/* .el-tree > .el-tree-node {
+    display: inline-block !important;
+    width: 100%;
+} */
+
+.tree-form .el-input_inner-set {
+  width: 50%;
+}
+
+.tree-form .el-input__inner {
+  height: 20px;
+  line-height: 20px;
+  border: 1px solid #DDDDDD;
+  color: #555555;
+  font-size: 12px;
+  padding: 0 10px;
+}
+
+.tree-form .el-button--mini {
+  padding: 3px 7px;
+}
+
+.tree-text-line {
+  width: 215px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*radio样式修改*/
+.el-radio__input.is-checked .el-radio__inner {
+  border-color: #324F82;
+  background: #FFFFFF;
+}
+
+.el-radio__inner::after {
+  width: 8px;
+  height: 8px;
+  background-color: #324F82;
+}
+
+.el-radio__input.is-checked + .el-radio__label {
+  color: #666666;
+}
+
+.el-radio__inner:hover {
+  border-color: #324F82;
+}
+
+.el-radio + .el-radio {
+  margin-left: 0;
+}
+
+.el-radio {
+  color: #666666;
+}
+
+/*checkbox样式修改*/
+.el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+  background-color: #3A6BB9;
+  border-color: #3A6BB9;
+}
+
+.el-checkbox__input.is-focus .el-checkbox__inner {
+  border-color: #3A6BB9;
+}
+
+.el-checkbox__inner:hover {
+  border-color: #3A6BB9;
+}
+
+.el-checkbox__inner {
+  width: 16px;
+  height: 16px;
+}
+
+.el-checkbox__inner::after {
+  width: 5px;
+  height: 9px;
+}
+
+.el-checkbox__input.is-checked + .el-checkbox__label {
+  color: #3A6BB9;
+}
+
+/*input样式修改*/
+.el-select .el-input.is-focus .el-input__inner {
+  border-color: #3A6BB9;
+}
+
+.el-select .el-input.is-focus .el-input__inner {
+  border-color: #3A6BB9;
+}
+
+.el-select .el-input__inner:focus {
+  border-color: #3A6BB9;
+}
+
+.el-input.is-active .el-input__inner, .el-input__inner:focus {
+  border-color: #DDDDDD;
+  outline: 0;
+}
+
+.el-textarea.is-active .el-textarea__inner, .el-textarea__inner:focus {
+  border-color: #DDDDDD;
+  outline: 0;
+}
+
+/* primary类型的button默认样式修改 */
+.el-button--primary {
+  color: #fff;
+
+  /* background-color: #437ACF; */
+  /* border-color: #437ACF; */
+  background-color: #2A436F;
+  border-color: #2A436F;
+}
+
+.el-button--primary:focus, .el-button--primary:hover {
+  background: #66b1ff;
+  border-color: #66b1ff;
+  color: #fff;
+}
+
+.el-button--primary.is-active, .el-button--primary:active {
+  background: #3a8ee6;
+  border-color: #3a8ee6;
+  color: #fff;
+}
+
+.el-button--primary:active {
+  outline: 0;
+}
+
+.el-button--primary.is-disabled, .el-button--primary.is-disabled:active, .el-button--primary.is-disabled:focus, .el-button--primary.is-disabled:hover {
+  color: #fff;
+  background-color: #a0cfff;
+  border-color: #a0cfff;
+}
+
+.el-button--primary.is-plain {
+  color: #437ACF;
+  background: #ecf5ff;
+  border-color: #b3d8ff;
+}
+
+.el-button--primary.is-plain:focus, .el-button--primary.is-plain:hover {
+  background: #66b1ff;
+  border-color: #66b1ff;
+  color: #fff;
+}
+
+.el-button--primary.is-plain:active {
+  background: #3a8ee6;
+  border-color: #3a8ee6;
+  color: #fff;
+  outline: 0;
+}
+
+.el-button--primary.is-plain.is-disabled, .el-button--primary.is-plain.is-disabled:active, .el-button--primary.is-plain.is-disabled:focus, .el-button--primary.is-plain.is-disabled:hover {
+  color: #8cc5ff;
+  background-color: #ecf5ff;
+  border-color: #d9ecff;
+}
+
+/* 分页编号默认样式 */
+.el-pager li {
+  font-size: 12px;
+}
+.el-pager li:hover {
+  color: #437ACF;
+}
+
+.el-pager li.active {
+  color: #437ACF;
+  cursor: default;
+}
+
+.el-pagination.is-background .el-pager li:not(.disabled):hover {
+  color: #437ACF;
+}
+
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+  background-color: #437ACF;
+  color: #fff;
+}
+
+.el-pagination button,
+.el-pagination span:not([class*=suffix]),
+.el-date-picker__header-label,
+.el-select-dropdown__item,
+.el-textarea__inner,
+.el-input__inner,
+.el-alert__title,
+.el-radio__label,
+.el-checkbox__label,
+.el-button,
+.el-menu-item,
+.el-submenu__title,
+.el-dialog__title,
+.el-dialog__body {
+  font-size: 12px;
+}
+
+/*张龙注释*/
+/* .el-input__inner {
+  min-height: 40px;
+  height: 40px;
+  line-height: 40px;
+} */
+.el-select-dropdown__item.selected {
+  color: #324F82;
+  font-weight: 700;
+}
+
+/*个人组件公共样式*/
+
+/*
+  布局方式：flex容器布局
+  flex-direction属性决定主轴的方向（即项目的排列方向）。
+  flex-wrap默认情况下，项目都排在一条线（又称”轴线”）上。flex-wrap属性定义，如果一条轴线排不下，如何换行。
+  justify-content属性定义了项目在主轴上的对齐方式。
+  align-items属性定义项目在交叉轴上如何对齐。
+  align-content属性定义了多根轴线的对齐方式。如果项目只有一根轴线，该属性不起作用。
+*/
+.df {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+/* （默认值）：主轴为水平方向，起点在左端。 */
+.df-fd-r {
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+
+/* 主轴为水平方向，起点在右端。 */
+.df-fd-rr {
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: reverse;
+  -ms-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+/* 主轴为垂直方向，起点在上沿。 */
+.df-fd-c {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+/* 主轴为垂直方向，起点在下沿。 */
+.df-fd-cr {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+/* nowrap（默认）：不换行。 */
+.df-fw-n {
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+}
+
+/* wrap：换行，第一行在上方。 */
+.df-fw-w {
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+/* wrap-reverse：换行，第一行在下方。 */
+.df-fw-wr {
+  -ms-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+/* flex-start（默认值）：左对齐 */
+.df-jc-fs {
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+}
+
+/* flex-end：右对齐 */
+.df-jc-fe {
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+/* center： 居中 */
+.df-jc-c {
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+/* space-between：两端对齐，项目之间的间隔都相等。 */
+.df-jc-sb {
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+/* space-around：每个项目两侧的间隔相等。所以，项目之间的间隔比项目与边框的间隔大一倍。 */
+.df-jc-sa {
+  -ms-flex-pack: distribute;
+  justify-content: space-around;
+}
+
+/* flex-start：交叉轴的起点对齐。 */
+.df-ai-fs {
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+}
+
+/* flex-end：交叉轴的终点对齐。 */
+.df-ai-fe {
+  -webkit-box-align: end;
+  -ms-flex-align: end;
+  align-items: flex-end;
+}
+
+/* center：交叉轴的中点对齐。 */
+.df-ai-c {
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+/* baseline: 项目的第一行文字的基线对齐。 */
+.df-ai-b {
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+}
+
+/* stretch（默认值）：如果项目未设置高度或设为auto，将占满整个容器的高度。 */
+.df-ai-s {
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+}
+
+/* flex-start：与交叉轴的起点对齐。 */
+.df-ac-fs {
+  -ms-flex-line-pack: start;
+  align-content: flex-start;
+}
+
+/* flex-end：与交叉轴的终点对齐。 */
+.df-ac-fe {
+  -ms-flex-line-pack: end;
+  align-content: flex-end;
+}
+
+/* center：与交叉轴的中点对齐。 */
+.df-ac-c {
+  -ms-flex-line-pack: center;
+  align-content: center;
+}
+
+/* space-between：与交叉轴两端对齐，轴线之间的间隔平均分布。 */
+.df-ac-sb {
+  -ms-flex-line-pack: justify;
+  align-content: space-between;
+}
+
+/* space-around：每根轴线两侧的间隔都相等。所以，轴线之间的间隔比轴线与边框的间隔大一倍。 */
+.df-ac-sa {
+  -ms-flex-line-pack: distribute;
+  align-content: space-around;
+}
+
+/* stretch（默认值）：轴线占满整个交叉轴。 */
+.df-ac-s {
+  -ms-flex-line-pack: stretch;
+  align-content: stretch;
+}
+
+/*属性定义项目的放大比例，默认为0，即如果存在剩余空间，也不放大。*/
+.df-f1 {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-height: 0;
+}
+.cm_main_attr .df-f1{
+  flex: initial;
+}
+
+.df-f2 {
+  -webkit-box-flex: 2;
+  -ms-flex: 2;
+  flex: 2;
+}
+
+.df-f3 {
+  -webkit-box-flex: 3;
+  -ms-flex: 3;
+  flex: 3;
+}
+.df-f3 .el-input {
+  height: 32px;
+}
+
+.df-f4 {
+  -webkit-box-flex: 4;
+  -ms-flex: 4;
+  flex: 4;
+}
+
+.df-f5 {
+  -webkit-box-flex: 5;
+  -ms-flex: 5;
+  flex: 5;
+}
+
+.df-f6 {
+  -webkit-box-flex: 6;
+  -ms-flex: 6;
+  flex: 6;
+}
+
+.df-f7 {
+  -webkit-box-flex: 7;
+  -ms-flex: 7;
+  flex: 7;
+}
+
+.df-f8 {
+  -webkit-box-flex: 8;
+  -ms-flex: 8;
+  flex: 8;
+}
+
+.df-f9 {
+  -webkit-box-flex: 9;
+  -ms-flex: 9;
+  flex: 9;
+}
+
+.df-f10 {
+  -webkit-box-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+}
+
+/*属性定义了项目的缩小比例，默认为1，即如果空间不足，该项目将缩小。*/
+.df-fs {
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+}
+
+.tab-icon-set {
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/*center:主轴居中、交叉轴居中*/
+.df-jc-ai-c {
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.mt10 {
+  margin-top: 10px;
+}
+
+.mt20 {
+  margin-top: 20px;
+}
+
+.mr10 {
+  margin-right: 10px;
+}
+
+.mr20 {
+  margin-right: 20px;
+}
+
+.mb10 {
+  margin-bottom: 10px;
+}
+
+.mb20 {
+  margin-bottom: 20px;
+}
+
+.ml10 {
+  margin-left: 10px;
+}
+
+.ml20 {
+  margin-left: 20px;
+}
+
+.m20 {
+  margin: 20px;
+}
+
+.m10 {
+  margin: 10px;
+}
+
+.p10 {
+  padding: 10px;
+}
+
+.pt10 {
+  padding-top: 10px;
+}
+
+.pr10 {
+  padding-right: 10px;
+}
+
+.pb10 {
+  padding-bottom: 10px;
+}
+
+.pl10 {
+  padding-left: 10px;
+}
+
+.p20 {
+  padding: 20px;
+}
+
+.pt20 {
+  padding-top: 20px;
+}
+
+.pr20 {
+  padding-right: 20px;
+}
+
+.pb20 {
+  padding-bottom: 20px;
+}
+
+.pl20 {
+  padding-left: 20px;
+}
+
+.pos-r {
+  position: relative;
+}
+
+.pos-a {
+  position: absolute;
+}
+
+.w100 {
+  width: 100%;
+}
+
+.h100 {
+  height: 100%;
+}
+
+.h10 {
+  height: 10%;
+}
+
+.h20 {
+  height: 20%;
+}
+
+.font12 {
+  font-size: 12px !important;
+}
+
+.font14 {
+  font-size: 14px !important;
+}
+
+.icon-search {
+  background-image: url(../images/icon66_1.png);
+}
+
+.icon-refresh {
+  background-image: url(../images/icon67.png);
+}
+
+.icon-view {
+  background-image: url(../images/icon69.png);
+  width: 20px;
+}
+
+.icon-moveUp {
+  background-image: url(../images/icon130.png);
+  width: 14px;
+}
+
+.icon-moveDown {
+  background-image: url(../images/icon126.png);
+  width: 14px;
+}
+
+.icon-remove {
+  background-image: url(../images/icon129.png);
+  width: 14px;
+}
+
+.icon-move {
+  background-image: url(../images/icon127.png);
+  width: 14px;
+}
+
+.icon-topping {
+  background-image: url(../images/icon128.png);
+  width: 14px;
+}
+
+.icon-copy {
+  background-image: url(../images/small_copy.png);
+  width: 20px;
+}
+
+.icon-copy-small {
+  background-image: url(../images/small_copy.png);
+}
+.icon-pipei {
+  background-image: url(../images/pipei_1.png);
+}
+
+.icon-edit {
+  background-image: url(../images/icon70.png);
+}
+
+.icon-delete {
+  background-image: url(../images/icon75.png);
+}
+
+.icon-delete-small {
+  background-image: url(../images/icon71.png);
+}
+
+.icon-help {
+  background-image: url(../images/icon80.png);
+}
+
+.icon-set {
+  background-image: url(../images/icon90.png);
+}
+
+.icon-exchange {
+  background-image: url(../images/icon82.png);
+}
+
+.icon-save {
+  background-image: url(../images/icon83.png);
+}
+
+.icon-add {
+  background-image: url(../images/icon84_1.png);
+}
+.icon-look {
+  background-image: url(../images/icon133_1.png);
+}
+
+.icon-add-gray {
+  background-image: url(../images/icon84_0.png);
+}
+
+.icon-load {
+  background-image: url(../images/icon85.png);
+}
+
+.icon-up-small {
+  background-image: url(../images/icon88.png);
+}
+
+.icon-down-small {
+  background-image: url(../images/icon89.png);
+}
+
+.icon-on {
+  background-image: url(../images/icon98.png);
+}
+
+.icon-in {
+  background-image: url(../images/icon99.png);
+}
+
+.icon-under {
+  background-image: url(../images/icon100.png);
+}
+
+.icon-left {
+  background-image: url(../images/icon101.png);
+}
+
+.icon-middle {
+  background-image: url(../images/icon102.png);
+}
+
+.icon-right {
+  background-image: url(../images/icon103.png);
+}
+
+.icon-pack-up {
+  background-image: url(../images/icon86.png);
+}
+
+.icon-pack-an {
+  background-image: url(../images/icon87.png);
+}
+.icon-pack-top {
+  background-image: url(../images/btn_caozuo_top.png);
+}
+
+.icon-pack-up1 {
+  background-image: url(../images/icon115.png);
+}
+
+.icon-pack-an1 {
+  background-image: url(../images/icon116.png);
+}
+
+.cp {
+  cursor: pointer;
+}
+
+.filter-config-table .el-table .cell { /*分析新增tab中的筛选配置表格*/
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 400px;
+}
+
+.tree-footer-icon { /*页面tree下面的搜索和刷新区域布局*/
+  border-bottom: 1px solid #ebeef5;
+  border-top: 1px solid #ebeef5;
+  border-right: 1px solid #ebeef5;
+  height: 40px;
+  margin-bottom: 16px;
+}
+
+.login_btn_img {
+  background: url(../images/login_btn.png) no-repeat;
+}
+
+.login_header_img {
+  background: url(../images/login_logo.png) center left no-repeat;
+}
+
+.login_show_img {
+  background: #e1e6ec url(../images/login_bgt1.png) no-repeat center center;
+}
+
+.user_img {
+  background: url(../images/login_user.png) no-repeat center left;
+}
+
+.password_img {
+  background: url(../images/login_pwd.png) no-repeat center left;
+}
+
+.login_box_img {
+  background: url(../images/login_box2.png) no-repeat;
+}
+
+.u3524_div {
+  width: 26px;
+  height: 25px;
+  border: 1px solid #437acf;
+}
+.icon-create-new-praram-suanfa {
+  background-image: url(../images/new_param_two_suanfa_min.png);
+}
+/* 修改字体大小 */
+.el-form-item__label{
+  font-size: 12px;
+}
+.el-message__content,.el-message-box__title,.el-message-box__content{
+  font-size: 12px;
+}
+.el-step__title{
+  font-size: 12px;
+}
+.el-pagination__sizes .el-input .el-input__inner{
+  font-size: 12px
+}
+.el-tabs__item{
+  font-size: 12px;
+}
+.el-input__inner{
+  height:32px;
+}
+
+.tab_file_new_left .left_filter .el-input {
+  margin-right: 12px;
+  margin-left: 12px;
+}
+
+
+.tab_file_new{
+  height: 100% !important;
+}
+
+.header-two-content{
+  height: 93% !important;
+}
+.permissions-table{
+  margin-left: 12px;
+}
+
+.pos-a .df .role-permissions-input i{
+  width: 0px !important;
+}
+.pos-a .df{
+  position: relative;
+}
+.pos-a .df .role-permissions-input{
+  position: absolute;
+  right: 0px;
+}
+.el-tab-pane .pos-a .h10{
+  height: 9% !important;
+}
+.el-tab-pane .pos-a .w100{
+  width: 98% !important;
+  margin: 0 auto;
+}
+.category .category_left .left_filter{
+  margin: 12px;
+}
+.content-main .category-search{
+  width: 97% !important;
+  margin: 0 auto;
+}
+
+.content-main .category-search .el-input {
+  margin: 0px !important;
+}
+.content-main .category-table{
+  width: 97% !important;
+  margin: 0 auto !important;
+
+}
+/* .category .category_right{
+  width: 78% !important;
+} */
+
+
+.tab_file_new_middle{
+  width: calc(100% - 20%) !important;
+}
+
+.file-new-bottom button{
+  width: 90px !important;
+}
+
+.tab_file_new_left{
+  width: 20% !important;
+}
+
+/* .el-button--mini{
+  padding: 10px 32px !important;
+} */
+.param-two-left{
+  width: 20% !important;
+}
+.param-two-center{
+  width: 56% !important;
+}
+.param-two-right{
+  width: 24% !important;
+}
+.el-button--small{
+  width: 90px !important;
+}
+.file-new-bottom button{
+  line-height: 0px !important;
+}
+/*
+.tree-expand{
+  padding: 4px 15px !important;
+} */
+
+.main_save .el-button--mini{
+  padding: 10px 32px !important;
+}
+
+
+.tree-expand .el-button--mini {
+  padding: 4px 6px !important;
+  margin-left: 5px;
+}
+
+.left_tree::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.analysis-tab-tree::-webkit-scrollbar{
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.analysis-tab-tree::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #cccccc;
+}
+
+/* .el-table__body-wrapper::-webkit-scrollbar{
+  height: 8px ;
+  width: 8px;
+}
+
+
+.el-table__body-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #cccccc;
+}
+
+.el-table--scrollable-y .el-table__header{
+    width: calc(100% + 18px) !important;
+}
+.el-table--scrollable-y .el-table__body{
+  width: calc(100% + 9px) !important;
+} */
+
+.header-two{
+  overflow: hidden;
+}
+/* .analysis-tab-content{
+  padding: 12px 12px 0px 12px !important;
+} */
+.manager-table{
+  width: 97% !important;
+  margin: 12px auto 0px;
+}
+
+.category_right .el-button--mini{
+  width: 90px !important;
+  height: 34px !important;
+  /* padding: 10px 32px !important; */
+}
+/* .header-two{
+  padding: 12px 12px 0px 12px;
+} */
+body .el-table th.gutter {
+  display: table-cell !important;
+}
+
+body .el-table colgroup.gutter {
+  display: table-cell !important;
+}
+.main_content .el-tabs__nav-wrap .el-tabs__nav-scroll .el-tabs__nav{
+  transform: translate(11px) !important;
+}
+.main_attr .el-tabs__nav{
+  transform: translate(11px) !important;
+}
+
+.ace_content{
+  height: 0px!important;
+}
+
+.analysis-tab-left{
+  height: 100% !important;
+  box-sizing: border-box;
+
+}
+
+.tab_file_new_left{
+  height: 100% !important;
+  box-sizing: border-box;
+}
+
+.ace_print-margin{
+  width: 0px !important;
+}
+.moban1 {
+  background-image: url(../images/moban1.png);
+}
+
+a:hover{text-decoration:none}
+
+.el-table::before {
+  height: 1px !important;
+}
+/* .has-gutter tr{
+  color: rgb(42, 67, 111) !important;
+  background: rgb(249, 249, 249) !important;
+} */
+/* .el-table .is-leaf{
+  color: rgb(42, 67, 111) !important;
+  background: rgb(249, 249, 249) !important;
+} */
+.el-table thead tr th{
+  color: rgb(42, 67, 111) !important;
+  background: rgb(249, 249, 249) !important;
+}
+/* 页面布局格式统一调整 */
+/* 左右 左边宽度20%*/
+.cm_tab_file_new_left{
+  width: 20% !important;
+}
+.cm_tab_file_new_main{
+  width: 80% !important;
+}
+.cm_main_content{
+  width: 70% !important;
+}
+.cm_main_attr{
+  width: 30% !important;
+}
+/* 左中右 */
+.cm_param-two-center{
+  width: 56% !important;
+}
+.cm_param-two-right{
+  width: 24% !important;
+}
+/* 左右 左边宽度76% */
+.cm_content_main_left{
+  width: 76% !important;
+}
+.cm_content_main_left_tree{
+  width: 26.3% !important;
+}
+.cm_content_main_right_content{
+  width: 73.7% !important;
+}
+/* .el-button--mini{
+  padding: 10px 32px; */
+  /* width: 90px !important;
+  height: 34px !important; */
+  .cm_param-two-right .tab-profile{
+    height: 88%;
+  }
+.cm_button{
+  width: 90px !important;
+  height: 32px;
+}
+
+.df-f3 .el-input__inner {
+  height: 32px !important;
+}

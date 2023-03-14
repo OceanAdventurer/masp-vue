@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<!--link rel="stylesheet" href="style.css"-->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<head>
+  <script src="/csap/static/js/jquery-1.10.2.js"></script>
+  <!--  	<link rel="stylesheet" type="text/css" href="DynamicTree.css" />-->
+  <!--    <script type="text/javascript" src="DynamicTreeBuilder.js"></script>-->
+  <!--    <script type="text/javascript" src="plugins.js"></script>-->
+  <!--    <script type="text/javascript" src="DynamicTree.js"></script>-->
+  <script src="src-noconflict/ace.js"></script>
+  <script src="src-noconflict/ext-language_tools.js"></script>
+  <style type="text/css">
+    html, body{
+      position:relative;
+      margin:0 !important;
+      padding:0 !important;
+      width:100%;
+      height:100%;
+    }
+
+    .main{
+      position:absolute;
+      width:100%;
+      height:100%;
+      left:0px;
+      top:0px;
+    }
+
+    /* .menu{
+      position:absolute;
+      top:0px;
+      left:0px;
+      height:100%;
+      width:240px;
+      //background:yellowgreen;
+    } */
+
+    /* .content{
+      position:absolute;
+      top:0px;
+      left:245px;
+      height:100%;
+      right:0px;
+      //background:palevioletred;
+    }
+
+    .cut-off{
+      /* position:absolute;
+      left:245px; */
+    width:5px;
+    /* top:0px; */
+    height:100%;
+    background:gray;
+    cursor: e-resize;
+    }
+
+    .code-area{
+      position:absolute;
+      left:0px;
+      right:0px;
+      top:0px;
+      height:100%;
+      /* background:red; */
+    }
+
+    .console-area{
+      /* position:absolute; */
+      left:0px;
+      right:0px;
+      top:605px;
+      bottom:0px;
+      /* //background:yellow; */
+    }
+
+    .cut-off1{
+      position:absolute;
+      top:600px;
+      left:0px;
+      height:5px;
+      width:100%;
+      background:gray;
+      cursor: ns-resize;
+    }
+
+    body { background: #F1EFE2; }
+    h1 { font-size: 24px; }
+    body { font-family: tahoma; font-size: 12px; margin: 1em 2em; padding: 0; }
+    form { margin: 0; }
+    input,select { font-size: 11px; font-family: georgia, tahoma, verdana; }
+    input[readonly] { border: 1px solid #7F9DB9; background: #ffffff; }
+    a { color: #0000ee; text-decoration: none; }
+    a:hover { color: #0000ee; text-decoration: underline; }
+    p { margin-top: 0; margin-bottom: 1em; }
+    #tree-plugin, #tree-plugin-button-import-html { display: none; }
+    #tree-plugin-textarea { white-space: nowrap; }
+
+    #editor {
+      margin: 0;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    /* .console-title{
+      position:absolute;
+      left:0px;
+      height:40px;
+      width:100%;
+      top:0px;
+      background:#CCC;
+    } */
+
+  </style>
+</head>
+<body>
+<div class="main">
+  <div class="cut-off">
+  </div>
+  <div class="content">
+    <div class="code-area">
+      <pre id="editor"></pre>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+<!--script src="kitchen-sink/demo.js"></script-->
+<!-- load ace -->
+
+<script>
+  var textInit = ''
+  var dragTag = false, dragTag1 = false, dragTag2 = false, dragTag3 = false, editor
+
+  var IH = $(document.body).height()
+  var IW = $(document.body).width()
+
+  // var tree = new DynamicTree("tree");
+  // tree.foldersAsLinks = true;
+  // tree.init();
+
+  function insertMethod (text) {
+    // editor.setValue("");
+    // editor.insertSnippet(text);
+    // var editorText = editor.getValue();
+    if (text.indexOf('system_') > -1) { // 系统函数的不需要
+      text = text.replace('"', '').replace('"', '').replace('system_', '')
+      editor.insertSnippet(text)
+      textInit = text
+    } else if (text.indexOf('left_') == -1) { // 不包含left_(即是点击脚本编辑下一步的赋值)
+      editor.setValue('')
+      editor.insertSnippet(text)
+      textInit = text
+    } else { // 包含left_（即点击左侧工程参数的赋值） 如果需要赋值则用这个
+      text = text.replace('left_', '')
+      editor.insertSnippet(text)
+    }
+  }
+
+  var hasLoaded = false
+
+  var allMethod = new Array()
+
+  var funcType = 2
+
+  var url = '/csap/apm/getTwoDimensionMethods'
+
+  function getMethodByBeforeMethod (beforeMethod, cb) {
+    if (hasLoaded) {
+      methodConfig = new Array()
+      for (var i = 0; i < allMethod.length; i++) {
+        var beforeMethodType = allMethod[i]['METHOD_BEFORE_TYPE']
+        if (beforeMethodType != beforeMethod) {
+          continue
+        }
+        var argArr = new Array()
+        var argArr_ = new Array()
+        var parameters = allMethod[i]['parameters']
+        for (var j = 0; j < parameters.length; j++) {
+          argArr.push(parameters[j]['PARAMETER_TYPE'] + ' ' + parameters[j]['PARAMETER_NAME'])
+          argArr_.push(parameters[j]['PARAMETER_NAME'])
+        }
+        var args = argArr.join(',')
+        var args_ = argArr_.join(',')
+        var obj = {
+          name: allMethod[i]['METHOD_NAME'] + (allMethod[i]['METHOD_NAME'] != '_' ? '(' + args_ + ')' : ''),
+          value: allMethod[i]['METHOD_NAME'] + (allMethod[i]['METHOD_NAME'] != '_' ? '(' + args_ + ')' : ''),
+          caption: allMethod[i]['METHOD_NAME'] + (allMethod[i]['METHOD_NAME'] != '_' ? '(' + args + '):' : ':') + allMethod[i]['METHOD_OUT_TYPE'],
+          meta: allMethod[i]['METHOD_OUT_TYPE'],
+          type: 'ceair',
+          ID: allMethod['ID'],
+          score: 1000 - methodConfig.length // 让test排在最上面
+        }
+        methodConfig.unshift(obj)
+      }
+      if (cb) {
+        cb()
+      }
+    } else {
+      $.get(url, {}, function (data) {
+        allMethod = data
+        hasLoaded = true
+        methodConfig = new Array()
+        for (var i = 0; i < data.length; i++) {
+          var beforeMethodType = data[i]['METHOD_BEFORE_TYPE']
+          if (beforeMethodType != beforeMethod) {
+            continue
+          }
+          var argArr = new Array()
+          var argArr_ = new Array()
+          var parameters = data[i]['parameters']
+          for (var j = 0; j < parameters.length; j++) {
+            argArr.push(parameters[j]['PARAMETER_TYPE'] + ' ' + parameters[j]['PARAMETER_NAME'])
+            argArr_.push(parameters[j]['PARAMETER_NAME'])
+          }
+          var args = argArr.join(',')
+          var args_ = argArr_.join(',')
+          var obj = {
+            name: data[i]['METHOD_NAME'] + (data[i]['METHOD_NAME'] != '_' ? '(' + args_ + ')' : ''),
+            value: data[i]['METHOD_NAME'] + (data[i]['METHOD_NAME'] != '_' ? '(' + args_ + ')' : ''),
+            caption: data[i]['METHOD_NAME'] + (data[i]['METHOD_NAME'] != '_' ? '(' + args + '):' : ':') + data[i]['METHOD_OUT_TYPE'],
+            meta: data[i]['METHOD_OUT_TYPE'],
+            type: 'ceair',
+            ID: data['ID'],
+            score: 1000 - methodConfig.length // 让test排在最上面
+          }
+          methodConfig.unshift(obj)
+        }
+        if (cb) {
+          cb()
+        }
+      })
+    }
+  }
+
+  var methodConfig = [{
+    name: 'setAcType',
+    value: 'setAcType(acType);',
+    caption: 'setAcType(List<String> acType):void',
+    meta: 'TeachingAssignCondition',
+    type: 'local',
+    score: 1000 // 让test排在最上面
+  },
+    {
+      name: 'setAcTypeCfg',
+      value: 'setAcTypeCfg(acTypeCfg);',
+      caption: 'setAcTypeCfg(Map<String, Integer> acTypeCfg):void',
+      meta: 'AssignCondition',
+      type: 'func',
+      score: 1000 // 让test排在最上面
+    },
+    {
+      name: 'setAssignFlightNos',
+      value: 'setAssignFlightNos(assignFlightNos, acType);',
+      caption: 'setAssignFlightNos(Map<String, String> assignFlightNos, List<String> acType):void',
+      meta: 'AssignCondition',
+      type: 'func',
+      score: 1000 // 让test排在最上面
+    }]
+
+  $(function () {
+    getMethodByBeforeMethod(null)
+    var x = 240 //IW * 0.2;
+    $('.cut-off').css({'left': x + 'px'})
+    // $(".menu").css({"width":x+"px"});
+    $('.content').css({'left': (x + 5) + 'px'})
+
+    var y = IH * 0.7
+    // $(".cut-off1").css({"top":y+"px"});
+    // $(".code-area").css({"height":y+"px"});
+    // $(".console-area").css({"top":(y+5)+"px"});
+
+    languageTools = ace.require('ace/ext/language_tools')
+    editor = ace.edit('editor')
+    editor.setTheme('ace/theme/tomorrow')
+    editor.session.setMode('ace/mode/groovy')
+    editor.setOptions({
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: true
+    })
+
+    //for(var i=0; i<editor.completers.length-1; i++){
+    //	editor.completers.pop();
+    //}
+
+    /*autoCompleteData是一个数组，每一项都类似于下面这个结构：
+    {“meta”:”function”, “caption”:”addShape”, “value”:”addShape”,”score”:1},
+
+    meta：显示在提示框的右边（如下图）。
+    caption：显示在提示框的左边（如下图）。
+    value：是实际插入的数据。
+    score：表示优先级，高的排在前面。*/
+
+    //languageTools.addCompleter({
+    //	getCompletions: function(editor, session, pos, prefix, callback) {
+    //	callback(null, methodConfig);
+    //	}
+    //});
+
+    editor.completer = new languageTools.autoComplete()
+    editor.completer.showPopup(editor)
+    $('.ace_autocomplete').css('width', 600)
+
+    //增加关键词
+    //editor.$onChangeMode(function(){
+    //	editor.session.$mode.$highlightRules.$keywordList.push("addKeyWords");
+    //})
+
+    //在光标处插入:
+    //editor.insert("Something cool");
+
+    //获取光标所在行或列:
+    editor.selection.getCursor()
+    //跳转到行:
+    var lineNumber = 10
+    editor.gotoLine(lineNumber)
+
+    //获取总行数:
+    editor.session.getLength()
+
+    //设置编辑器只读:
+    //editor.setReadOnly(true);
+
+    //移动光标至第0行，第0列
+    editor.moveCursorTo(0, 0)
+
+    //设置高亮:
+    editor.setHighlightActiveLine(false)
+
+    //设置代码折叠
+    editor.getSession().setUseWrapMode(true)
+
+    //监听改变事件
+    editor.getSession().on('change', function (e) {
+      // e.type, etc
+      console.log(e)
+      //console.log(e.lines);
+      if (e.action == 'insert' && e.lines[0].length > 0 && e.lines[0].indexOf('(') > 0 && e.lines[0].indexOf(')') > 0 && e.lines[0].indexOf('(') == e.lines[0].lastIndexOf('(') && e.lines[0].indexOf(')') == e.lines[0].lastIndexOf(')')) {
+        var row = e.start['row']
+        var column = e.start['column'] + e.lines[0].indexOf('(')
+        var hasArg = e.lines[0].lastIndexOf(')') - e.lines[0].indexOf('(') > 1
+        console.log(row + '|' + column)
+
+        editor.moveCursorTo(row, column + 1)
+
+        setTimeout(function () {
+          var range = editor.selection.getRange()
+
+          if (e.lines[0].indexOf(',') < 0) {
+            var firstArg = e.lines[0].substring(e.lines[0].indexOf('(') + 1, e.lines[0].indexOf(')'))
+            console.log(firstArg)
+            var len = firstArg.length
+
+            if (hasArg) {
+              editor.moveCursorTo(row, column + 1)
+              editor.selection.setSelectionAnchor(row, column + 1 + len)
+            } else {
+              editor.moveCursorTo(row, column + 2)
+            }
+          } else {
+            var firstArg = e.lines[0].substring(e.lines[0].indexOf('(') + 1, e.lines[0].indexOf(','))
+            console.log(firstArg)
+            var len = firstArg.length
+
+            if (hasArg) {
+              editor.moveCursorTo(row, column + 1)
+              editor.selection.setSelectionAnchor(row, column + 1 + len)
+            } else {
+              editor.moveCursorTo(row, column + 2)
+            }
+          }
+        }, 50)
+      } else if (e.action == 'insert' && e.lines[0] == '.') {
+        var cursorPos = editor.selection.getCursor() //{row: 19, column: 14}
+        var rows = cursorPos['row']
+        var column = cursorPos['column']
+        var totalPrevious = new Array()
+        while (rows >= 0) {
+          var line = editor.selection.doc.$lines[rows]
+          if (line.indexOf(';') < 0 && line.indexOf('}') < 0 && line.indexOf('(') < 0 && line.indexOf(',') < 0) {
+            if (line.trim()) {
+              var lineArr = line.split(' ')
+              for (var n = lineArr.length - 1; n >= 0; n--) {
+                totalPrevious.push(lineArr[n].trim())
+              }
+            }
+            rows--
+          } else {
+            var lastSymbol1 = line.lastIndexOf(';')
+            lastSymbol1 = lastSymbol1 > column ? -1 : lastSymbol1
+            var lastSymbol2 = line.lastIndexOf('}')
+            lastSymbol2 = lastSymbol2 > column ? -1 : lastSymbol2
+            var lastSymbol3 = line.lastIndexOf('(')
+            if (line.lastIndexOf('()') + 2 == column) {
+              var tmpLine = line.substring(0, line.lastIndexOf('()'))
+              lastSymbol3 = tmpLine.lastIndexOf('(')
+            }
+            lastSymbol3 = lastSymbol3 > column ? -1 : lastSymbol3
+            var lastSymbol4 = line.lastIndexOf(',')
+            lastSymbol4 = lastSymbol4 > column ? -1 : lastSymbol4
+            var lastSymbol = -1
+            if (lastSymbol1 > 0) {
+              lastSymbol = lastSymbol > lastSymbol1 ? lastSymbol : lastSymbol1
+            }
+            if (lastSymbol2 > 0) {
+              lastSymbol = lastSymbol > lastSymbol2 ? lastSymbol : lastSymbol2
+            }
+            if (lastSymbol3 > 0) {
+              lastSymbol = lastSymbol > lastSymbol3 ? lastSymbol : lastSymbol3
+            }
+            if (lastSymbol4 > 0) {
+              lastSymbol = lastSymbol > lastSymbol4 ? lastSymbol : lastSymbol4
+            }
+            var newLine = line.substring(lastSymbol + 1, column + 1)
+            if (newLine.trim()) {
+              newLine = newLine.replace(/,/g, ', ')
+              var lineArr = newLine.split(' ')
+              for (var n = lineArr.length - 1; n >= 0; n--) {
+                totalPrevious.push(lineArr[n].trim())
+              }
+            }
+            break
+          }
+        }
+        console.log(totalPrevious)
+        formatSubmitFunc(totalPrevious, function () {
+          if (editor.completers.length > 3) {
+            editor.completers.pop()
+          }
+          languageTools.addCompleter({
+            getCompletions: function (editor, session, pos, prefix, callback) {
+              callback(null, methodConfig)
+            }
+          })
+
+          setTimeout(function () {
+            editor.completer = new languageTools.autoComplete()
+            editor.completer.showPopup(editor)
+            $('.ace_autocomplete').css('width', 600)
+          }, 50)
+        })
+      }
+    })
+
+    //添加新命令、绑定按键
+    editor.commands.addCommand({
+      name: 'autoComplete',
+      bindKey: {win: 'Alt-/', mac: 'Alt-/'},
+      exec: function (editor) {
+        //...
+        console.log(editor)
+
+        //获取光标所在行或列
+        var cursorPos = editor.selection.getCursor() //{row: 19, column: 14}
+        var rows = cursorPos['row']
+        var column = cursorPos['column']
+
+        if (editor.session.getTextRange(editor.getSelectionRange())) {
+
+        }
+
+        isFuncArg(rows, column)
+
+        var fstMark
+
+        var totalPrevious = new Array()
+        while (rows >= 0) {
+          var line = editor.selection.doc.$lines[rows]
+          if (line.indexOf(';') < 0 && line.indexOf('}') < 0 && line.indexOf('(') < 0 && line.indexOf(',') < 0) {
+            if (line.trim()) {
+              var lineArr = line.split(' ')
+              for (var n = lineArr.length - 1; n >= 0; n--) {
+                totalPrevious.push(lineArr[n].trim())
+              }
+            }
+            rows--
+          } else {
+            var lastSymbol1 = line.lastIndexOf(';')
+            lastSymbol1 = lastSymbol1 > column ? -1 : lastSymbol1
+            var lastSymbol2 = line.lastIndexOf('}')
+            lastSymbol2 = lastSymbol2 > column ? -1 : lastSymbol2
+            var lastSymbol3 = line.lastIndexOf('(')
+            if (line.lastIndexOf('()') + 2 == column) {
+              var tmpLine = line.substring(0, line.lastIndexOf('()'))
+              lastSymbol3 = tmpLine.lastIndexOf('(')
+            }
+            lastSymbol3 = lastSymbol3 > column ? -1 : lastSymbol3
+            var lastSymbol4 = line.lastIndexOf(',')
+            lastSymbol4 = lastSymbol4 > column ? -1 : lastSymbol4
+            var lastSymbol = -1
+            if (lastSymbol1 > 0) {
+              lastSymbol = lastSymbol > lastSymbol1 ? lastSymbol : lastSymbol1
+            }
+            if (lastSymbol2 > 0) {
+              lastSymbol = lastSymbol > lastSymbol2 ? lastSymbol : lastSymbol2
+            }
+            if (lastSymbol3 > 0) {
+              lastSymbol = lastSymbol > lastSymbol3 ? lastSymbol : lastSymbol3
+            }
+            if (lastSymbol4 > 0) {
+              lastSymbol = lastSymbol > lastSymbol4 ? lastSymbol : lastSymbol4
+            }
+            var newLine = line.substring(lastSymbol + 1, column + 1)
+            if (newLine.trim()) {
+              newLine = newLine.replace(/,/g, ', ')
+              var lineArr = newLine.split(' ')
+              for (var n = lineArr.length - 1; n >= 0; n--) {
+                totalPrevious.push(lineArr[n].trim())
+              }
+            }
+            break
+          }
+        }
+
+        console.log(totalPrevious)
+        formatSubmitFunc(totalPrevious, function () {
+          //setTimeout(function(){
+          if (editor.completers.length > 3) {
+            editor.completers.pop()
+          }
+          languageTools.addCompleter({
+            getCompletions: function (editor, session, pos, prefix, callback) {
+              callback(null, methodConfig)
+            }
+          })
+
+          setTimeout(function () {
+            editor.completer = new languageTools.autoComplete()
+            editor.completer.showPopup(editor)
+            $('.ace_autocomplete').css('width', 600)
+            //editor.completers.pop();
+          }, 50)
+          //}, 50);
+          //var previousTag = editor.selection.doc.$lines[cursorPos["row"]].substr(cursorPos["column"]-1);
+        })
+      },
+      readOnly: false // 如果不需要使用只读模式，这里设置false
+    })
+
+    //获取选择内容:
+    editor.session.getTextRange(editor.getSelectionRange())
+  })
+
+  function isFuncArg (row, column) {
+    var hasPreBrackets = false, hasLastBrackets = false
+    var lines = editor.selection.doc.$lines
+    var preContent = ''
+    for (var i = 0; i < row; i++) {
+      var tmp = lines[i].trim()
+      if (tmp.indexOf('/*') >= 0) {
+        tmp = tmp.substring(0, tmp.indexOf('/*'))
+      } else if (tmp.indexOf('*') >= 0) {
+        tmp = tmp.substring(0, tmp.indexOf('*'))
+      }
+      preContent += tmp
+    }
+    preContent += lines[row].substring(0, column)
+    console.log(preContent)
+
+    var nextContent = ''
+    nextContent += lines[row].substring(column, lines[row].length)
+    if (row + 1 <= lines.length) {
+      for (var i = row + 1; i < lines.length; i++) {
+        var tmp = lines[i].trim()
+        if (tmp.indexOf('/*') >= 0) {
+          tmp = tmp.substring(0, tmp.indexOf('/*'))
+        } else if (tmp.indexOf('*') >= 0) {
+          tmp = tmp.substring(0, tmp.indexOf('*'))
+        }
+        nextContent += tmp
+      }
+    }
+    console.log('这是下条内容' + nextContent)
+    console.log(editor.session.getTextRange())
+  }
+
+  function checkError (type, row, column, content) {
+    editor.getSession().setAnnotations([{
+      row: row,
+      column: column,
+      text: content,
+      type: type // error, warning and information
+    }])
+  }
+
+  function recoverError (row) {
+    editor.getSession().setAnnotations([{
+      row: row,
+      column: 0,
+      text: '',
+      type: 'information' // error, warning and information
+    }])
+  }
+
+  function formatSubmitFunc (lineArr, cb) {
+    var funcArr = new Array()
+    for (var i = 0; i < lineArr.length; i++) {
+      var line = lineArr[i]
+      var funcName = line.substr(0, line.length)
+      if (funcName) {
+        funcArr.push(funcName)
+      }
+    }
+    console.log(funcArr)
+    var funcList = (funcArr[0] ? (funcArr[0] == '.' ? funcArr[1] : funcArr[0]) : '').split('.')
+    for (var i = funcList.length - 1; i >= 0; i--) {
+      if (funcList[i].trim()) {
+        var curType = funcList[i].replace(/\([^\)]*\)/g, '')
+        var funcType = null
+        for (var j = 0; j < allMethod.length; j++) {
+          if (allMethod[j]['METHOD_NAME'] == curType) {
+            funcType = allMethod[j]['METHOD_OUT_TYPE']
+            console.log('=================funcType:' + funcType)
+            getMethodByBeforeMethod(funcType, cb)
+          }
+        }
+        break
+      }
+    }
+  }
+
+  $('.cut-off').mousedown(function () {
+    dragTag = true
+  })
+
+  // $(".cut-off1").mousedown(function(){
+  // 	var type = $(this).attr("type");
+  // 	if(type == "row"){
+  // 		dragTag1 = true;
+  // 	}else{
+  // 		dragTag2 = true;
+  // 	}
+  // });
+
+  $('.main').mousemove(function (e) {
+    if (dragTag) {
+      var x = e.pageX
+      $('.cut-off').css({'left': x + 'px'})
+      // $(".menu").css({"width":x+"px"});
+      $('.content').css({'left': (x + 5) + 'px'})
+    } else if (dragTag1) {
+      var y = e.pageY
+      // $(".cut-off1").css({"top":y+"px"});
+      // $(".code-area").css({"height":y+"px"});
+      // $(".console-area").css({"top":(y+5)+"px"});
+    } else if (dragTag2) {
+      var x = e.pageX - 20
+      // $(".cut-off1").css({"right":((IW-x)-5)+"px"});
+      // $(".code-area").css({"right":(IW-x)+"px"});
+      // $(".console-area").css({"width":((IW-x)-5)+"px"});
+    } else if (dragTag3) {
+      var x = e.pageX
+      var y = e.pageY
+      if (y > 0 && y < $('.code-area').height() && x > (IW - 225) && x < IW) {
+        // $(".cut-off1").attr("type", "col");
+
+        var x = 225
+        $('.code-area').css({'height': '100%', 'top': '0px', 'left': '0px', 'right': (x + 5) + 'px', 'width': 'auto'})
+        // $(".cut-off1").css({"height":"100%", "top":"0px", "right":x+"px", "width":"5px", "left":"auto"});
+        // $(".console-area").css({"height":"100%", "top":"0px", "right":"0px", "width":x+"px", "left":"auto", "bottom":"auto"});
+        // $(".console-title").css({"height":"40px", "top":"0px", "left":"0px", "right":"0px"});
+        // $(".cut-off1").css("cursor", "ew-resize");
+        // }else if(x>$(".menu").width() && x<IW && y>IH*0.65 && y<IH){
+      } else if (x < IW && y > IH * 0.65 && y < IH) {
+        // $(".cut-off1").attr("type", "row");
+
+        var y = IH * 0.7
+        $('.code-area').css({'height': y + 'px', 'left': '0px', 'right': 'auto', 'width': '100%', 'top': '0px'})
+        // $(".cut-off1").css({"top":y+"px", "height":"5px", "left":"0px", "width":"100%", "right":"auto"});
+        // $(".console-area").css({"top":(y+5)+"px", "height":"5px", "left":"0px", "width":"100%", "right":"auto", "bottom":"0px"});
+        // $(".console-title").css({"height":"40px", "top":"0px", "left":"0px", "right":"0px"});
+        // $(".cut-off1").css("cursor", "ns-resize");
+      }
+    }
+  })
+
+  $('.main').mouseup(function () {
+    dragTag = false
+    dragTag1 = false
+    dragTag2 = false
+    dragTag3 = false
+  })
+
+  $('.console-title').mousedown(function () {
+    dragTag3 = true
+  })
+
+  /*
+  var langTools = ace.require("ace/ext/language_tools");
+    var editor = ace.edit("editor");
+    editor.setOptions({enableBasicAutocompletion: true});
+    // uses http://rhymebrain.com/api.html
+    var rhymeCompleter = {
+        getCompletions: function(editor, session, pos, prefix, callback) {
+            if (prefix.length === 0) { callback(null, []); return }
+            $.getJSON(
+                "http://rhymebrain.com/talk?function=getRhymes&word=" + prefix,
+                function(wordList) {
+                    // wordList like [{"word":"flow","freq":24,"score":300,"flags":"bc","syllables":"1"}]
+                    callback(null, wordList.map(function(ea) {
+                        return {name: ea.word, value: ea.word, score: ea.score, meta: "rhyme"}
+                    }));
+                })
+        }
+    }
+    langTools.addCompleter(rhymeCompleter);
+  */
+
+</script>
+<!--script type="text/javascript" src="actions.js"></script-->
