@@ -96,7 +96,7 @@
               <span>{{pparName}}详情</span>
               <el-button type="primary" icon="el-icon-top-right" @click="goCheck">去验证</el-button>
             </div>
-            <div v-for="detail in paramDetailList" :key="detail.value" class="text item">
+            <div v-for="detail in paramDetailList" :key="detail.value+detail.label" class="text item">
               {{detail.label}}：{{detail.value}}
             </div>
           </el-card>
@@ -151,6 +151,7 @@
             <div class="text item">
               <!-- <p>ID：{{selectedData.gpId}}</p> -->
               <p>描述：{{selectedData.GP_CHINESE_NAME}}</p>
+              <p>单位：{{selectedData.UNIT}}</p>
             </div>
           </el-card>
         </div>
@@ -482,11 +483,11 @@ export default {
     },
     handleSelectionChange (a, b) { // 选中工程参数某一行，进行绑定操作
       let label = b.labelName
-      const {GP_NAME: name, ID:gpId, GP_CHINESE_NAME} = a
+      const {GP_NAME: name, ID:gpId, GP_CHINESE_NAME, UNIT} = a
       label = label === '单选' ? this.filtersForm.modelId[0] : label
       this.selectedVal = gpId
       this.selectedRow = this.engineeringTableData.filter((item) => item.gpId === gpId)
-      this.selectedData = {label, gpId, name, GP_CHINESE_NAME} 
+      this.selectedData = {label, gpId, name, GP_CHINESE_NAME, UNIT} 
     }
   },
   destroyed () {}
