@@ -53,11 +53,11 @@
             <p>中位值：{{mid}}</p>
             <p>平均值：{{avg}}</p>
             <h6>众数信息：</h6>
-            <p class='style'><span>值:{{fir.label}}</span><span>次数:{{fir.value}}</span></p>
-            <p class='style'><span>值:{{sec.label}}</span><span>次数:{{sec.value}}</span></p>
-            <p class='style'><span>值:{{thir.label}}</span><span>次数:{{thir.value}}</span></p>
-            <p class='style'><span>值:{{forth.label}}</span><span>次数:{{forth.value}}</span></p>
-            <p class='style'><span>值:{{fifth.label}}</span><span>次数:{{fifth.value}}</span></p>
+            <p class='style' v-if='fir.label'><span>值:{{fir.label}}</span><span>次数:{{fir.value}}</span></p>
+            <p class='style' v-if='sec.label'><span>值:{{sec.label}}</span><span>次数:{{sec.value}}</span></p>
+            <p class='style' v-if='thir.label'><span>值:{{thir.label}}</span><span>次数:{{thir.value}}</span></p>
+            <p class='style' v-if='forth.label'><span>值:{{forth.label}}</span><span>次数:{{forth.value}}</span></p>
+            <p class='style' v-if='fifth.label'><span>值:{{fifth.label}}</span><span>次数:{{fifth.value}}</span></p>
             <!-- <p v-for="(item, idx) in numsList"
               :key='idx'>
               {{item}}
@@ -526,7 +526,7 @@ export default {
   padding-left: 4px;
 }
 .data_verification .flight_info .right {
-  width: calc(100% - 345px); /* .left 宽度340，留4像素做右边padding */
+  width: calc(100% - 378px); /* .left 宽度340，留4像素做右边padding */
   padding-left: 4px;
   border-left: 1px solid rgb(211, 211, 211);
 }
@@ -537,13 +537,16 @@ export default {
   display: flex;
 }
 .data_verification .flight_info .detail {
-  width: 148px;
+  width: 180px;
   height: 420px;
   padding: 0 4px;
 }
 .data_verification .flight_info .detail .style span {
   display: inline-block;
-  width: 48%;
+  width: 65%;
+}
+.data_verification .flight_info .detail .style span + span {
+  width: 35%;
 }
 .data_verification .flight_info .detail p:first-child {
   font-weight: 700;
