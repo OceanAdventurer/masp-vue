@@ -97,7 +97,7 @@
                   </el-form-item>
               </el-col>
               <el-col :span=4>
-                <el-form-item label="开始时间" prop="startLine">
+                <el-form-item label="开始时间" prop="startLine" label-width="70px">
                   <el-input
                     type='number'
                     class="numberOnly"
@@ -108,7 +108,7 @@
               </el-col>
               <el-col :span=4>
                 <!-- onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode || event.which)))|| event.which === 8" -->
-                <el-form-item label="结束时间" prop="endLine">
+                <el-form-item label="结束时间" prop="endLine" label-width="70px">
                   <el-input
                     type='number'
                     min='1'
@@ -310,6 +310,19 @@ export default {
         this.$message.warning('至少选择一个参数')
       }
     },
+    resetParams () {
+      this.avg = null
+      this.max = null
+      this.mid = null
+      this.min = null
+      this.fir = {}
+      this.sec = {}
+      this.thir = {}
+      this.forth = {}
+      this.fifth = {}
+      this.tableHeader = []
+      this.frequencyData = []
+    },
     checkDetail (row) { // 查询数据
       if (row) {
         this.rowKey = row.ROWKEY
@@ -338,6 +351,7 @@ export default {
             const {data = {}} = res
             if (data.message == "参数不存在") {
               this.$message.error(data.message)
+              this.resetParams()
               return
             }
             const {avg = 0, max = 0, mid = 0, min = 0, thickestValue1 = '',
@@ -395,15 +409,11 @@ export default {
               this.dp = jump
             }
           } else {
-            this.frequencyData = []
-            this.tableHeader = []
+            this.resetParams()
             this.$message.error(res.message)
           }
         }).catch(err => {
-          console.log(err)
-          this.frequencyData = []
-          this.tableHeader = []
-          this.$message.error('请求响应失败，请稍后重试！')
+          this.resetParams()
           this.$store.commit('HIDE_LOADING', '加载中！')
         })
       } else {
@@ -471,21 +481,14 @@ export default {
                 }
               } else if (data.length === 0){
                 this.$message.info('航班数据为空')
-                this.avg = null
-                this.max = null
-                this.mid = null
-                this.min = null
-                this.fir = {}
-                this.sec = {}
-                this.thir = {}
-                this.forth = {}
-                this.fifth = {}
-                this.frequencyData = []
+                this.resetParams()
                 this.flightTableData = []
               }
               this.$store.commit('HIDE_LOADING', '加载中！')
             }).catch(err => {
               console.log(err)
+              this.resetParams()
+              this.flightTableData = []
               // this.$message.error('请求响应失败，请稍后重试！')
               this.$store.commit('HIDE_LOADING', '加载中！')
             })

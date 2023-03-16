@@ -4,8 +4,8 @@
     <Loading v-show="showLoading"></Loading>
     <el-form ref="filtersRef" :model= "filtersForm" :rules="filtersRules" label-width="80px">
       <el-row>
-        <el-col :span=12>
-          <el-form-item label="版本库" prop="modelId">
+        <el-col :span=11>
+          <el-form-item label="版本库" prop="modelId" class='lib_content'>
             <el-select
               v-model="filtersForm.modelId"
               @change='queryTableInfo'
@@ -21,7 +21,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span=6>
+        <el-col :span=8>
           <el-form-item label="查询字段" prop="paramName" class='fixCol'>
             <el-select v-model="filtersForm.searchNames" multiple placeholder="请选择字段">
               <el-option
@@ -30,7 +30,7 @@
                 :value="item.label">
               </el-option>
             </el-select>
-            <el-input v-model="filtersForm.paramName" placeholder="请输入参数名"></el-input>
+            <el-input v-model="filtersForm.paramName" placeholder="参数名"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span=3>
@@ -44,7 +44,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span=2 style="margin-left: 10px">
+        <el-col :span=2 style="padding-left:10px">
           <el-button type='primary' icon="el-icon-search" @click="queryTableInfo">搜索</el-button>
         </el-col>
       </el-row>
@@ -193,6 +193,7 @@ export default {
       options: [],
       versionLibraryList: [], // 版本库列表，后端获取
       queryNameList: [
+        // {label: 'all', value: 'paramName'},
         {label: '参数名', value: 'paramName'},
         {label: '中文名', value: 'chName'},
         {label: '描述', value: 'desc'}
@@ -597,14 +598,17 @@ export default {
 } */
 </style>
 <style>
-.data_verification .el-table__body-wrapper td {
-  /* height: 24px; */
+.data_verification .el-form .lib_content .el-form-item__label {
+  width: 60px!important;
+}
+.data_verification .el-form .lib_content .el-form-item__content {
+  margin-left: 60px!important;
 }
 .data_verification .el-form .el-row .el-col .fixCol .el-form-item__content {
   display: flex;
 }
 .data_verification .el-form .el-row .el-col .fixCol .el-form-item__content .el-select {
-  flex: 1;
+  flex: 3;
   margin-right: 5px;
 }
 .data_verification .el-form .el-row .el-col .fixCol .el-form-item__content .el-input {
