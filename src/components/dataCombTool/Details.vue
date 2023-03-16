@@ -278,40 +278,46 @@ export default {
       this.dialogVisible = !this.dialogVisible
       this.rowData = col
     },
-    handleBinding ({row, column}, unconnect) { // 进行绑定操作
+    unitAxiosFun (url, params, method ) {
+      this.$store.commit('SHOW_LOADING', '加载中...')
+      return new Promise((resolve, reject) => {
+        this.$axios({
+          baseURL: '/pm/parameterMatching',
+          method: method || 'get',
+          url: url,
+          params: params
+        }).then(response => {
+          this.$store.commit('HIDE_LOADING', '加载中！')
+          resolve(response)
+        }).catch(error => {
+          this.$store.commit('HIDE_LOADING', '加载中！')
+          reject(error)
+        })
+      })
+    },
+    async handleBinding ({row, column}, unconnect) { // 进行绑定操作
       const {label, gpId, name} = this.selectedData
       if(!gpId && !unconnect) {
         this.$message.error('请先选择要绑定的工程参数')
         return
       }
-      let paramId = row[column.label].paramId
-      this.$store.commit('SHOW_LOADING', '加载中...')
-      this.$axios({
-        baseURL: '/pm',
-        url: '/parameterMatching/bingGp',
-        method: 'get',
-        params: {
+      try {
+        let params = {
           gpId: unconnect ? '' : gpId,
-          paramId
+          paramId: row[column.label].paramId
         }
-      }).then(res => {
-        this.$store.commit('HIDE_LOADING', '加载中！')
+        let res = await this.unitAxiosFun('bingGp', params)
         if (res.status === 200) {
           this.$message.success("操作成功")
-          // this.selectedData = {}
-          // this.selectedRow = []
-          // this.selectedVal = ''
           this.dialogVisible = false
           this.queryTableInfo()
           this.queryGpTableInfo()
         }
-      }).catch(err => {
-        console.log(err)
-        this.$message.error('请求响应失败，请稍后重试！')
+      } catch (error) {
         this.$store.commit('HIDE_LOADING', '加载中！')
-      })
+      }
     },
-    checkDetail ({column, row}) { // 点击单元格查询参数详情
+    async checkDetail ({column, row}) { // 点击单元格查询参数详情
       const {modelId} = this.filtersForm
       const {NAME_IN_CSV:name} = row
       let label = Number(column.label) || '' // 版本库名称
@@ -327,17 +333,12 @@ export default {
           return
         }
         this.colId = row[label].paramId
-        this.$store.commit('SHOW_LOADING', '加载中...')
-        this.$axios({
-          baseURL: '/pm',
-          url: '/parameterMatching/searchParamDetailByAlpha',
-          method: 'get',
-          params: {
+        try {
+          let params = {
             modelId: label,
             paramName: this.pparName
           }
-        }).then(res => {
-          this.$store.commit('HIDE_LOADING', '加载中！')
+          let res = await this.unitAxiosFun('searchParamDetailByAlpha', params)
           if (res.status === 200) {
             this.toggleIndex++
             const {data={}} = res
@@ -364,106 +365,83 @@ export default {
               this.paramDetailList = [{label: '版本库', value: label}]
             }
           }
-        }).catch(err => {
-          console.log(err)
-          this.$message.error('请求响应失败，请稍后重试！')
+        } catch (error) {
           this.$store.commit('HIDE_LOADING', '加载中！')
-        })
         }
+      }
     },
-    queryLibraryList () { // 查询版本库列表
-      this.$store.commit('SHOW_LOADING', '加载中...')
-      this.$axios({
-        baseURL: '/pm',
-        url: '/parameterMatching/getModels',
-        method: 'get'
-      }).then(res => {
-        this.$store.commit('HIDE_LOADING', '加载中！')
+    async queryLibraryList () { // 查询版本库列表
+      try {
+        let res = await this.unitAxiosFun('getModels')
         if (res.status === 200) {
           const {data = []} = res
           this.versionLibraryList = data
         }
-      }).catch(err => {
-        console.log(err)
-        this.$message.error('请求响应失败，请稍后重试！')
+      } catch (error) {
         this.$store.commit('HIDE_LOADING', '加载中！')
-      })
+      }
     },
     queryTableInfo (val) { // 查询参数列表数据
       if (this.filtersForm.modelId.length === 0) {
         this.resetTableInfo() // 清空所有数据
       }
-      this.$refs['filtersRef'].validate(valid => {
-         if (valid) { // 查询table数据
-            let para = this.filtersForm.modelId.join(',')
-            let nameList = []
-            this.filtersForm.searchNames.forEach(item => {
-              this.queryNameList.forEach(name => {
-                if (item === name.label) {
-                  nameList.push(name.value)
-                }
-              })
+      this.$refs['filtersRef'].validate(async valid => {
+        if (valid) { // 查询table数据
+          let para = this.filtersForm.modelId.join(',')
+          let nameList = []
+          this.filtersForm.searchNames.forEach(item => {
+            this.queryNameList.forEach(name => {
+              if (item === name.label) {
+                nameList.push(name.value)
+              }
             })
-            let typeNum = this.filtersForm.matchRange === '头部' ? 1 : this.filtersForm.matchRange === '尾部' ? 2 :
-              this.filtersForm.matchRange === '精确' ? 3 : 4
-            let searchNames = nameList.join(',')
-            this.$store.commit('SHOW_LOADING', '加载中...')
-            this.$axios({
-              baseURL: '/pm',
-              url: '/parameterMatching/searchParamBindingStatus',
-              method: 'get',
-              params: {
-                pattern: this.filtersForm.paramName,
-                modelIds: para,
-                searchNames,
-                type: typeNum
-              }
-            }).then(res => {
-              if (res.status === 200) {
-                const {data = []} = res
-                this.paramTableData = data || []
-              } else {
-                this.paramTableData = []
-              }
-              this.$store.commit('HIDE_LOADING', '加载中！')
-            }).catch(err => {
-              console.log(err)
+          })
+          let typeNum = this.filtersForm.matchRange === '头部' ? 1 : this.filtersForm.matchRange === '尾部' ? 2 :
+          this.filtersForm.matchRange === '精确' ? 3 : 4
+          let searchNames = nameList.join(',')
+          try {
+            let params = {
+              pattern: this.filtersForm.paramName,
+              modelIds: para,
+              searchNames,
+              type: typeNum
+            }
+            let res = await this.unitAxiosFun('searchParamBindingStatus', params)
+            if (res.status === 200) {
+              const {data = []} = res
+              this.paramTableData = data || []
+            } else {
               this.paramTableData = []
-              // this.$message.error('请求响应失败，请稍后重试！')
-              this.$store.commit('HIDE_LOADING', '加载中！')
-            })
-          } else {
-            console.log('error submit!!')
-            return false
+            }
+          } catch (error) {
+            this.paramTableData = []
+            this.$store.commit('HIDE_LOADING', '加载中！')
           }
+        } else {
+          console.log('error submit!!')
+          return false
+        }
       })
     },
     queryGpTableInfo () {
-      this.$refs['gpFiltersRef'].validate(valid => {
+      this.$refs['gpFiltersRef'].validate(async valid => {
          if (valid) { // 查询table数据
             let para = this.filtersForm.modelId.join(',')
-            this.$store.commit('SHOW_LOADING', '加载中...')
-            this.$axios({
-              baseURL: '/pm',
-              url: '/parameterMatching/getGpBindStatus',
-              method: 'get',
-              params: {
+            try {
+              let params = {
                 pattern: this.gpFiltersForm.gpParamName,
                 modelIds: para
               }
-            }).then(res => {
+              let res = await this.unitAxiosFun('getGpBindStatus', params)
               if (res.status === 200) {
                 const {data = []} = res
                 this.engineeringTableData = data || []
               } else {
                 this.engineeringTableData = []
               }
-              this.$store.commit('HIDE_LOADING', '加载中！')
-            }).catch(err => {
-              console.log(err)
+            } catch (error) {
               this.engineeringTableData = []
-              this.$store.commit('HIDE_LOADING', '加载中！')
-            })
+            }
           } else {
             console.log('error submit!!')
             return false
@@ -512,7 +490,6 @@ export default {
   width: 60px;
   height: 28px;
   padding: 0;
-  /* background: url('../../assets/images/binding.png') center no-repeat; */
 }
 .data_verification .el-form-item__content .el-select {
   width: 100%;
@@ -530,7 +507,6 @@ export default {
   display: flex;
   height: calc(60% - 15px);
   margin-bottom: 5px;
-  /* margin-bottom: 4px; */
 }
 .data_verification .table_container .table_content.gp_table {
   margin-bottom: 4px;
@@ -542,9 +518,6 @@ export default {
 .data_verification .table_container .el-form .el-row .el-col .el-form-item {
   margin-bottom: 5px; 
 }
-/* .data_verification .table_container .el-form .el-row {
-  background-color: rgba(48, 66, 108, 0.1);
-} */
 .data_verification .table_container .table_content .table_wrapper {
   height: 100%;
   width: calc(100% - 310px);
@@ -617,7 +590,6 @@ export default {
 .data_verification .el-table__body-wrapper {
   height: calc(100% - 38px)!important;
   overflow: auto;
-  /* height: 100%; */
 }
 .data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper .el-table__body .el-table__row td {
   padding: 0;
@@ -625,45 +597,6 @@ export default {
 .data_verification .table_container .table_content .table_wrapper .el-table {
   height: 100%;
 }
-/* .data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper {
-  overflow: auto;
-} */
-.data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper .el-table__body .el-table__row td.desc .cell {
-  /* overflow-x: scroll;
-  word-break: break-all;
-  white-space: pre;
-  text-overflow: unset; */
-  /* height: 38px;
-  line-height: 38px!important; */
-}
-.data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper .el-table__body .el-table__row td .cell {
-  /* overflow-x: scroll;
-  word-break: break-all;
-  white-space: pre;
-  text-overflow: unset;
-  height: 38px;
-  line-height: 38px!important; */
-  /* overflow: hidden; tooltip样式，配合show-overflow-tooltip属性使用 */
-  /* white-space: nowrap; tooltip样式，配合show-overflow-tooltip属性使用 */
-  /* text-overflow: ellipsis; tooltip样式，配合show-overflow-tooltip属性使用 */
-}
-.data_verification .table_container .table_content .table_wrapper .el-table .el-table__body-wrapper .el-table__body .el-table__row td .cell:hover {
-  /* line-height: 38px!important; */
-}
-/* .el-table .el-table__body tr:hover div.row-icon-group,
- .table-row-class-name.current-row div.row-icon-group {
-  line-height: 38px!important;
-  white-space: nowrap;
-  display: block;
-} */
-/* .el-table .el-table__body div.row-icon-group {
-  white-space: nowrap;
-}
- .table-row-class-name.current-row div.row-icon-group {
-  line-height: 38px!important;
-  white-space: nowrap;
-  display: block;
-} */
 /* 整个滚动条 */
 ::-webkit-scrollbar {
   width: 8px;

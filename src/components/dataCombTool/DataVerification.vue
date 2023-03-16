@@ -46,30 +46,18 @@
           </div>
         <div class="detail">
           <div>
-          <!-- <div v-show="frequencyData.length>0"> -->
             <p>{{frequencyForm.paramName[0]}}详情</p>
             <p>最大值：{{max}}</p>
             <p>最小值：{{min}}</p>
             <p>中位值：{{mid}}</p>
             <p>平均值：{{avg}}</p>
-            <h6>众数信息：</h6>
-            <p class='style' v-if='fir.label'><span>值:{{fir.label}}</span><span>次数:{{fir.value}}</span></p>
-            <p class='style' v-if='sec.label'><span>值:{{sec.label}}</span><span>次数:{{sec.value}}</span></p>
-            <p class='style' v-if='thir.label'><span>值:{{thir.label}}</span><span>次数:{{thir.value}}</span></p>
-            <p class='style' v-if='forth.label'><span>值:{{forth.label}}</span><span>次数:{{forth.value}}</span></p>
-            <p class='style' v-if='fifth.label'><span>值:{{fifth.label}}</span><span>次数:{{fifth.value}}</span></p>
-            <!-- <p v-for="(item, idx) in numsList"
-              :key='idx'>
-              {{item}}
-              值：{{item.label}}，次数：{{item.value}}
-            </p> -->
-            <!-- <el-table :data="numsList">
-              <el-table-column label="值" prop='label'>
-              </el-table-column>
-              <el-table-column label="次数" prop='value'>
-              </el-table-column>
-            </el-table> -->
           </div>
+            <h6>众数信息：</h6>
+            <el-table :data="multyList" border class="nums_list">
+              <el-table-column label="值" prop='label'></el-table-column>
+              <el-table-column label="次数" prop='value' width="50">
+              </el-table-column>
+            </el-table>
         </div>
         </div>
       </div>
@@ -200,12 +188,7 @@ export default {
       max: null, // 最大值
       mid: null, // 中位值
       min: null, // 最小值
-      numsList: [], // 众数信息
-      fir: {},
-      sec: {},
-      thir: {},
-      forth: {},
-      fifth: {},
+      multyList: [], // 众数信息
       frequencyData: [], // 频率表格数据
       flightTableData: [], // 航班数据
       rowKey: '',
@@ -220,9 +203,7 @@ export default {
   components: {
     Loading
   },
-  created () {
-    window.addEventListener('resize', this.getHeight)
-  },
+  created () {},
   async mounted () {
     const {query} = this.$route
     // this.filtersForm.modelId = 10357
@@ -236,13 +217,6 @@ export default {
     })
   },
   methods: {
-    getHeight() {
-      this.$nextTick(() => {
-        // window.innerHeight 浏览器窗口的可见高度，下面的 220 是除了table最大高度的剩余空间。
-        let height = window.innerHeight - 58;
-        this.tableHeight = height;
-      })
-    },
     headerRowClassName ({row, rowIndex}) { // 表格头部样式
       return 'header-row-class-name'
     },
@@ -253,29 +227,22 @@ export default {
       row.index = rowIndex
       return 'table-row-class'
     },
-    remoteMethod (query) {
+    async remoteMethod (query) {
       if (this.filtersForm.modelId) {
         if (query !== '') {
-          this.$store.commit('SHOW_LOADING', '加载中...')
-          this.$axios({
-            baseURL: '/pm',
-            url: '/parameterMatching/searchParams',
-            method: 'get',
-            params: {
+          let params = {
               modelId: this.filtersForm.modelId,
               pattern: query
             }
-          }).then(res => {
-            this.$store.commit('HIDE_LOADING', '加载中！')
+          try {
+            let res = await this.unitAxiosFun('searchParams', params)
             if (res.status === 200) {
               const {data = []} = res
               this.options = data
             }
-          }).catch(err => {
-            console.log(err)
-            this.$message.error('请求响应失败，请稍后重试！')
+          } catch (error) {
             this.$store.commit('HIDE_LOADING', '加载中！')
-          })
+          }
         } else {
           this.options = []
         }
@@ -315,15 +282,11 @@ export default {
       this.max = null
       this.mid = null
       this.min = null
-      this.fir = {}
-      this.sec = {}
-      this.thir = {}
-      this.forth = {}
-      this.fifth = {}
+      this.multyList = []
       this.tableHeader = []
       this.frequencyData = []
     },
-    checkDetail (row) { // 查询数据
+    async checkDetail (row) { // 查询数据
       if (row) {
         this.rowKey = row.ROWKEY
       }
@@ -333,19 +296,14 @@ export default {
       }
       if (this.frequencyForm.paramName.length > 0) {
         let para = this.frequencyForm.paramName.join(',')
-        this.$store.commit('SHOW_LOADING', '加载中...')
-        this.$axios({
-          baseURL: '/pm',
-          url: '/parameterMatching/getParameterAggregatInfo',
-          method: 'get',
-          params: {
-            rowkey: row ? row.ROWKEY : this.rowKey,
-            startRowIndex: this.frequencyForm.startLine,
-            endRowIndex: this.frequencyForm.endLine,
-            parameterName: para.replace(/\s*/g, '')
-          }
-        }).then(res => {
-          this.$store.commit('HIDE_LOADING', '加载中！')
+        let params = {
+          rowkey: row ? row.ROWKEY : this.rowKey,
+          startRowIndex: this.frequencyForm.startLine,
+          endRowIndex: this.frequencyForm.endLine,
+          parameterName: para.replace(/\s*/g, '')
+        }
+        try {
+          let res = await this.unitAxiosFun('getParameterAggregatInfo', params)
           if (res.status === 200) {
             this.toggleIndex++
             const {data = {}} = res
@@ -362,19 +320,14 @@ export default {
             this.mid = mid
             this.min = min
             let dataList = [thickestValue1, thickestValue2, thickestValue3, thickestValue4, thickestValue5]
-            let numsList = []
-
-            this.fir = {label: this.getLabel(thickestValue1, ':'), value: this.getValue(thickestValue1, ':')}
-            this.sec = {label: this.getLabel(thickestValue2, ':'), value: this.getValue(thickestValue2, ':')}
-            this.thir = {label: this.getLabel(thickestValue3, ':'), value: this.getValue(thickestValue3, ':')}
-            this.forth = {label: this.getLabel(thickestValue4, ':'), value: this.getValue(thickestValue4, ':')}
-            this.fifth = {label: this.getLabel(thickestValue5, ':'), value: this.getValue(thickestValue5, ':')}
+            let multyList = []
             dataList.forEach((item, index) => {
-              numsList.push({
+              multyList.push({
                 label: this.getLabel(item, ':'),
                 value: this.getValue(item, ':')
               })
             })
+            this.multyList = multyList
             this.startRowIndex = this.frequencyForm.startLine
             this.endRowIndex = this.frequencyForm.endLine
             let arr = data && data.data || []
@@ -412,13 +365,13 @@ export default {
             this.resetParams()
             this.$message.error(res.message)
           }
-        }).catch(err => {
+        } catch (error) {
           this.resetParams()
           this.$store.commit('HIDE_LOADING', '加载中！')
-        })
+        }
       } else {
-        this.$message.warning('至少选择一个参数')
-      }
+          this.$message.warning('至少选择一个参数')
+        }
     },
     getLabel (a, b) {
       return a.substring(0, a.indexOf(b))
@@ -426,53 +379,37 @@ export default {
     getValue (a, b) {
       return a.substring(a.indexOf(b)+1)
     },
-    queryLibraryList () { // 查询版本库列表
-      this.$store.commit('SHOW_LOADING', '加载中...')
-      this.$axios({
-        baseURL: '/pm',
-        url: '/parameterMatching/getModels',
-        method: 'get'
-      }).then(res => {
-        this.$store.commit('HIDE_LOADING', '加载中！')
-        if (res.status === 200) {
-          const {data = []} = res
-          this.versionLibraryList = data
-        }
-      }).catch(err => {
-        console.log(err)
-        this.$message.error('请求响应失败，请稍后重试！')
-        this.$store.commit('HIDE_LOADING', '加载中！')
-      })
+    async queryLibraryList () { // 查询版本库列表
+      let res = await this.unitAxiosFun('getModels', )
+      if (res.status === 200) {
+        const {data = []} = res
+        this.versionLibraryList = data
+      }
     },
-    getAxiosData (url, method, params) {
+    unitAxiosFun (url, params, method ) {
       this.$store.commit('SHOW_LOADING', '加载中...')
-      this.$axios({
-        baseURL: '/pm',
-        url,
-        method: method || 'get',
-        params: params || undefined
-      }).then(res => {
-        this.$store.commit('HIDE_LOADING', '加载中！')
-        return res
-      }).catch(err => {
-        console.log(err)
-        this.$message.error('请求响应失败，请稍后重试！')
-        this.$store.commit('HIDE_LOADING', '加载中！')
+      return new Promise((resolve, reject) => {
+        this.$axios({
+          baseURL: '/pm/parameterMatching',
+          method: method || 'get',
+          url: url,
+          params: params
+        }).then(response => {
+          this.$store.commit('HIDE_LOADING', '加载中！')
+          resolve(response)
+        }).catch(error => {
+          this.$store.commit('HIDE_LOADING', '加载中！')
+          reject(error)
+        })
       })
     },
     queryTableInfo (val) { // 查询航班数据
-      this.$refs['filtersRef'].validate(valid => {
+      this.$refs['filtersRef'].validate(async (valid) => {
          if (valid) { // 查询table数据
-            this.$store.commit('SHOW_LOADING', '加载中...')
-            this.$axios({
-              baseURL: '/pm',
-              url: '/parameterMatching/getRandomFlights',
-              method: 'get',
-              params: {
-                modelId: this.filtersForm.modelId
-              }
-            }).then(res => {
-                const {data = []} = res
+            let params = { modelId: this.filtersForm.modelId }
+            try {
+              let res = await this.unitAxiosFun('getRandomFlights', params)
+              const {data = []} = res
               if (res.status === 200 && data.length > 0) {
                 this.flightTableData = data
                 this.rowKey = data[0].ROWKEY
@@ -484,14 +421,11 @@ export default {
                 this.resetParams()
                 this.flightTableData = []
               }
-              this.$store.commit('HIDE_LOADING', '加载中！')
-            }).catch(err => {
-              console.log(err)
+            } catch (error) {
               this.resetParams()
               this.flightTableData = []
-              // this.$message.error('请求响应失败，请稍后重试！')
               this.$store.commit('HIDE_LOADING', '加载中！')
-            })
+            }
           } else {
             console.log('error submit!!')
             return false
@@ -510,9 +444,7 @@ export default {
         return newObj
     }
   },
-  destroyed () {
-    window.removeEventListener('resize', this.getHeight)
-  }
+  destroyed () {}
 }
 </script>
 <style scoped>
@@ -537,12 +469,20 @@ export default {
   padding-top: 4px;
 }
 .data_verification .flight_info .flight_no {
+  padding-top: 20px;
   display: flex;
 }
 .data_verification .flight_info .detail {
   width: 180px;
   height: 420px;
   padding: 0 4px;
+}
+.data_verification .flight_info .detail div p:first-child {
+  margin-top: 0;
+}
+.data_verification .flight_info .detail h6 {
+  margin-top: 48px;
+  margin-bottom: 10px;
 }
 .data_verification .flight_info .detail .style span {
   display: inline-block;
@@ -594,5 +534,13 @@ input[type='number'] {
   background-color: #2A436F;
   border-color: #2A436F;
   background: #2A436F;
+}
+</style>
+<style>
+.data_verification .nums_list.el-table .cell,
+.el-table--border td .cell,
+.el-table--border th .cell {
+  padding-left: 5px;
+  padding-right: 5px;
 }
 </style>
