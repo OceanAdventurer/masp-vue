@@ -30,6 +30,7 @@
       <DataTableTab v-show="navMenuValue === 'dataTable'" id="dataTableContent"></DataTableTab>
       <AnalysisTab v-show="navMenuValue === 'analysis'" id="analysisContent"></AnalysisTab>
       <DataMiniTab v-show="navMenuValue === 'dataMining'" id="dataMiningContent"></DataMiniTab>
+      <WeatherTab v-show="navMenuValue === 'weather'" id="weatherContent"></WeatherTab>
       <ParamOneTab v-show="navMenuValue === 'paramOne'" id="paramOneContent"></ParamOneTab>
       <ParamTwoTab v-show="navMenuValue === 'paramTwo'" id="paramTwoContent"></ParamTwoTab>
       <EventTab v-show="navMenuValue === 'paramEvent'" id="eventContent"></EventTab>
@@ -46,6 +47,7 @@
   // 按需异步加载组件，打包时减少体积
   const AnalysisTab = () => import('components/analysis/AnalysisTab')
   const DataMiniTab = () => import('components/datamining/DataMiniTab')
+  const WeatherTab = () => import('components/edgeComputing/WeatherTab')
   const DataTableTab = () => import('components/datatable/DataTableTab')
   const ParamOneTab = () => import('components/paramone/ParamOneTab')
   const ParamTwoTab = () => import('components/paramtwo/ParamTwoTab')
@@ -76,6 +78,7 @@
       ParamTwoTab,
       AnalysisTab,
       DataMiniTab,
+      WeatherTab,
       SettingTab,
       EventTab,
       // ChangeLogTab,

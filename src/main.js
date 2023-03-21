@@ -124,6 +124,19 @@ Vue.prototype.$axios.interceptors.response.use((response) => {
   return Promise.reject(error)
 })
 
+// 下拉框加载
+Vue.directive('loadMore', {
+  bind (el, binding) {
+    let dom = el.querySelector('.el-select-dropdown .el-select-dropdown__wrap')
+    dom.addEventListener('scroll', function () {
+      let height = this.scrollHeight - this.scrollTop
+      if (height <= this.clientHeight) {
+        binding.value()
+      }
+    })
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

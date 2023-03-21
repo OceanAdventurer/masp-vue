@@ -27,6 +27,10 @@ export const menuData = {
     dataMining: [
       { enName: 'mining', zhName: '数据挖掘', parent: 'dataMining', isShow: true }
     ],
+    weather: [
+      { enName: 'flight', zhName: '航班天气', parent: 'weather', isShow: true },
+      { enName: 'airport', zhName: '机场天气', parent: 'weather', isShow: true }
+    ],
     paramEvent: [ // 左侧分析菜单数据
       { enName: 'eventLibrary', zhName: '事件库', parent: 'paramEvent', isShow: true }
     ],
@@ -267,6 +271,14 @@ export const menuData = {
       { disabledImgUrl: require('assets/images/icon107_0.png'), showImgUrl: require('assets/images/icon6_1.png'), zhName: '重命名', enName: 'setting_edit_catalog', isShow: false, isDisabled: false, parent: 'setting_category', isDropdown: false, dropdownItem: [] },
       { disabledImgUrl: require('assets/images/remove_large_2.png'), showImgUrl: require('assets/images/remove_large_1.png'), zhName: '删除', enName: 'setting_remove_catalog', isShow: false, isDisabled: false, parent: 'setting_category', isDropdown: false, dropdownItem: [] }
     ],
+
+    // 天气三级菜单
+    // weather_flight: [ // 航班天气
+    //   { disabledImgUrl: require('assets/images/file_large_2.png'), showImgUrl: require('assets/images/file_large_1.png'), zhName: '航班天气', enName: 'flight_weather', isShow: false, isDisabled: false, parent: 'weather_flight', isDropdown: false, dropdownItem: [] }
+    // ],
+    // weather_airport: [ // 机场天气
+    //   { disabledImgUrl: require('assets/images/file_large_2.png'), showImgUrl: require('assets/images/file_large_1.png'), zhName: '机场天气', enName: 'airport_weather', isShow: false, isDisabled: false, parent: 'weather_airport', isDropdown: false, dropdownItem: [] }
+    // ],
 
     event_store_result: [],
     changeLog_change: [],

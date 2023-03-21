@@ -84,10 +84,19 @@
           </el-menu-item>
         </el-submenu>
 
-        <el-menu-item index="edgeComputing" v-if="menuListObj.analysis">
-          <i class="el-icon-date"></i>
-          <span slot="title">外部数据边缘计算</span>
-        </el-menu-item>
+        <el-submenu index="edgeComputing" v-if="menuListObj.analysis">
+          <template slot="title">
+            <i class="el-icon-date"></i>
+            <span slot="title">外部数据边缘计算</span>
+          </template>
+          <div x-arrow="" class="cm-popper__arrow" style="left: 65px;"></div>
+          <el-menu-item index="weather">
+            天气
+          </el-menu-item>
+          <el-menu-item index="airRoute">
+            空管-航路
+          </el-menu-item>
+        </el-submenu>
 
 <!--
         <el-menu-item index="analysis" v-if="menuListObj.analysis">
@@ -307,8 +316,6 @@ export default {
         window.open('/csap/user/ssoDMS?type=3', '_blank')
       } else if (key === 'modelRuntimeMenu') { // 模型运营区
         window.open('/csap/user/ssoDMS?type=1', '_blank')
-      } else if (key === 'edgeComputing') { // 数据挖掘
-        window.open('/csap/user/ssoDMS?type=2', '_blank')
       } else {
         this.activeIndex = key
         this.openNavMenuItem(key)
@@ -376,6 +383,10 @@ export default {
           }
           this.$bus.$emit('analysisAddTab', {enName: 'analysis_result', zhName: fileResultName, isClosable: true, parent: name})
         }
+      } else if (name === 'weather_flight') {
+        this.$bus.$emit('weatherAddTab', {enName: 'flight_weather', zhName: '航班天气', isClosable: false, parent: name})
+      } else if (name === 'weather_airport') {
+        this.$bus.$emit('weatherAddTab', {enName: 'airport_weather', zhName: '机场天气', isClosable: false, parent: name})
       }
 
       // if (name === 'event_store_result') {
