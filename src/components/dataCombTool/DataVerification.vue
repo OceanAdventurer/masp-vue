@@ -158,6 +158,7 @@
 <script>
 /* eslint-disable */
 import { mapState } from 'vuex'
+import Cookies from 'js-cookie'
 const Loading = () => import('components/base/Loading')
 export default {
   name: 'DataVerification',
@@ -210,6 +211,8 @@ export default {
     this.queryLibraryList()
     if (query.modelId) {
       this.queryTableInfo()
+    } else {
+      this.renderHistory()
     }
     this.$nextTick(()=> {
       let height = window.innerHeight - 58
@@ -226,6 +229,16 @@ export default {
     tableRowClass ({row, rowIndex}) { // 表格行样式
       row.index = rowIndex
       return 'table-row-class'
+    },
+    renderHistory () {
+      let storageQuery = JSON.parse(Cookies.get('storageQuery')) // 查询条件参数记录
+      const {startRowIndex, endRowIndex, parameterName} = storageQuery
+      let storageLibVal = Cookies.get('storageLibVal') // 版本库参数记录
+      this.filtersForm.modelId = storageLibVal
+      this.frequencyForm.startLine = startRowIndex
+      this.frequencyForm.endLine = endRowIndex
+      this.frequencyForm.paramName = parameterName.split() || []
+      this.queryTableInfo()
     },
     async remoteMethod (query) {
       if (this.filtersForm.modelId) {
@@ -305,6 +318,7 @@ export default {
         try {
           let res = await this.unitAxiosFun('getParameterAggregatInfo', params)
           if (res.status === 200) {
+            Cookies.set('storageQuery', JSON.stringify(params), {expires: 7})
             this.toggleIndex++
             const {data = {}} = res
             if (data.message == "参数不存在") {
@@ -410,6 +424,7 @@ export default {
             try {
               let res = await this.unitAxiosFun('getRandomFlights', params)
               const {data = []} = res
+              Cookies.set('storageLibVal', this.filtersForm.modelId, {expires: 7})
               if (res.status === 200 && data.length > 0) {
                 this.flightTableData = data
                 this.rowKey = data[0].ROWKEY

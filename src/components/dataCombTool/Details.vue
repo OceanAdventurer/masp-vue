@@ -53,6 +53,7 @@
       <div class="table_content">
         <div class="table_wrapper">
           <el-table
+            ref='tableRefs'
             :row-style="{height:'38px'}"
             :cell-style="{height:'38px'}"
             :cell-class-name="getCellClassName"
@@ -132,6 +133,7 @@
                 <el-radio v-model='selectedVal' :label='scope.row.ID'>&nbsp;</el-radio>
               </template>
             </el-table-column>
+            <el-table-column type='index' label="序号" width='50'></el-table-column>
             <el-table-column prop="GP_NAME" label="参数名"></el-table-column>
             <el-table-column prop="GP_CHINESE_NAME" label="描述" width="280"></el-table-column>
             <el-table-column  v-for="(col, idx) in filtersForm.modelId" :key='idx' :label="col+''">
@@ -173,6 +175,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
+import Cookies from 'js-cookie'
 const Loading = () => import('components/base/Loading')
 /* eslint-disable */
 export default {
@@ -244,8 +247,8 @@ export default {
   created () {},
   mounted () {
     this.queryLibraryList()
-    // this.filtersForm.modelId = [1043, 1615, 10357]
-    // this.filtersForm.paramName = 'RAL*'
+    this.renderHistory()
+    // console.log(this.$refs.tableRefs, 'this.$refs.tableRefs----test')
   },
   methods: {
     getCellClassName({column}) {
@@ -272,7 +275,24 @@ export default {
         this.$message.warning('请选择一个参数')
       }
     },
-
+    renderHistory () {
+      let storageQueryInfo = JSON.parse(Cookies.get('storageQueryInfo')) // 参数查询条件
+      const {storageModelIdList, storageSearchNames, storageParamName, storageMatchRange} = storageQueryInfo
+      // let storageDetail = JSON.parse(Cookies.get('storageDetail')) // 点击的单元格
+      let storageGpquery = Cookies.get('storageGpquery') // 工程参数查询条件
+      // let storageSelected = JSON.parse(Cookies.get('storageSelected')) // 选中的工程参数
+      this.filtersForm.modelId = storageModelIdList
+      this.filtersForm.searchNames = storageSearchNames
+      this.filtersForm.paramName = storageParamName
+      this.filtersForm.matchRange = storageMatchRange
+      // this.pparName = storageDetail.paramName
+      this.gpFiltersForm.gpParamName = storageGpquery
+      // this.selectedData = storageSelected
+      this.queryTableInfo()
+      // this.checkDetail(storageDetail)
+      this.queryGpTableInfo()
+      // this.handleSelectionChange(storageSelected.a, storageSelected.b)
+    },
     clickShowDia(col) {
       this.rowData = {}
       this.dialogVisible = !this.dialogVisible
@@ -343,6 +363,7 @@ export default {
             this.toggleIndex++
             const {data={}} = res
             if (data.ppar_name) {
+              Cookies.set('storageDetail', JSON.stringify({column, row}), {expires: 7})
               let list = []
               for (let o in data) {
                 if (o === 'ppar_name') {
@@ -386,6 +407,7 @@ export default {
         this.resetTableInfo() // 清空所有数据
       }
       this.$refs['filtersRef'].validate(async valid => {
+        this.storageData()
         if (valid) { // 查询table数据
           let para = this.filtersForm.modelId.join(',')
           let nameList = []
@@ -423,6 +445,15 @@ export default {
         }
       })
     },
+    storageData(name, val) {
+      let obj = {
+        'storageModelIdList': this.filtersForm.modelId,
+        'storageSearchNames': this.filtersForm.searchNames,
+        'storageParamName': this.filtersForm.paramName,
+        'storageMatchRange': this.filtersForm.matchRange
+      }
+      Cookies.set('storageQueryInfo', JSON.stringify(obj), {expires:7})
+    },
     queryGpTableInfo () {
       this.$refs['gpFiltersRef'].validate(async valid => {
          if (valid) { // 查询table数据
@@ -434,6 +465,7 @@ export default {
               }
               let res = await this.unitAxiosFun('getGpBindStatus', params)
               if (res.status === 200) {
+                Cookies.set('storageGpquery', this.gpFiltersForm.gpParamName, {expires: 7})
                 const {data = []} = res
                 this.engineeringTableData = data || []
               } else {
@@ -466,7 +498,8 @@ export default {
       label = label === '单选' ? this.filtersForm.modelId[0] : label
       this.selectedVal = gpId
       this.selectedRow = this.engineeringTableData.filter((item) => item.gpId === gpId)
-      this.selectedData = {label, gpId, name, GP_CHINESE_NAME, UNIT} 
+      this.selectedData = {label, gpId, name, GP_CHINESE_NAME, UNIT}
+      // Cookies.set('storageSelected', JSON.stringify({a, b}))
     }
   },
   destroyed () {}

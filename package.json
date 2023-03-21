@@ -20,6 +20,7 @@
     "deepmerge": "2.1.1",
     "el-tree-transfer": "2.2.9",
     "element-ui": "2.13.2",
+    "js-cookie": "^3.0.1",
     "moment": "2.22.2",
     "sortablejs": "1.8.3",
     "vue": "2.5.2",
