@@ -408,6 +408,8 @@ export default {
       }
       this.$refs['filtersRef'].validate(async valid => {
         this.storageData()
+        this.pparName = ''
+        this.paramDetailList = []
         if (valid) { // 查询table数据
           let para = this.filtersForm.modelId.join(',')
           let nameList = []
