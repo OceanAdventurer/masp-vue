@@ -2372,17 +2372,17 @@ export default {
               if (this.$util.isNotEmptyObject(chartData)) {
                 let xAxisArr = []
                 let yAxisArr = []
-                let arrTest = []
+                let sortArr = []
                 for (let j in chartData) {
-                  arrTest.push({
+                  sortArr.push({
                     label: j,
                     value: chartData[j]
                   })
                 }
-                arrTest.sort((a, b) => {
+                sortArr.sort((a, b) => {
                   return a.label - b.label
                 })
-                arrTest.forEach(item => {
+                sortArr.forEach(item => {
                   xAxisArr.push(item.label)
                   yAxisArr.push(item.value)
                 })
