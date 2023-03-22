@@ -2372,10 +2372,20 @@ export default {
               if (this.$util.isNotEmptyObject(chartData)) {
                 let xAxisArr = []
                 let yAxisArr = []
+                let arrTest = []
                 for (let j in chartData) {
-                  xAxisArr.push(j)
-                  yAxisArr.push(chartData[j])
+                  arrTest.push({
+                    label: j,
+                    value: chartData[j]
+                  })
                 }
+                arrTest.sort((a, b) => {
+                  return a.label - b.label
+                })
+                arrTest.forEach(item => {
+                  xAxisArr.push(item.label)
+                  yAxisArr.push(item.value)
+                })
                 tempDataObj['name'] = xAxisArr
                 tempDataObj[columnName] = yAxisArr
                 // 删除fdvChartDataArr中重复的数据
@@ -2452,6 +2462,7 @@ export default {
 
               this.$refs.fdvTable.doLayout()
             }
+            console.log(this.fdvChartDataArr, 'fdvChartDataArr----test')
           } else {
             // 清空表格数据
             this.fdvDialogColumnData = []
