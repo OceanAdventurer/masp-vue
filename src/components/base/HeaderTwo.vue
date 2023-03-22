@@ -38,6 +38,7 @@
       <!-- <ChangeLogTab v-show="navMenuValue === 'changeLog'" id="changeLogContent"></ChangeLogTab> -->
       <TodoListTab v-show="navMenuValue === 'todoList'" id="todoListContent"></TodoListTab>
       <AppTab v-show="navMenuValue === 'app'" id="appContent"></AppTab>
+      <SafetyMonitorTab v-show="navMenuValue === 'safetyMonitor'" id="SafetyMonitorTabContent"> </SafetyMonitorTab>
     </div>
   </div>
 </template>
@@ -56,6 +57,7 @@
   // const ChangeLogTab = () => import('components/changeLogList/ChangeLogTab')
   const TodoListTab = () => import('components/todolist/TodoListTab')
   const AppTab = () => import('components/app/AppTab')
+  const SafetyMonitorTab = () => import('components/safetyMonitor/SafetyMonitorTab') // 安全监控
 
   export default {
     data () {
@@ -83,7 +85,8 @@
       EventTab,
       // ChangeLogTab,
       TodoListTab,
-      AppTab
+      AppTab,
+      SafetyMonitorTab
     },
     created () {
       console.log('xxx', menu.menuData.headerData)

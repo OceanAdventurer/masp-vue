@@ -48,7 +48,7 @@
         :collapse="!isCollapsed"
         @open="handleOpen"
         @close="handleClose"
-        @select="handleSelect"
+        @select="openNavMenuItem"
         >
         <el-menu-item index="dataTable" v-if="menuListObj.dataTable">
           <i class="el-icon-menu el-icon-data"></i>
@@ -310,20 +310,19 @@ export default {
     handleClose (key, keyPath) {
       console.log(key, keyPath)
     },
-    handleSelect (key, keyPath) {
-      console.log('key', key)
-      if (key === 'safetyMonitor') { // 安全监控
-        window.open('/csap/user/ssoDMS?type=3', '_blank')
-      } else if (key === 'modelRuntimeMenu') { // 模型运营区
-        window.open('/csap/user/ssoDMS?type=1', '_blank')
-      } else {
-        this.activeIndex = key
-        this.openNavMenuItem(key)
-      }
-    },
-
+    // handleSelect (key, keyPath) {
+    //   console.log('key', key)
+    //   if (key === 'safetyMonitor') { // 安全监控
+    //     window.open('/csap/user/ssoDMS?type=3', '_blank')
+    //   } else if (key === 'modelRuntimeMenu') { // 模型运营区
+    //     window.open('/csap/user/ssoDMS?type=1', '_blank')
+    //   } else {
+    //     this.activeIndex = key
+    //     this.openNavMenuItem(key)
+    //   }
+    // },
     openNavMenuItem (name) { // 头部一级菜单显示效果
-      console.log('openNavMenuItem:~~~', name)
+      this.activeIndex = name
       this.navMenu = name // 激活左边导航菜单
       this.headerMenu = this.headerTwoData[this.navMenu][0].parent + '_' + this.headerTwoData[this.navMenu][0].enName // 激活头部一级导航菜单
       this.headerTwoValue = this.getHeaderTwoValue() // 点击头部一级菜单时赋值二级菜单值
@@ -342,6 +341,11 @@ export default {
       } else if (this.navMenu === 'analysis') {
         this.showSettingCategoryDefault = false
         this.$bus.$emit('analysisMenu')
+      } else if (this.navMenu === 'weather') { // 天气，默认打开航班天气页面
+        this.$bus.$emit('weatherAddTab', {enName: 'flight_weather', zhName: '航班天气', isClosable: false, parent: name})
+      } else if (this.navMenu === 'safetyMonitor') { // 安全监控
+        this.$bus.$emit('safetyMonitorMenu', 'safetyMonitor_stats')
+        this.$bus.$emit('safetyMonitor_stats') // 默认打开用户日志页面
       } else { // 点击的是其他菜单则隐藏，否则会导致二级菜单不出来
         this.showSettingCategoryDefault = false // 隐藏
       }
@@ -387,6 +391,15 @@ export default {
         this.$bus.$emit('weatherAddTab', {enName: 'flight_weather', zhName: '航班天气', isClosable: false, parent: name})
       } else if (name === 'weather_airport') {
         this.$bus.$emit('weatherAddTab', {enName: 'airport_weather', zhName: '机场天气', isClosable: false, parent: name})
+      } else if (name === 'safetyMonitor_stats') {
+        this.$bus.$emit('safetyMonitorMenu', 'safetyMonitor_stats')
+        this.$bus.$emit('safetyMonitor_stats')
+      } else if (name === 'safetyMonitor_userLog') {
+        this.$bus.$emit('safetyMonitorMenu', 'safetyMonitor_userLog')
+        this.$bus.$emit('safetyMonitor_userLog')
+      } else if (name === 'safetyMonitor_userData') {
+        this.$bus.$emit('safetyMonitorMenu', 'safetyMonitor_userData')
+        this.$bus.$emit('safetyMonitor_userData')
       }
 
       // if (name === 'event_store_result') {

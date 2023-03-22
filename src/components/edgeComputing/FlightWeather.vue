@@ -141,19 +141,21 @@
             <el-table-column
               prop="depType"
               label="起飞机场天气类型"
-              width="auto">
+              :show-overflow-tooltip="true"
+              width="auto"
+              min-width="120px">
             </el-table-column>
             <el-table-column
               prop="arrAp"
               label="着陆机场"
-              :show-overflow-tooltip="true"
               width="80px">
             </el-table-column>
             <el-table-column
               prop="arrType"
               label="着陆机场天气类型"
               :show-overflow-tooltip="true"
-              width="auto">
+              width="auto"
+              min-width="120px">
             </el-table-column>
             <el-table-column
               prop="depTime"
@@ -431,7 +433,6 @@ export default {
           'Content-type': 'application/json;charset=UTF-8'
         }
       }).then(res => {
-        console.log(res)
         let data = res.data
         this.tableData = data.content
         this.currentPage = Number(data.pageNo)
@@ -488,6 +489,8 @@ export default {
   position: relative;
   width: 100%;
   height: 20%;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .flight-weather-table-input .el-form--inline .el-form-item {

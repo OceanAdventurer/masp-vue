@@ -35,7 +35,9 @@ export const menuData = {
       { enName: 'eventLibrary', zhName: '事件库', parent: 'paramEvent', isShow: true }
     ],
     safetyMonitor: [ // 左侧设置菜单数据
-      { enName: 'monitor', zhName: '安全监控', parent: 'safetyMonitor', isShow: true }
+      { enName: 'stats', zhName: '数据统计', parent: 'safetyMonitor', isShow: true },
+      { enName: 'userLog', zhName: '用户日志', parent: 'safetyMonitor', isShow: true },
+      { enName: 'userData', zhName: '用户数据', parent: 'safetyMonitor', isShow: true }
     ],
     setting: [ // 左侧设置菜单数据
       { enName: 'set', zhName: '权限设置', parent: 'setting', isShow: true },

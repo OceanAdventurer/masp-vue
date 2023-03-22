@@ -1,8 +1,8 @@
 <template>
-  <div class="flight-weather">
-    <div class="flight-weather-container df df-fd-r">
-      <div class="flight-weather-table">
-        <div class="flight-weather-table-input df df-jc-c df-ai-c">
+  <div class="airport-weather">
+    <div class="airport-weather-container df df-fd-r">
+      <div class="airport-weather-table">
+        <div class="airport-weather-table-input df df-jc-c df-ai-c">
           <el-form :inline="true" label-width="70px">
             <el-form-item label="机场:">
               <el-input v-model.trim="form.aptlcaoCode" disabled clearable placeholder="机场" style="width: 100px; " />
@@ -60,7 +60,7 @@
             </el-form-item>
           </el-form>
         </div>
-        <div class="flight-weather-table-info">
+        <div class="airport-weather-table-info">
           <el-table
             :row-style="{height:'38px'}"
             :cell-style="{padding:'0px'}"
@@ -143,21 +143,17 @@
               prop="weatherDesc"
               label="天气描述"
               :show-overflow-tooltip="true"
-              width="200px">
+              width="auto"
+              min-width="200px">
             </el-table-column>
             <el-table-column
               prop="msgTimeBeijing"
               label="天气时间"
               width="160px">
             </el-table-column>
-            <el-table-column label="操作" width="101px">
-              <template slot-scope="scope">
-                <el-button size="mini" round @click.native="showInfo(scope.row)">天气详情</el-button>
-              </template>
-            </el-table-column>
           </el-table>
         </div>
-        <div class="flight-weather-table-pagination df df-jc-fe df-ai-c">
+        <div class="airport-weather-table-pagination df df-jc-fe df-ai-c">
           <el-pagination
             background
             @size-change="handleSizeChange"
@@ -315,7 +311,6 @@ export default {
           'Content-type': 'application/json;charset=UTF-8'
         }
       }).then(res => {
-        console.log(res)
         let data = res.data
         this.tableData = data.content
         this.currentPage = Number(data.pageNo)
@@ -331,52 +326,54 @@ export default {
 }
 </script>
 <style scoped>
-.flight-weather {
+.airport-weather {
   position: absolute;
   width: 100%;
   height: 100%;
 }
-.flight-weather-container {
+.airport-weather-container {
   position: relative;
   width: 100%;
   height: 100%;
 }
-.flight-weather-table {
+.airport-weather-table {
   position: relative;
   width: calc(100vw - 204px);
   height:100%;
   margin-left: 12px;
 }
-.flight-weather-table-input {
+.airport-weather-table-input {
   position: relative;
   width: 100%;
   height: 20%;
+  display: flex;
+  justify-content: flex-start;
 }
 
-.flight-weather-table-input .el-form--inline .el-form-item {
+.airport-weather-table-input .el-form--inline .el-form-item {
   margin-bottom: unset;
   /*margin-right: unset;*/
 }
 
-.flight-weather-table-input .el-range-editor.el-input__inner {
+.airport-weather-table-input .el-range-editor.el-input__inner {
   padding: 0 10px;
 }
 
-.flight-weather-table-input /deep/.weather-class .el-input__inner {
+.airport-weather-table-input /deep/.weather-class .el-input__inner {
   height: 32px !important;
 }
 
-.flight-weather-table-input .el-button{
+.airport-weather-table-input .el-button{
   padding: 9px 20px !important;
 }
 
-.flight-weather-table-info {
+.airport-weather-table-info {
   position: relative;
   width: 100%;
   height: 70%;
 }
 
-.flight-weather-table-pagination {
+.airport-weather-table-pagination {
   position: relative;
   width: 100%;
   height: 10%;
