@@ -310,17 +310,6 @@ export default {
     handleClose (key, keyPath) {
       console.log(key, keyPath)
     },
-    // handleSelect (key, keyPath) {
-    //   console.log('key', key)
-    //   if (key === 'safetyMonitor') { // 安全监控
-    //     window.open('/csap/user/ssoDMS?type=3', '_blank')
-    //   } else if (key === 'modelRuntimeMenu') { // 模型运营区
-    //     window.open('/csap/user/ssoDMS?type=1', '_blank')
-    //   } else {
-    //     this.activeIndex = key
-    //     this.openNavMenuItem(key)
-    //   }
-    // },
     openNavMenuItem (name) { // 头部一级菜单显示效果
       this.activeIndex = name
       this.navMenu = name // 激活左边导航菜单
