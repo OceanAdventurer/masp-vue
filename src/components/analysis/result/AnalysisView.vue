@@ -1235,11 +1235,21 @@ export default {
           let xyAxisArrData = []
           let xAxisArr = []
           let yAxisArr = []
-          for (let i in resultData) {
-            xAxisArr.push(i)
-            yAxisArr.push(resultData[i])
-            xyAxisArrData.push([i, resultData[i]])
+          let sortArr = []
+          for (let j in resultData) {
+            sortArr.push({
+              label: j,
+              value: resultData[j]
+            })
           }
+          sortArr.sort((a, b) => {
+            return a.label - b.label
+          })
+          sortArr.forEach(item => {
+            xAxisArr.push(item.label)
+            yAxisArr.push(item.value)
+            xyAxisArrData.push([item.label, item.value])
+          })
           this.chartXAxisArrData = xAxisArr
           this.chartYAxisArrData = yAxisArr
           this.chartAxisArrData = xyAxisArrData
