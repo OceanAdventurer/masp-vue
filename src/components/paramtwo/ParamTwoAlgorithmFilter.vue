@@ -285,7 +285,7 @@
                     <ParamTwoLeft v-on:listenToChildEvent="showMsgFromChild"></ParamTwoLeft>
                   </div>
                   <div class="script_edit">
-                    <iframe id="ifid" ref="iframe" src="/csap/static/groovyIDE/index2.html" width="100%"></iframe>
+                    <iframe id="ifid" ref="iframe" src="/dsap/static/groovyIDE/index2.html" width="100%"></iframe>
                   </div>
                </span>
             </span>
@@ -321,7 +321,7 @@
                 <div class="right_shade"></div>
                 <div class="right_content">
 
-                  <iframe id="iframeOrgChart" frameborder="no" border="0" ref="iframeOrgChart" src="/csap/static/orgChart/color-coded/org_chart.html" ></iframe>
+                  <iframe id="iframeOrgChart" frameborder="no" border="0" ref="iframeOrgChart" src="/dsap/static/orgChart/color-coded/org_chart.html" ></iframe>
                   <el-button @click="closePopup" style="float:right;margin:10px 26px 0px 0px;">关闭</el-button>
                 </div>
               </div>

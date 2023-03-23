@@ -12,19 +12,20 @@ module.exports = {
     assetsSubDirectory: 'static',
 
     // 编译发布的根目录，可配置为资源服务器域名或 CDN 域名
-    assetsPublicPath: '/csap/',
+    assetsPublicPath: '/dsap/',
     // assetsPublicPath: '/',
 
     // dev服务器使用http-proxy-middleware进行代理,定义代理规则
-    proxyTable: {  // 到请求/users现在会被代理到请求http://172.20.42.144:8080/csap/users
+    proxyTable: {  // 到请求/users现在会被代理到请求http://172.20.42.144:8080/dsap/users
       '/**': {
         // target: 'http://10.18.21.122:8081/', // 代理接口的域名   http://localhost:8081/ | http://172.20.42.143:8080/ | http://172.20.42.144:8080/
         // target: 'http://10.62.103.242:8080/', // 后台詹龙飞服务器
-       target: 'http://172.168.20.141:8080/',
+        // target: 'http://172.168.20.141:8080/', // 测试环境
+        target: 'http://172.168.60.61:8080/', // 生产环境
         secure: false,      // 如果是https接口，需要配置这个参数, 默认情况下，不接受运行在HTTPS上，且使用了无效证书的后端服务器
         changeOrigin: false,     // 如果接口跨域，需要进行这个参数配置
         pathRewrite: { // 如果你不想始终传递/api，则需要重写路径
-          // '^/csap': ''
+          // '^/dsap': ''
         }
       }
     },
@@ -84,7 +85,7 @@ module.exports = {
     assetsSubDirectory: 'static',
 
     // 此属性定义的是静态资源的公开路径，也就是真正的引用路径。值修改成‘./’ 不用启动服务器直接访问
-    assetsPublicPath: '/csap/',
+    assetsPublicPath: '/dsap/',
     // assetsPublicPath: '/',
 
     // 此属性定义是否在生产环境生成souremap，sourcemap是用来debug编译文件的，通过映射到编译前文件来实现

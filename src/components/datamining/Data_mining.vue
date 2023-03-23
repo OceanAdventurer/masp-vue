@@ -212,11 +212,11 @@ export default {
         // })
         // alert(JSON.stringify(tempDm))
 
-        // /csap/apm/submitLinearRegresion?ids=[{"id":"aaa","type"="twoDimension"}]&regParam=0.1&elasticNetParam=1
+        // /dsap/apm/submitLinearRegresion?ids=[{"id":"aaa","type"="twoDimension"}]&regParam=0.1&elasticNetParam=1
 
         let form = document.createElement('form')
         form.style.display = 'none'
-        form.action = '/csap/apm/submitLinearRegresion'
+        form.action = '/dsap/apm/submitLinearRegresion'
         form.method = 'post'
         form.target = '_blank'
         document.body.appendChild(form)

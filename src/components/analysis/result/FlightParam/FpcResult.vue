@@ -1152,7 +1152,7 @@
 
         console.log('exportTableConfig@params~~~:', JSON.stringify(submitAnalysisParams))
 
-        this.postExcelFile(submitAnalysisParams, '/csap/export/exportTableConfig')
+        this.postExcelFile(submitAnalysisParams, '/dsap/export/exportTableConfig')
       },
       postExcelFile (params, url) { //params是post请求需要的参数，url是请求url地址
         let form = document.createElement('form')

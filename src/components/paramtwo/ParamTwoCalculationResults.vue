@@ -121,7 +121,7 @@
          脚本内容：
        </div>
        <div style="margin-top: 10px;">
-         <iframe id="ifid" ref="iframe" src="/csap/static/groovyIDE/index2.html" width="100%" style="height:100px;width: 100%;"  ></iframe>
+         <iframe id="ifid" ref="iframe" src="/dsap/static/groovyIDE/index2.html" width="100%" style="height:100px;width: 100%;"  ></iframe>
        </div>
        <div class="my-row" style="margin-top: 10px;">
          <el-button type="primary" size="small" @click="this.getResultData">执行脚本</el-button>

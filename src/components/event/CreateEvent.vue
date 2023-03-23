@@ -565,7 +565,7 @@
                 <EventScriptTree @listenToChildStepEvent="showMsgFromChild" @listenToChildStepEvent1="showMsgFromChildSystem" :showDescription="showDescription" :isCurrentUser="isCurrentUser" :isLinkParam="isLinkParam" :isLoadScript="isLoadScript"></EventScriptTree>
               </div>
               <div class="script_edit">
-                <iframe id="ifid" ref="iframe" src="/csap/static/groovyIDE/index2.html" width="100%" style="height:97%;width: 94%;margin-left: 4%;margin-top: 3%"  readonly="readonly" ></iframe>
+                <iframe id="ifid" ref="iframe" src="/dsap/static/groovyIDE/index2.html" width="100%" style="height:97%;width: 94%;margin-left: 4%;margin-top: 3%"  readonly="readonly" ></iframe>
               </div>
             </span>
           </div>
@@ -612,7 +612,7 @@
                 <div v-show="rightShow">
                   <div class="right_shade"></div>
                   <div class="right_content">
-                    <iframe id="iframeOrgChart" frameborder="no" border="0" ref="iframeOrgChart" src="/csap/static/orgChart/color-coded/org_chart.html" ></iframe>
+                    <iframe id="iframeOrgChart" frameborder="no" border="0" ref="iframeOrgChart" src="/dsap/static/orgChart/color-coded/org_chart.html" ></iframe>
                     <el-button @click="closePopup" style="float:right;margin:10px 26px 0px 0px;">关闭</el-button>
                   </div>
                 </div>

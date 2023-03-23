@@ -216,7 +216,7 @@ float: right;
           </div>
           <div class="eidtor">
             <div class="editor_iframe">
-              <iframe id="ifid" ref="iframe" src="/csap/static/groovyIDE/index.html" width="100%" height="100%"></iframe>
+              <iframe id="ifid" ref="iframe" src="/dsap/static/groovyIDE/index.html" width="100%" height="100%"></iframe>
             </div>
           </div>
         </div>
@@ -271,7 +271,7 @@ float: right;
               <div v-show="rightShow">
                 <div class="right_shade"></div>
                 <div class="right_content">
-                  <iframe id="iframeOrgChart" frameborder="no" border="0" ref="iframeOrgChart" src="/csap/static/orgChart/color-coded/org_chart.html" ></iframe>
+                  <iframe id="iframeOrgChart" frameborder="no" border="0" ref="iframeOrgChart" src="/dsap/static/orgChart/color-coded/org_chart.html" ></iframe>
                   <el-button @click="closePopup" style="float:right;margin:0px 26px 0px 0px;">关闭</el-button>
                 </div>
               </div>

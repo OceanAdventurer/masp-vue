@@ -3444,7 +3444,7 @@ export default {
 
     postExcelFile (params, url) { // params是post请求需要的参数，url是请求url地址
       params = this.currentFlightId
-      url = '/csap/flightRecords/downloadCsv'
+      url = '/dsap/flightRecords/downloadCsv'
 
       this.$store.commit('SHOW_LOADING', '正在导出数据，请稍等！')
       let form = document.createElement('form')

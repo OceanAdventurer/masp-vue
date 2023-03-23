@@ -83,7 +83,7 @@ export default {
   },
   mounted () { // 处理dom加载完后的事情
     this.getUserInfo()
-    // this.getHttps('https://msap-bi.localhost.com:8081/csap/index.html#/home')
+    // this.getHttps('https://msap-bi.localhost.com:8081/dsap/index.html#/home')
   },
   destroyed () { // 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。
     // this.$bus.$off('openHeaderMenu') // 移除自定义事件监听器。
@@ -95,7 +95,7 @@ export default {
       localStorage.setItem('currentSystem', name)
       if (val.slice(0, 4) === 'http') {
         window.location.href = val
-        // window.location.href = 'http://localhost:8080/csap/index.html#/home'
+        // window.location.href = 'http://localhost:8080/dsap/index.html#/home'
       } else {
         if (val.search(':') !== -1) {
           let data = window.location.protocol + '//' + val

@@ -25,7 +25,7 @@
     <el-header style="height: 45px;">
       <div class="nav-menu-header" v-show="menuListArr.length > 0">
         <div class="nav-menu-header-left" :style="isCollapsed ? 'width: 181px;' : ''">
-          <h2>{{ isCollapsed ? 'CSAP分析系统' : 'CSAP' }}</h2>
+          <h2>{{ isCollapsed ? 'DSAP分析系统' : 'DSAP' }}</h2>
         </div>
 <!--        <div v-show="isCollapsed" class="logo-div"></div>-->
         <div :class="[rotateIcon, headerLogo]"></div>
@@ -205,7 +205,7 @@ export default {
       noMenuData: '',
       dialogVisible: false,
       options: [],
-      value: 'http://172.20.42.144:8080/csap/index.html#/home'
+      value: 'http://172.20.42.144:8080/dsap/index.html#/home'
     }
   },
   computed: {
@@ -277,7 +277,7 @@ export default {
   methods: {
     cancelSystem () {
       this.dialogVisible = false
-      this.value = 'http://172.20.42.144:8080/csap/index.html#/home'
+      this.value = 'http://172.20.42.144:8080/dsap/index.html#/home'
     },
     changrSystem () {
       window.open(this.value, '_self')
@@ -537,10 +537,10 @@ export default {
           window.sessionStorage.removeItem('MSAP-sublineAllData') // 删除浏览器辅助线信息
           /**
            * 地址会有两种：
-              1、/csap/index.html
-              2、http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/csap
+              1、/dsap/index.html
+              2、http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/dsap
           */
-          // window.location.href = 'http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/csap'
+          // window.location.href = 'http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/dsap'
           if (this.$util.isDefine(response.data.status)) {
             if (response.data.status === '0') {
               let resUrl = response.data.result.data
@@ -580,7 +580,7 @@ export default {
         this.$confirm('确认关闭？')
           .then(_ => {
             this.dialogVisible = false
-            this.value = 'http://172.20.42.144:8080/csap/index.html#/home'
+            this.value = 'http://172.20.42.144:8080/dsap/index.html#/home'
             done()
           })
           .catch(_ => {})

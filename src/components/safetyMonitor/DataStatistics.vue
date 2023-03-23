@@ -12,7 +12,7 @@ export default {
   components: {},
   data () {
     return {
-      url: '/csap/user/ssoDMS?type=3'
+      url: '/dsap/user/ssoDMS?type=3'
     }
   },
   created () {

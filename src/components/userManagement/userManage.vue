@@ -48,7 +48,7 @@
             <el-form-item label="系统权限:">
             <el-checkbox-group v-model="userForm.type">
             <el-checkbox label="多租户管理平台" name="type"></el-checkbox>
-            <el-checkbox label="csap" name="type"></el-checkbox>
+            <el-checkbox label="dsap" name="type"></el-checkbox>
 <!--            <el-checkbox label="东航飞行MSAP" name="type"></el-checkbox>-->
 <!--            <el-checkbox label="东航机务MSAP" name="type"></el-checkbox>-->
 <!--            <el-checkbox label="东航运控MSAP" name="type"></el-checkbox>-->
@@ -252,10 +252,10 @@ export default {
           window.sessionStorage.removeItem('MSAP-sublineAllData') // 删除浏览器辅助线信息
           /**
            * 地址会有两种：
-              1、/csap/index.html
-              2、http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/csap
+              1、/dsap/index.html
+              2、http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/dsap
           */
-          // window.location.href = 'http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/csap'
+          // window.location.href = 'http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/dsap'
           if (this.$util.isDefine(response.data.status)) {
             if (response.data.status === '0') {
               let resUrl = response.data.result.data

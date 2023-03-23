@@ -148,7 +148,7 @@
         //   url: '//services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
         // })
         // return UrlTemplateImageryProvider({
-        //   url: 'http://localhost:8080/csap/static/satellite_en/{z}/{x}/{y}.jpg',
+        //   url: 'http://localhost:8080/dsap/static/satellite_en/{z}/{x}/{y}.jpg',
         //   fileExtension: 'jpg'
         // })
       },
