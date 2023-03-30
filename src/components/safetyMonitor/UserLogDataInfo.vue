@@ -300,10 +300,6 @@ export default {
   padding: 0 10px;
 }
 
-.user-log-data-table-input /deep/.weather-class .el-input__inner {
-  height: 32px !important;
-}
-
 .user-log-data-table-input .el-button{
   padding: 9px 20px !important;
 }

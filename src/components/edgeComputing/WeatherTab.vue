@@ -40,7 +40,7 @@ const AirportWeather = () => import('components/edgeComputing/AirportWeather')
 export default {
   data () {
     return {
-      showType: 'flight_weather',
+      showType: '',
       weatherTabsValue: '1',
       weatherTabs: [],
       tabIndex: 1
@@ -54,7 +54,7 @@ export default {
     this.$bus.$on('weatherAddTab', (obj) => {
       this.addSettingTab(obj)
     })
-    this.addSettingTab({enName: 'flight_weather', zhName: '航班天气', isClosable: false, parent: 'weather_flight'})
+    // this.addSettingTab({enName: 'flight_weather', zhName: '航班天气', isClosable: false, parent: 'weather_flight'})
   },
   props: [
     'menuListObj'

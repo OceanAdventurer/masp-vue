@@ -177,9 +177,6 @@ export default {
     closeDialog () {
       this.userDataDialog = false
       this.row = { 'dialog': this.userDataDialog }
-    },
-    closeAuth (row) {
-      this.userDataDialog = true
     }
   }
 }
@@ -216,10 +213,6 @@ export default {
 
 .user-data-table-input .el-range-editor.el-input__inner {
   padding: 0 10px;
-}
-
-.user-data-table-input /deep/.weather-class .el-input__inner {
-  height: 32px !important;
 }
 
 .user-data-table-input .el-button{

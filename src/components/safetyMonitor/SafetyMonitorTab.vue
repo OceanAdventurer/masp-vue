@@ -19,7 +19,7 @@ const UserLog = () => import('components/safetyMonitor/UserLog.vue')
 export default {
   data () {
     return {
-      tabName: '数据统计'
+      tabName: ''
     }
   },
   components: {

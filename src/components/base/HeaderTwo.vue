@@ -39,6 +39,7 @@
       <TodoListTab v-show="navMenuValue === 'todoList'" id="todoListContent"></TodoListTab>
       <AppTab v-show="navMenuValue === 'app'" id="appContent"></AppTab>
       <SafetyMonitorTab v-show="navMenuValue === 'safetyMonitor'" id="SafetyMonitorTabContent"> </SafetyMonitorTab>
+      <ModelRuntimeTab v-show="navMenuValue === 'modelRuntime'" id="ModelRuntimeTabContent"> </ModelRuntimeTab>
     </div>
   </div>
 </template>
@@ -58,6 +59,7 @@
   const TodoListTab = () => import('components/todolist/TodoListTab')
   const AppTab = () => import('components/app/AppTab')
   const SafetyMonitorTab = () => import('components/safetyMonitor/SafetyMonitorTab') // 安全监控
+  const ModelRuntimeTab = () => import('components/modelRuntime/ModelRuntimeTab') // 模型运行
 
   export default {
     data () {
@@ -86,7 +88,8 @@
       // ChangeLogTab,
       TodoListTab,
       AppTab,
-      SafetyMonitorTab
+      SafetyMonitorTab,
+      ModelRuntimeTab
     },
     created () {
       console.log('xxx', menu.menuData.headerData)

@@ -76,7 +76,7 @@
           <el-menu-item index="analysis" v-if="menuListObj.analysis">
             模型实验区
           </el-menu-item>
-          <el-menu-item index="modelRuntimeMenu" v-if="menuListObj.analysis">
+          <el-menu-item index="modelRuntime" v-if="menuListObj.analysis">
             模型运行区
           </el-menu-item>
           <el-menu-item index="dataMining" v-if="menuListObj.dataMining">
@@ -334,7 +334,9 @@ export default {
         this.$bus.$emit('weatherAddTab', {enName: 'flight_weather', zhName: '航班天气', isClosable: false, parent: name})
       } else if (this.navMenu === 'safetyMonitor') { // 安全监控
         this.$bus.$emit('safetyMonitorMenu', 'safetyMonitor_stats')
-        this.$bus.$emit('safetyMonitor_stats') // 默认打开用户日志页面
+        this.$bus.$emit('safetyMonitor_stats') // 默认打开
+      } else if (this.navMenu === 'modelRuntime') { // 模型运行区
+        this.$bus.$emit('modelRuntimeMenu', 'modelRuntime_approve')
       } else { // 点击的是其他菜单则隐藏，否则会导致二级菜单不出来
         this.showSettingCategoryDefault = false // 隐藏
       }
