@@ -40,6 +40,7 @@
       <AppTab v-show="navMenuValue === 'app'" id="appContent"></AppTab>
       <SafetyMonitorTab v-show="navMenuValue === 'safetyMonitor'" id="SafetyMonitorTabContent"> </SafetyMonitorTab>
       <ModelRuntimeTab v-show="navMenuValue === 'modelRuntime'" id="ModelRuntimeTabContent"> </ModelRuntimeTab>
+      <RuntimeManageTab v-show="navMenuValue === 'runtimeManage'" id="RuntimeManageTabContent"> </RuntimeManageTab>
     </div>
   </div>
 </template>
@@ -60,6 +61,7 @@
   const AppTab = () => import('components/app/AppTab')
   const SafetyMonitorTab = () => import('components/safetyMonitor/SafetyMonitorTab') // 安全监控
   const ModelRuntimeTab = () => import('components/modelRuntime/ModelRuntimeTab') // 模型运行
+  const RuntimeManageTab = () => import('components/modelRuntime/RuntimeManageTab') // 模型运行管理区
 
   export default {
     data () {
@@ -89,7 +91,8 @@
       TodoListTab,
       AppTab,
       SafetyMonitorTab,
-      ModelRuntimeTab
+      ModelRuntimeTab,
+      RuntimeManageTab
     },
     created () {
       console.log('xxx', menu.menuData.headerData)

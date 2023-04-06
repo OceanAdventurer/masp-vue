@@ -23,6 +23,16 @@
             <el-form-item label="所属用户:">
               <el-input v-model.trim="form.modelUser" clearable placeholder="所属用户" style="width: 120px; "/>
             </el-form-item>
+            <el-form-item label="模型状态:">
+              <el-select v-model="form.modelState" clearable placeholder="模型状态" style="width: 120px;">
+                <el-option
+                  v-for="item in stateList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="initList">查询</el-button>
             </el-form-item>
@@ -64,12 +74,17 @@
               :show-overflow-tooltip="true"
               width="200px">
             </el-table-column>
+            <el-table-column
+              prop="modelState"
+              label="模型状态"
+              :formatter="modelFormatter"
+              width="100px">
+            </el-table-column>
             <el-table-column label="操作" width="300px">
               <template slot-scope="scope">
                 <el-button size="mini" round @click.native="showOptInfo(scope.row)">查看</el-button>
-                <el-button v-if="showButton(1, scope.row)" size="mini" round @click.native="modelApprove(scope.row)">审批</el-button>
-                <el-button v-if="showButton(5, scope.row)" size="mini" round @click.native="reject( scope.row)">驳回</el-button>
-                <el-button v-if="showButton(6, scope.row)" size="mini" round @click.native="transfer(scope.row)">转办</el-button>
+                <el-button v-if="showButton(3, scope.row)" size="mini" round @click.native="online(scope.row)">上线</el-button>
+                <el-button v-if="showButton(4, scope.row)" size="mini" round @click.native="offline(scope.row)">下线</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -90,26 +105,9 @@
 
     <el-dialog :title="modelOpt.title" class="model-opt-dialog" :visible.sync="modelOpt.modelDialog" @close='closeDialog'>
       <el-form :model="modelOpt" label-width="80px" :rules="rules"  ref="modelOpt">
-          <el-form-item label="模型名称:">
-            <el-input v-model="modelOpt.modelName" style="width: 350px;" disabled/>
-          </el-form-item>
-          <el-form-item label="转办用户:" prop="userList" v-if="modelOpt.title === '转办'">
-            <el-select v-model="modelOpt.userList"
-               placeholder="转办用户"
-               clearable
-               filterable
-               multiple
-               :multiple-limit="20"
-               style="width: 350px;"
-            >
-              <el-option
-                v-for="item in allUserList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
+        <el-form-item label="模型名称:">
+          <el-input v-model="modelOpt.modelName" style="width: 350px;" disabled/>
+        </el-form-item>
           <el-form-item label="意见:" prop="explain">
             <el-input type="textarea"
                       :rows="3"
@@ -175,13 +173,17 @@
 <script>
 
 export default {
-  name: 'ModelApprove',
+  name: 'ModelOnlineOffline',
   components: {},
   data () {
     return {
       // 是否有审批权限
       approve: false,
       typeList: [],
+      stateList: [
+        {label: '已上线', value: '70'},
+        {label: '已下线', value: '80'}
+      ],
       form: {
         modelName: '',
         categoryType: '',
@@ -206,12 +208,8 @@ export default {
         explain: [
           { required: true, message: '请输入意见', trigger: 'blur' },
           { message: '长度不能超过50个字符', trigger: 'blur', max: 50 }
-        ],
-        userList: [
-          { required: true, message: '请选择转办用户', trigger: 'blur' }
         ]
       },
-      allUserList: [],
       modelOptList: {
         modelOptDialog: false,
         dataList: []
@@ -229,8 +227,6 @@ export default {
       this.initList()
       // 查询模型分类
       this.getModelCategory()
-      // 查询所有用户
-      this.getAllUserList()
     })
   },
   watch: {},
@@ -255,7 +251,7 @@ export default {
         pageNo: this.currentPage
       }
       this.$axios({
-        url: '/modelMotion/approve/pageList',
+        url: '/modelMotion/onlineOffline/pageList',
         method: 'post',
         data: JSON.stringify(params),
         headers: {
@@ -302,24 +298,6 @@ export default {
         this.$message.error('查询模型分类失败! ')
       })
     },
-    getAllUserList () {
-      this.allUserList = []
-      this.$axios({
-        url: '/user/getAllUsers',
-        method: 'get'
-      }).then(res => {
-        if (res.data && res.data.length > 0) {
-          res.data.forEach(item => {
-            this.allUserList.push({
-              label: item.LOGIN_NAME,
-              value: item.ID
-            })
-          })
-        }
-      }).catch(res => {
-        this.$message.error('查询用户列表失败! ')
-      })
-    },
     showOptInfo (row) {
       this.modelOptList.dataList = []
       this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！')
@@ -336,18 +314,6 @@ export default {
         this.$message.error('查询失败! ')
       })
     },
-    // 审批
-    modelApprove (row) {
-      this.setModelDialog('审批', '/approve', row.modelId, row.modelName)
-    },
-    // 驳回
-    reject (row) {
-      this.setModelDialog('驳回', '/reject', row.modelId, row.modelName)
-    },
-    // 转办
-    transfer (row) {
-      this.setModelDialog('转办', '/transfer', row.modelId, row.modelName)
-    },
     // 设置模型操作参数
     setModelDialog (type, url, modelId, modelName) {
       this.modelOpt.url = url
@@ -357,6 +323,14 @@ export default {
       this.modelOpt.explain = ''
       this.modelOpt.userList = []
       this.modelOpt.modelDialog = true
+    },
+    // 上线
+    online (row) {
+      this.setModelDialog('上线', '/online', row.modelId, row.modelName)
+    },
+    // 下线
+    offline (row) {
+      this.setModelDialog('下线', '/offline', row.modelId, row.modelName)
     },
     modelConfirm (type, modelName, url, params) {
       this.$confirm('您确定要' + type + '模型【' + modelName + '】吗?', '提示', {
@@ -411,10 +385,10 @@ export default {
     },
     // 操作按钮权限
     showButton (showType, row) {
-      if (showType === 1 || showType === 5) {
-        if (this.approve && (row.modelState === '20' || row.modelState === '40')) return true
-      } else if (showType === 6) {
-        if (this.approve && row.modelState === '20') return true
+      if (showType === 3) {
+        if (this.approve && (row.modelState === '50' || row.modelState === '80')) return true
+      } else if (showType === 4) {
+        if (this.approve && row.modelState === '70') return true
       }
       return false
     },
@@ -423,6 +397,11 @@ export default {
       if (column.property === 'categoryType') {
         if (!cellValue && cellValue !== '0') return ''
         let obj = this.typeList.find(item => item.value === cellValue)
+        if (!obj) return ''
+        return obj.label
+      } else if (column.property === 'modelState') {
+        if (!cellValue) return ''
+        let obj = this.stateList.find(item => item.value === cellValue)
         if (!obj) return ''
         return obj.label
       }

@@ -67,9 +67,7 @@
             <el-table-column label="操作" width="300px">
               <template slot-scope="scope">
                 <el-button size="mini" round @click.native="showOptInfo(scope.row)">查看</el-button>
-                <el-button v-if="showButton(1, scope.row)" size="mini" round @click.native="modelApprove(scope.row)">审批</el-button>
-                <el-button v-if="showButton(5, scope.row)" size="mini" round @click.native="reject( scope.row)">驳回</el-button>
-                <el-button v-if="showButton(6, scope.row)" size="mini" round @click.native="transfer(scope.row)">转办</el-button>
+                <el-button size="mini" round @click.native="modelHandle(scope.row)">办理</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -92,23 +90,6 @@
       <el-form :model="modelOpt" label-width="80px" :rules="rules"  ref="modelOpt">
           <el-form-item label="模型名称:">
             <el-input v-model="modelOpt.modelName" style="width: 350px;" disabled/>
-          </el-form-item>
-          <el-form-item label="转办用户:" prop="userList" v-if="modelOpt.title === '转办'">
-            <el-select v-model="modelOpt.userList"
-               placeholder="转办用户"
-               clearable
-               filterable
-               multiple
-               :multiple-limit="20"
-               style="width: 350px;"
-            >
-              <el-option
-                v-for="item in allUserList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
           </el-form-item>
           <el-form-item label="意见:" prop="explain">
             <el-input type="textarea"
@@ -175,7 +156,7 @@
 <script>
 
 export default {
-  name: 'ModelApprove',
+  name: 'ModelHandle',
   components: {},
   data () {
     return {
@@ -206,12 +187,8 @@ export default {
         explain: [
           { required: true, message: '请输入意见', trigger: 'blur' },
           { message: '长度不能超过50个字符', trigger: 'blur', max: 50 }
-        ],
-        userList: [
-          { required: true, message: '请选择转办用户', trigger: 'blur' }
         ]
       },
-      allUserList: [],
       modelOptList: {
         modelOptDialog: false,
         dataList: []
@@ -229,8 +206,6 @@ export default {
       this.initList()
       // 查询模型分类
       this.getModelCategory()
-      // 查询所有用户
-      this.getAllUserList()
     })
   },
   watch: {},
@@ -255,7 +230,7 @@ export default {
         pageNo: this.currentPage
       }
       this.$axios({
-        url: '/modelMotion/approve/pageList',
+        url: '/modelMotion/handle/pageList',
         method: 'post',
         data: JSON.stringify(params),
         headers: {
@@ -302,24 +277,6 @@ export default {
         this.$message.error('查询模型分类失败! ')
       })
     },
-    getAllUserList () {
-      this.allUserList = []
-      this.$axios({
-        url: '/user/getAllUsers',
-        method: 'get'
-      }).then(res => {
-        if (res.data && res.data.length > 0) {
-          res.data.forEach(item => {
-            this.allUserList.push({
-              label: item.LOGIN_NAME,
-              value: item.ID
-            })
-          })
-        }
-      }).catch(res => {
-        this.$message.error('查询用户列表失败! ')
-      })
-    },
     showOptInfo (row) {
       this.modelOptList.dataList = []
       this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！')
@@ -336,17 +293,9 @@ export default {
         this.$message.error('查询失败! ')
       })
     },
-    // 审批
-    modelApprove (row) {
-      this.setModelDialog('审批', '/approve', row.modelId, row.modelName)
-    },
-    // 驳回
-    reject (row) {
-      this.setModelDialog('驳回', '/reject', row.modelId, row.modelName)
-    },
-    // 转办
-    transfer (row) {
-      this.setModelDialog('转办', '/transfer', row.modelId, row.modelName)
+    // 办理
+    modelHandle (row) {
+      this.setModelDialog('办理', '/handle', row.modelId, row.modelName)
     },
     // 设置模型操作参数
     setModelDialog (type, url, modelId, modelName) {
@@ -408,15 +357,6 @@ export default {
           })
         }
       })
-    },
-    // 操作按钮权限
-    showButton (showType, row) {
-      if (showType === 1 || showType === 5) {
-        if (this.approve && (row.modelState === '20' || row.modelState === '40')) return true
-      } else if (showType === 6) {
-        if (this.approve && row.modelState === '20') return true
-      }
-      return false
     },
     // 数据格式化
     modelFormatter (row, column, cellValue, index) {

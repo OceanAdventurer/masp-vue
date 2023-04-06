@@ -79,6 +79,9 @@
           <el-menu-item index="modelRuntime" v-if="menuListObj.analysis">
             模型运行区
           </el-menu-item>
+          <el-menu-item index="runtimeManage" v-if="menuListObj.analysis">
+            运行管理区
+          </el-menu-item>
           <el-menu-item index="dataMining" v-if="menuListObj.dataMining">
             数据挖掘
           </el-menu-item>
@@ -337,6 +340,8 @@ export default {
         this.$bus.$emit('safetyMonitor_stats') // 默认打开
       } else if (this.navMenu === 'modelRuntime') { // 模型运行区
         this.$bus.$emit('modelRuntimeMenu', 'modelRuntime_approve')
+      } else if (this.navMenu === 'runtimeManage') { // 模型运行管理区
+        this.$bus.$emit('runtimeManageMenu', 'runtimeManage_approve')
       } else { // 点击的是其他菜单则隐藏，否则会导致二级菜单不出来
         this.showSettingCategoryDefault = false // 隐藏
       }
@@ -391,6 +396,15 @@ export default {
       } else if (name === 'safetyMonitor_userData') {
         this.$bus.$emit('safetyMonitorMenu', 'safetyMonitor_userData')
         this.$bus.$emit('safetyMonitor_userData')
+      } else if (name === 'runtimeManage_approve') {
+        this.$bus.$emit('runtimeManageMenu', 'runtimeManage_approve')
+        this.$bus.$emit('runtimeManage_approve')
+      } else if (name === 'runtimeManage_onlineOffline') {
+        this.$bus.$emit('runtimeManageMenu', 'runtimeManage_onlineOffline')
+        this.$bus.$emit('runtimeManage_onlineOffline')
+      } else if (name === 'runtimeManage_handle') {
+        this.$bus.$emit('runtimeManageMenu', 'runtimeManage_handle')
+        this.$bus.$emit('runtimeManage_handle')
       }
 
       // if (name === 'event_store_result') {
