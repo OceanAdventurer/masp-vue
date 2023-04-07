@@ -40,6 +40,7 @@
                 <div class="icon-edit tab-icon-set mr10" title="编辑分析" @click="managerRowEdit(scope.row)"></div>
                 <div class="icon-view tab-icon-set mr10" title="提交分析" @click="managerRowView(scope.row)"></div>
                 <div class="icon-copy tab-icon-set mr10" title="复制分析" @click="managerRowCopy(scope.row)"></div>
+                <div class="el-icon-upload tab-icon-set mr10" title="发布分析" @click="managerRowPublish(scope.row)"></div>
                 <div class="icon-delete tab-icon-set mr10" title="删除分析" @click="managerRowDelete(scope.$index, managerTableData)"></div>
               </div>
             </template>
@@ -87,6 +88,54 @@
         </div>
       </el-dialog>
     </div>
+    <div class="publish_dia">
+      <el-dialog :close-on-click-modal="false" title="发布信息" :visible.sync="publishDiaShow">
+        <div class="event-dialog-content">
+          <el-form ref="publishDiaRef" :model= "publishInfoForm" :rules="publishInfoRules" label-width="80px">
+            <el-row>
+              <el-col :span='12'>
+                <el-form-item label="分析名称" prop="modelName" width='350'>
+                  <el-input v-model="publishInfoForm.modelName" disabled></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span='12'>
+                <el-form-item label="模型分类" prop="modelType">
+                  <el-select v-model="publishInfoForm.modelType">
+                    <el-option
+                      v-for="item in typeList"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    >
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-form-item label="备注" prop="explain">
+              <el-input type="textarea"
+                :rows="3"
+                v-model.trim="publishInfoForm.explain"
+                clearable
+                placeholder="请输入发布原因，有效期等信息"/>
+            </el-form-item>
+            <el-form-item label="提交人" prop="submitBy">
+              <span disabled>{{publishInfoForm.submitBy}}</span>
+            </el-form-item>
+            <el-form-item label="提交时间" prop="submitTime">
+              <span disabled>{{publishInfoForm.submitTime}}</span>
+              <!-- <el-date-picker v-model="publishInfoForm.subTime" format='yyyy-MM-dd' type="date" disabled></el-date-picker> -->
+            </el-form-item>
+          </el-form>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button size="mini" @click="managerRowPublish()">取  消</el-button>
+          <el-button type="primary" size="mini" @click="handlerPublish()">发布</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 <script>
@@ -112,13 +161,37 @@ export default {
       isAddTreeNode: false,
       defaultExpandedKeys: [],
       currentEditNodeName: '', // 当前正在编辑的节点名字
-
       dialogEventVisible: false,
       eventTreeData: [],
       eventTreeKeyword: '',
       eventDefaultExpandedKeys: [],
       eventName: '',
-      eventStoreObj: {}
+      eventStoreObj: {},
+      typeList: [
+        {name: '基础风险分析', code: '1'},
+        {name: '核心风险分析', code: '2'},
+        {name: '专题分析', code: '3'}
+      ],
+      publishInfoForm: {
+        modelName: '', // 模型名称
+        modelType: '', // 类型
+        explain: '', // 备注备注
+        submitTime: this.$moment().startOf('day'), // 提交日期
+        submitBy: '张三'
+      },
+      publicParmas: {}, // 审批列表跳过来的参数
+      publishDiaShow: false,
+      publishInfoRules: {
+        modelType: [
+          { required: true, message: '请选择模型分类', trigger: 'change' }
+        ],
+        explain: [
+          { required: true, message: '请填写备注栏', trigger: 'blur' }
+        ]
+      },
+      ownedBy: '',
+      treeType: '',
+      nodeName: ''
     }
   },
   watch: {
@@ -149,8 +222,8 @@ export default {
     this.$nextTick(() => { // 整个视图渲染完毕后加载数据
       this.getTreeData() // dom渲染完毕后加载数据
       this.setManagerTableWidth() // 设置表格的宽度
+      this.getTypeList()
     })
-
     const that = this
     this.$bus.$on('reloadGetAnalysisRecord', () => {
       that.reloadGetAnalysisRecord()
@@ -167,7 +240,14 @@ export default {
     this.$bus.$on('openEventDialogHandle', (pdata, cdata) => {
       that.openEventDialog(pdata, cdata)
     })
-
+    this.$bus.$on('sendToManager', obj => {
+      if (obj.NAME) {
+        this.currentTreeId = obj.ID
+        this.$refs['managerTreeRef'].setCurrentKey(obj.ID)
+        this.managerTreeNodeHandleClick(obj)
+        this.publicParmas = obj
+      }
+    })
     // document.getElementById('managerTableRef').addEventListener('click', // 点击表格时重新设置表格的宽度
     //   function (e) {
     //     setTimeout(() => {
@@ -274,6 +354,79 @@ export default {
       } else {
         this.$bus.$emit('analysisAddTab', {enName: 'analysis_file_new', zhName: row.CONTENT.fileNewName, isClosable: true, parent: 'analysis_file', count: 0, type: row.TYPE})
       }
+      this.publicParmas = {}
+    },
+    handlerPublish () { // 提交发布
+      this.$refs['publishDiaRef'].validate(valid => {
+        if (valid) { // 查询table数据
+          this.$store.commit('SHOW_LOADING', '加载中...')
+          let obj = this.publishInfoForm
+          obj.ownedBy = this.ownedBy
+          obj.treeType = this.treeType
+          obj.nodeName = this.nodeName
+          // console.log(obj, 'obj---test')
+          this.$axios({
+            url: '/modelMotion/submit',
+            method: 'get',
+            params: obj
+            }).then(res => {
+            if (res.data.status === '0') {
+              this.publishDiaShow = false
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+            } else {
+              this.$message.error('操作失败，请稍后重试！')
+            }
+            this.$store.commit('HIDE_LOADING', '加载中！')
+          }).catch(err => {
+            console.log(err)
+            this.$store.commit('HIDE_LOADING', '加载中！')
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    managerRowPublish (row) { // 发布模型分析弹窗
+      console.log(row, 'row---test')
+      this.publishInfoForm = {}
+      if (row) {
+        this.publishInfoForm.modelName = row.NAME
+      }
+      this.publishInfoForm.submitBy = '张三'
+      // this.publishInfoForm.subTime = '2023-04-06'
+      const year = new Date().getFullYear()
+      let month = new Date().getMonth() + 1
+      let date = new Date().getDate()
+      if (month < 10) {
+        month = '0' + month
+      }
+      if (date < 10) {
+        date = '0' + date
+      }
+      this.publishInfoForm.submitTime = year + '-' + month + '-' + date // 提交日期
+      this.publishDiaShow = !this.publishDiaShow
+    },
+    getTypeList () {
+      this.$store.commit('SHOW_LOADING', '加载中...')
+      this.$axios({
+        url: '/modelMotion/getModelCategory',
+        method: 'get'
+        }).then(res => {
+        if (res.data.status === '0') {
+          let list = res.data.data.list || []
+          this.typeList = list
+        } else {
+          this.$message.error('操作失败，请稍后重试！')
+        }
+        this.$store.commit('HIDE_LOADING', '加载中！')
+      }).catch(err => {
+        console.log(err)
+        this.$store.commit('HIDE_LOADING', '加载中！')
+      })
     },
     managerRowCopy (row) {
       console.log('copy', row)
@@ -319,11 +472,12 @@ export default {
       this.$store.commit('TEMP_MANAGER_TREE_NODE_ID', '')
       let hideMenuObj = {}
       let disabledMenuObj = {}
-
       if (!data.CHILDREN && !data.isAdd && !data.status) { // 如果不是目录,且节点不在编辑中，则点击节点时候获取分析子集数据
         this.getAnalysisRecord(data.ID)
         this.$store.commit('MANAGER_TREE_NODE_ID', data.ID) // 存放树节点编号，提交分析参数时使用
-
+        this.ownedBy = data.ID // id保存，提交发布传到后端，审批人通过id打开新建分析页面
+        this.treeType = data.TREETYPE
+        this.nodeName = data.NAME
         hideMenuObj.analysis_file_new = true // 新建分析
         hideMenuObj.analysis_event_file_new = true // 新建事件分析
         hideMenuObj.analysis_dhbcsdb = true // 新建多航班参数对比
@@ -785,6 +939,12 @@ export default {
             this.managerTableData = resultData
             this.totalCount = resultData.length // 显示表格数据总条数
             this.currentTreeId = id // 存储当前点击节点的编号，修改子集时使用
+            if (this.publicParmas.NAME) {
+              let row = resultData.filter(item => {
+                return item.NAME === this.publicParmas.NAME
+              })
+              this.managerRowEdit(row[0])
+            }
           } else {
             this.$message('暂无数据！')
           }
@@ -1664,6 +1824,19 @@ export default {
   width: 100%;
 }
 
+/* .manager .publish_dia .dialog-footer {
+  text-align: center;
+} */
+.manager .publish_dia .el-form-item .el-select {
+  width: 100%;
+  margin-bottom: 6px;
+}
+.manager .publish_dia .el-form-item {
+  margin-bottom: 0;
+}
+.manager .publish_dia .el-form-item .el-form-item__content span {
+  font-size: 12px;
+}
 .analysis-tab-left {
   position: relative;
   box-sizing: border-box;
@@ -1734,5 +1907,7 @@ export default {
 .dialog-footer .el-button--mini{
   padding: 10px 26px;
 }
-
+.publish_dia .el-form-item__label-wrap {
+  margin-left: 0 !important;
+}
 </style>

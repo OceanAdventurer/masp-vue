@@ -134,11 +134,23 @@
 
       <el-main v-show="headerTwoData[navMenu]" :class="[elMainContent]" id="elMain">
         <div style="cursor:pointer">
-          <img style="position:fixed;top:15px;right:278px" src="../../assets/images/btn_exchange.png" alt="">
-          <el-dropdown style="position:fixed;top:15px;right:179px;color:#fff" @command="handleCommand">
-            <span  class="el-dropdown-link">{{ sysName }}</span>
+          <img style="position:fixed;top:15px;right:185px" src="../../assets/images/btn_exchange.png" alt="">
+          <el-dropdown style="position:fixed;top:15px;right:80px;color:#fff" @command="handleCommand">
+            <span class="el-dropdown-link">{{ sysName }}</span>
             <el-dropdown-menu slot="dropdown" v-if="isDropdown">
               <el-dropdown-item v-for="item in options" :key="item.SYSTEM_ID" :command="composeValue(item.SYSTEM_URL, item.SYSTEM_NAME)" >{{ item.SYSTEM_NAME }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+          <el-dropdown :class="isShowTips ? 'task_bar tips_red' : 'task_bar'" style="position:fixed;top:15px;right:50px;color:#fff" @command="openDia" placement='top-end'>
+            <img src="../../assets/images/btnGroups.png" alt="newTips">
+            <el-dropdown-menu slot="dropdown" v-if="true" :class="isShowTips ? 'task_bar_menu tips_red' : 'task_bar_menu'">
+              <el-dropdown-item v-for="item in iconGroups" :key="item.title" :command="handleVlaue(item.value, item.title)" >
+                <img :src="item.src" :title="item.title">
+                <span :class="item.value === 'audit_list' ? 'tips_red' : ''">
+                  {{item.title}}
+                  <span v-if='isShowTips'>99+</span>
+                </span>
+              </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -151,6 +163,7 @@
         <DialogPage></DialogPage>
         <ChangeLogDialog></ChangeLogDialog>
         <HelpDialog></HelpDialog>
+        <SubmitDetail></SubmitDetail>
         <div class="logout" @click="logoutFun" title="退出">
           <img src="../../assets/images/icon114.png" alt="退出">
         </div>
@@ -168,11 +181,17 @@
 <script>
 import * as menu from 'assets/js/menuData'
 import { mapState } from 'vuex'
+import image0 from '@/assets/images/task_list.png'
+import image1 from '@/assets/images/change_data.png'
+import image2 from '@/assets/images/audit_list.png'
+import image3 from '@/assets/images/submit_details.png'
+import image4 from '@/assets/images/helps.png'
 const Loading = () => import('components/base/Loading')
 const HeaderTwo = () => import('components/base/HeaderTwo')
 const DialogPage = () => import('components/base/DialogModal')
 const ChangeLogDialog = () => import('components/base/ChangeLogDialog')
 const HelpDialog = () => import('components/base/HelpDialog')
+const SubmitDetail = () => import('components/base/SubmitDetail')
 
 export default {
   data () {
@@ -204,11 +223,15 @@ export default {
         todoList: true,
         app: true
       },
+      publicParmas: {},
       menuListArr: [],
       noMenuData: '',
       dialogVisible: false,
       options: [],
-      value: 'http://172.20.42.144:8080/dsap/index.html#/home'
+      value: 'http://172.20.42.144:8080/dsap/index.html#/home',
+      iconGroups: [],
+      isShowTips: true,
+      newTips: true
     }
   },
   computed: {
@@ -233,7 +256,8 @@ export default {
     DialogPage,
     Loading,
     ChangeLogDialog,
-    HelpDialog
+    HelpDialog,
+    SubmitDetail
   },
   created () {
     this.getUserInfo()
@@ -252,7 +276,10 @@ export default {
     this.$bus.$on('setCurrentName', (eName) => { // 接收点击头部一级菜单显示二级菜单的效果
       that.setCurrentName(eName)
     })
-
+    this.$bus.$on('sendingInfo', obj => {
+      console.log(obj, 'obj---sendingInfo-test')
+      that.openNavMenuItem('analysis', obj)
+    })
     document.getElementById('app').addEventListener('click',
       function (e) {
         if (that.$util.isDefine(that.$store.getters.userInfo.menuList) && that.$store.getters.userInfo.menuList.length <= 0) {
@@ -271,11 +298,15 @@ export default {
         that.$bus.$emit('resetManagerTableWidth') // 重置分析管理表格的大小
       }
     )
+    this.getIconGroups()
   },
   destroyed () { // 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。
     this.$bus.$off('openHeaderMenu') // 移除自定义事件监听器。
     this.$bus.$off('openHeaderMenuItem') // 移除自定义事件监听器。
     this.$bus.$off('setCurrentName')
+    this.iconGroups.forEach(item => {
+      this.$bus.$off(item.value)
+    })
   },
   methods: {
     cancelSystem () {
@@ -285,6 +316,15 @@ export default {
     changrSystem () {
       window.open(this.value, '_self')
       this.dialogVisible = false
+    },
+    getIconGroups () {
+      this.iconGroups = [
+        {src: image0, title: '任务详情', value: 'task_list'},
+        {src: image1, title: '变更日志', value: 'change_data'},
+        {src: image2, title: '审批列表', value: 'audit_list'},
+        {src: image3, title: '提交详情', value: 'submit_details'},
+        {src: image4, title: '帮助', value: 'help_manual'}
+      ]
     },
     getUserSystem (name) {
         this.$axios.get('/saas/getSystemsByUserLoginName', { params: {
@@ -313,7 +353,7 @@ export default {
     handleClose (key, keyPath) {
       console.log(key, keyPath)
     },
-    openNavMenuItem (name) { // 头部一级菜单显示效果
+    openNavMenuItem (name, publicParmas) { // 头部一级菜单显示效果
       this.activeIndex = name
       this.navMenu = name // 激活左边导航菜单
       this.headerMenu = this.headerTwoData[this.navMenu][0].parent + '_' + this.headerTwoData[this.navMenu][0].enName // 激活头部一级导航菜单
@@ -332,7 +372,9 @@ export default {
         this.$bus.$emit('eventMenu')
       } else if (this.navMenu === 'analysis') {
         this.showSettingCategoryDefault = false
+        let obj = publicParmas || {}
         this.$bus.$emit('analysisMenu')
+        this.$bus.$emit('sendToManager', obj)
       } else if (this.navMenu === 'weather') { // 天气，默认打开航班天气页面
         this.$bus.$emit('weatherAddTab', {enName: 'flight_weather', zhName: '航班天气', isClosable: false, parent: name})
       } else if (this.navMenu === 'safetyMonitor') { // 安全监控
@@ -459,10 +501,21 @@ export default {
     composeValue (val, name) {
       return {val, name}
     },
+    handleVlaue (val, name) {
+      return {val, name}
+    },
+    openDia (menu) {
+      this.$bus.$emit(menu.val)
+      if (menu.val === 'audit_list') { // 跳转到审批列表页面
+        this.openNavMenuItem('runtimeManage')
+        this.isShowTips = false
+      }
+    },
     handleCommand (data) {
+      data.name = 'dsap'
       let val = data.val
-      let name = data.name
-      localStorage.setItem('currentSystem', name)
+      // let name = data.name
+      localStorage.setItem('currentSystem', 'dsap')
       if (val.slice(0, 4) === 'http') {
         window.location.href = val
       } else {
@@ -610,6 +663,55 @@ export default {
   padding: 0px !important;
   border-radius: 4px !important;
 }
+.main-content #elMain .task_bar {
+  display: flex;
+}
+.main-content #elMain .task_bar.tips_red::after,
+.el-dropdown-menu.task_bar_menu .el-dropdown-menu__item img.tips_red::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 5px;
+  position: absolute;
+  top: -1px;
+  right: -5px;
+}
+.el-dropdown-menu.task_bar_menu .el-dropdown-menu__item span span {
+  display: none;
+}
+.el-dropdown-menu.task_bar_menu .el-dropdown-menu__item span.tips_red span {
+  display: inline-block;
+  color: #fff;
+  font-weight: bold;
+  width: 26px;
+  height: 20px;
+  border-radius: 13px;
+  font-size: 12px;
+  line-height: 20px;
+  background-color: red;
+  transform: scale(0.8);
+  text-align: center;
+}
+.el-dropdown-menu.task_bar_menu .el-dropdown-menu__item {
+  text-align: left;
+  padding: 0 10px;
+  width: 80px;
+  font-size: 12px;
+}
+.el-dropdown-menu.task_bar_menu.tips_red .el-dropdown-menu__item {
+  width: 100px;
+}
+.el-dropdown-menu.task_bar_menu .el-dropdown-menu__item img {
+  vertical-align: middle;
+}
+/* .el-dropdown-menu.task_bar_menu .el-dropdown-menu__item:first-child {
+  padding-left: 10px;
+} */
+.el-dropdown-menu.task_bar_menu img {
+  width: 16px;
+  height: 16px;
+}
 .el-menu--collapse .el-menu .el-submenu, .el-menu--popup {
     min-width: 60px !important;
 }
@@ -732,6 +834,12 @@ export default {
   border-left-color: transparent;
   border-bottom-color: transparent;
   border-style: solid;
+}
+
+.main-content #elMain .el-dropdown-link.el-dropdown-selfdefine {
+  /* width: 101px; */
+  display: inline-block;
+  text-align: left
 }
 .cm-popper__arrow::after{
   top: 1px;

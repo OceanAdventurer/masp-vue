@@ -70,11 +70,11 @@
 <template>
   <div>
     <!--任务详情-->
-    <div class="headerFixedBtn" @click="dialogVisible = true"> <!-- 去掉权限v-show="isAdmin"-->
+    <!-- <div class="headerFixedBtn" @click="dialogVisible = true"> 去掉权限v-show="isAdmin"
       <el-button type="text" title="任务详情" is-dot style="height:44px;line-height:28px">
         <img src="../../assets/images/icon76.png" style="height:16px;width: 16px;">
       </el-button>
-    </div>
+    </div> -->
     <el-dialog title="任务详情" :visible.sync="dialogVisible" width="800px;">
       <div style="position:absolute;top:80px;right: 18px;z-index: 1">
         <template>
@@ -234,6 +234,9 @@ export default {
     const that = this
     this.$bus.$on('updateDialogModalBtn', () => { // 接收显示表格右侧dom事件
       that.isAdmin = that.$store.getters.userInfo.isAdmin
+    })
+    this.$bus.$on('task_list', () => {
+      this.dialogVisible = true
     })
   },
   destroyed () { // 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。

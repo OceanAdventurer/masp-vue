@@ -1,8 +1,8 @@
 <template>
 <div class="changeLog-dialog">
-    <div class="changeLog" @click="changeLogDialogVisible = true" title="变更日志">
+    <!-- <div class="changeLog" @click="changeLogDialogVisible = true" title="变更日志">
       <img src="../../assets/images/icon125.png" alt="变更日志">
-    </div>
+    </div> -->
     <el-dialog
       title="帮助"
       :visible.sync="changeLogDialogVisible"
@@ -32,7 +32,9 @@ export default {
     }
   },
   created () { // 在实例创建完成后被立即调用
-
+    this.$bus.$on('change_data', () => {
+      this.changeLogDialogVisible = true
+    })
   },
   methods: {
 

@@ -1,8 +1,8 @@
 <template>
   <div class="help-dialog">
-    <div class="help" @click="helpDialogVisible = true" title="帮助">
+    <!-- <div class="help" @click="helpDialogVisible = true" title="帮助">
       <img src="../../assets/images/icon109.png" alt="帮助">
-    </div>
+    </div> -->
     <el-dialog
       title="帮助"
       :visible.sync="helpDialogVisible"
@@ -50,6 +50,11 @@ export default {
       helpDialogVisible: false,
       currentModule: 'dataSourceModule' // 当前点击的模块
     }
+  },
+  mounted () {
+    this.$bus.$on('help_manual', () => {
+      this.helpDialogVisible = true
+    })
   },
   methods: {
     changeTabImg (tabType) {
