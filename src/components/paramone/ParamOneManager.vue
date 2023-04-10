@@ -661,7 +661,7 @@ export default {
     this.$nextTick(() => {
       this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！') // 打开加载提示框
       console.log('加载工程参数数据------------------------')
-      this.userInfo = JSON.parse(window.sessionStorage.getItem('MSAP-userInfo'))
+      this.userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo'))
       if (this.userInfo) {
         this.getInitData()
       } else {
@@ -675,7 +675,7 @@ export default {
   methods: {
     getInitData () {
       this.$store.commit('HIDE_LOADING', '正在加载数据，请稍等！') // 关闭加载
-      this.userInfo = JSON.parse(window.sessionStorage.getItem('MSAP-userInfo'))
+      this.userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo'))
       console.log('工程参数当前用户userInfo{}', this.userInfo)
       let status = false
       for (let i = 0; i < this.userInfo.menuList.length; i++) {

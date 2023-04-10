@@ -84,7 +84,7 @@ export default {
   methods: {
     getMenueOrData () {
       this.$util.dataTableEditAuthority = false
-      this.userInfo = JSON.parse(window.sessionStorage.getItem('MSAP-userInfo'))
+      this.userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo'))
       if (this.userInfo) {
         for (let i = 0; i < this.userInfo.menuList.length; i++) {
           if (this.userInfo.menuList[i]['ID'] === '7002' || this.userInfo.menuList[i]['ID'] === 7002) {

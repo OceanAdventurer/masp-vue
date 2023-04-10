@@ -37,11 +37,12 @@
           <el-table-column label="操作" width="150" align="left">
             <template slot-scope="scope">
               <div class="row-icon-group">
-                <div class="icon-edit tab-icon-set mr10" title="编辑分析" @click="managerRowEdit(scope.row)"></div>
+                <div class="icon-edit tab-icon-set mr10" title="编辑分析" v-show='scope.row.modelState == undefined' @click="managerRowEdit(scope.row)"></div>
                 <div class="icon-view tab-icon-set mr10" title="提交分析" @click="managerRowView(scope.row)"></div>
                 <div class="icon-copy tab-icon-set mr10" title="复制分析" @click="managerRowCopy(scope.row)"></div>
-                <div class="el-icon-upload tab-icon-set mr10" title="发布分析" @click="managerRowPublish(scope.row)"></div>
-                <div class="icon-delete tab-icon-set mr10" title="删除分析" @click="managerRowDelete(scope.$index, managerTableData)"></div>
+                <div class="el-icon-upload tab-icon-set mr10" title="发布分析" v-show='scope.row.modelState == undefined' @click="managerRowPublish(scope.row)"></div>
+                <div class="el-icon-document tab-icon-set mr10" title="审批详情" v-show='scope.row.modelState =="待审批"' @click="managerRowPublish(scope.row)"></div>
+                <div class="icon-delete tab-icon-set mr10" title="删除分析" v-show='scope.row.modelState == undefined' @click="managerRowDelete(scope.$index, managerTableData)"></div>
               </div>
             </template>
           </el-table-column>
@@ -91,7 +92,7 @@
     <div class="publish_dia">
       <el-dialog :close-on-click-modal="false" title="发布信息" :visible.sync="publishDiaShow">
         <div class="event-dialog-content">
-          <el-form ref="publishDiaRef" :model= "publishInfoForm" :rules="publishInfoRules" label-width="80px">
+          <el-form ref="publishDiaRef" :model= "publishInfoForm" :rules="publishInfoRules" label-width="80px" label-position='right'>
             <el-row>
               <el-col :span='12'>
                 <el-form-item label="分析名称" prop="modelName" width='350'>
@@ -101,8 +102,8 @@
             </el-row>
             <el-row>
               <el-col :span='12'>
-                <el-form-item label="模型分类" prop="modelType">
-                  <el-select v-model="publishInfoForm.modelType">
+                <el-form-item label="模型分类" prop="categoryType">
+                  <el-select v-model="publishInfoForm.categoryType" v-if="publishInfoForm.modelState==='待提交'">
                     <el-option
                       v-for="item in typeList"
                       :key="item.code"
@@ -111,16 +112,47 @@
                     >
                     </el-option>
                   </el-select>
+                  <span v-else>{{publishInfoForm.categoryType}}</span>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-form-item label="备注" prop="explain">
               <el-input type="textarea"
                 :rows="3"
+                v-if="publishInfoForm.modelState==='待提交'"
                 v-model.trim="publishInfoForm.explain"
                 clearable
                 placeholder="请输入发布原因，有效期等信息"/>
+              <span v-else>{{publishInfoForm.explain}}</span>
             </el-form-item>
+            <el-row style='padding-top: 15px' v-if="publishInfoForm.modelState==='待审批'">
+              <el-card
+                style='margin-bottom: 5px'
+                v-for="(activity, index) in auditInfo"
+                :key="index"
+                :color='activity.color'
+              >
+                <h4>状态：{{activity.hanldeType}}</h4>
+                <p>处理人：{{activity.handlerBy}}</p>
+                <p>意见：{{activity.handlerOpinion}}</p>
+              </el-card>
+            </el-row>
+              <!-- <el-timeline :reverse="reverse">
+                <el-timeline-item
+                  v-for="(activity, index) in auditInfo"
+                  :key="index"
+                  :color='activity.color'
+                  :timestamp="activity.handleTime">
+                  <el-card
+                    v-for="(activity, index) in auditInfo"
+                    :key="index"
+                    :color='activity.color'>
+                    <h4>状态：{{activity.hanldeType}}</h4>
+                    <p>处理人：{{activity.handlerBy}}</p>
+                    <p>意见：{{activity.handlerOpinion}}</p>
+                  </el-card>
+                </el-timeline-item>
+              </el-timeline> -->
             <el-form-item label="提交人" prop="submitBy">
               <span disabled>{{publishInfoForm.submitBy}}</span>
             </el-form-item>
@@ -145,6 +177,7 @@ export default {
   name: 'Manager',
   data () {
     return {
+      // modelState: '待提交' // 模型的审批状态 待提交、待审批、待办理、已审批、已上线、已下线
       managerTreeData: [], // 树状数据
       treeKeyword: '',
       defaultProps: { // 树节点默认的属性
@@ -167,31 +200,30 @@ export default {
       eventDefaultExpandedKeys: [],
       eventName: '',
       eventStoreObj: {},
-      typeList: [
-        {name: '基础风险分析', code: '1'},
-        {name: '核心风险分析', code: '2'},
-        {name: '专题分析', code: '3'}
-      ],
+      typeList: [],
       publishInfoForm: {
         modelName: '', // 模型名称
-        modelType: '', // 类型
+        categoryType: '', // 类型
         explain: '', // 备注备注
-        submitTime: this.$moment().startOf('day'), // 提交日期
-        submitBy: '张三'
+        submitTime: '', // 提交日期
+        submitBy: '',
+        modelId: '',
+        modelState: '待提交'
       },
       publicParmas: {}, // 审批列表跳过来的参数
       publishDiaShow: false,
       publishInfoRules: {
-        modelType: [
-          { required: true, message: '请选择模型分类', trigger: 'change' }
+        categoryType: [
+          { required: true, message: '请选择模型分类', trigger: 'blur' }
         ],
         explain: [
           { required: true, message: '请填写备注栏', trigger: 'blur' }
         ]
       },
-      ownedBy: '',
+      auditInfo: [], // 审批流程
+      treeNode: '',
       treeType: '',
-      nodeName: ''
+      treeName: ''
     }
   },
   watch: {
@@ -241,13 +273,42 @@ export default {
       that.openEventDialog(pdata, cdata)
     })
     this.$bus.$on('sendToManager', obj => {
-      if (obj.NAME) {
-        this.currentTreeId = obj.ID
-        this.$refs['managerTreeRef'].setCurrentKey(obj.ID)
-        this.managerTreeNodeHandleClick(obj)
-        this.publicParmas = obj
+      if (obj.treeName) {
+        this.currentTreeId = obj.treeNode
+        let nodeObj = {
+          ID: obj.treeNode,
+          TREETYPE: obj.treeType,
+          NAME: obj.treeName,
+          modelName: obj.name
+        }
+        this.$refs['managerTreeRef'].setCurrentKey(obj.treeNode)
+        this.managerTreeNodeHandleClick(nodeObj)
+        this.publicParmas = nodeObj
       }
     })
+    this.auditInfo = [
+      {
+        handlerBy: 'zhangsan',
+        handleTime: '2023-04-07 09:30:22',
+        hanldeType: '待处理',
+        handlerOpinion: '此模型高度不够，请重新确认再提交。',
+        color: '#667391'
+      },
+      {
+        handlerBy: 'hangkeyuan',
+        handleTime: '2023-04-07 13:45:52',
+        hanldeType: '待审批',
+        handlerOpinion: '已修改高度，请确认。',
+        color: '#667391'
+      },
+      {
+        handlerBy: 'zhangsan',
+        handleTime: '2023-04-07 15:45:52',
+        hanldeType: '已审批',
+        handlerOpinion: '确认。',
+        color: '#667391'
+      }
+    ]
     // document.getElementById('managerTableRef').addEventListener('click', // 点击表格时重新设置表格的宽度
     //   function (e) {
     //     setTimeout(() => {
@@ -361,28 +422,34 @@ export default {
         if (valid) { // 查询table数据
           this.$store.commit('SHOW_LOADING', '加载中...')
           let obj = this.publishInfoForm
-          obj.ownedBy = this.ownedBy
+          obj.treeNode = this.treeNode
           obj.treeType = this.treeType
-          obj.nodeName = this.nodeName
-          // console.log(obj, 'obj---test')
+          obj.treeName = this.treeName
+          // obj.modelState = undefined
+          // obj.submitBy = undefined
+          // obj.submitTime = undefined
+          // obj.modelName = undefined
           this.$axios({
             url: '/modelMotion/submit',
-            method: 'get',
-            params: obj
-            }).then(res => {
+            method: 'post',
+            data: obj
+          }).then(res => {
             if (res.data.status === '0') {
               this.publishDiaShow = false
               this.$message({
                 message: '操作成功',
                 type: 'success'
               })
-            } else {
-              this.$message.error('操作失败，请稍后重试！')
+              this.publishInfoForm = {}
+              this.treeNode = ''
+              this.treeType = ''
+              this.treeName = ''
             }
+            this.$message.error(res.data.message)
             this.$store.commit('HIDE_LOADING', '加载中！')
           }).catch(err => {
-            console.log(err)
             this.$store.commit('HIDE_LOADING', '加载中！')
+            console.log(err)
           })
         } else {
           console.log('error submit!!')
@@ -392,12 +459,14 @@ export default {
     },
     managerRowPublish (row) { // 发布模型分析弹窗
       console.log(row, 'row---test')
-      this.publishInfoForm = {}
       if (row) {
         this.publishInfoForm.modelName = row.NAME
+        this.publishInfoForm.modelId = row.ID
+        this.publishInfoForm.modelState = row.modelState || '待提交'
       }
-      this.publishInfoForm.submitBy = '张三'
-      // this.publishInfoForm.subTime = '2023-04-06'
+
+      let userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo')) || {}
+      this.publishInfoForm.submitBy = userInfo.userName
       const year = new Date().getFullYear()
       let month = new Date().getMonth() + 1
       let date = new Date().getDate()
@@ -409,6 +478,7 @@ export default {
       }
       this.publishInfoForm.submitTime = year + '-' + month + '-' + date // 提交日期
       this.publishDiaShow = !this.publishDiaShow
+      this.$refs['publishDiaRef'].resetFields()
     },
     getTypeList () {
       this.$store.commit('SHOW_LOADING', '加载中...')
@@ -416,8 +486,8 @@ export default {
         url: '/modelMotion/getModelCategory',
         method: 'get'
         }).then(res => {
-        if (res.data.status === '0') {
-          let list = res.data.data.list || []
+        if (res.status === 200) {
+          let list = res.data || []
           this.typeList = list
         } else {
           this.$message.error('操作失败，请稍后重试！')
@@ -475,9 +545,9 @@ export default {
       if (!data.CHILDREN && !data.isAdd && !data.status) { // 如果不是目录,且节点不在编辑中，则点击节点时候获取分析子集数据
         this.getAnalysisRecord(data.ID)
         this.$store.commit('MANAGER_TREE_NODE_ID', data.ID) // 存放树节点编号，提交分析参数时使用
-        this.ownedBy = data.ID // id保存，提交发布传到后端，审批人通过id打开新建分析页面
+        this.treeNode = data.ID // id保存，提交发布传到后端，审批人通过id打开新建分析页面
         this.treeType = data.TREETYPE
-        this.nodeName = data.NAME
+        this.treeName = data.NAME
         hideMenuObj.analysis_file_new = true // 新建分析
         hideMenuObj.analysis_event_file_new = true // 新建事件分析
         hideMenuObj.analysis_dhbcsdb = true // 新建多航班参数对比
@@ -772,7 +842,7 @@ export default {
             name: name,
             parentId: pid,
             type: type,
-            userId: this.$store.getters.userInfo.userId || 'msap' // 暂时是默认值
+            userId: this.$store.getters.userInfo.userId || 'dsap' // 暂时是默认值
           },
           headers: {
             //'Content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -890,7 +960,7 @@ export default {
             parentId: pid,
             type: type,
             id: id,
-            userId: this.$store.getters.userInfo.userName || 'msap' // 暂时是默认值
+            userId: this.$store.getters.userInfo.userName || 'dsap' // 暂时是默认值
           },
           headers: {
             'Content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -939,9 +1009,9 @@ export default {
             this.managerTableData = resultData
             this.totalCount = resultData.length // 显示表格数据总条数
             this.currentTreeId = id // 存储当前点击节点的编号，修改子集时使用
-            if (this.publicParmas.NAME) {
+            if (this.publicParmas.modelName) {
               let row = resultData.filter(item => {
-                return item.NAME === this.publicParmas.NAME
+                return item.NAME === this.publicParmas.modelName
               })
               this.managerRowEdit(row[0])
             }
@@ -1676,7 +1746,7 @@ export default {
         this.getAnalysisRecord(this.$store.state.managerTreeNodeId)
       }
     },
-    // {"message":"请先登录","status":"E1001","result":{"data":"http://id.ceair.com:7777/oam/server/logout?end_url=http://msap-bi.ceair.com"}}
+    // {"message":"请先登录","status":"E1001","result":{"data":"http://id.ceair.com:7777/oam/server/logout?end_url=http://dsap-bi.ceair.com"}}
     logBackIn (data) {
       const that = this
       // if (!window.tipLock) {
@@ -1824,6 +1894,11 @@ export default {
   width: 100%;
 }
 
+.publish_dia .el-dialog .el-dialog__body {
+  /* max-height: 500px; */
+  height: 400px;
+  overflow-y: auto;
+}
 /* .manager .publish_dia .dialog-footer {
   text-align: center;
 } */
@@ -1861,6 +1936,16 @@ export default {
   position: relative;
   width: 80%;
   height: 100%;
+}
+.analysis-tab-content .el-icon-thumb,
+.analysis-tab-content .el-icon-upload,
+.analysis-tab-content .el-icon-document  {
+  transform: scale(1.3);
+  padding-top: 1px;
+  color: #637394;
+}
+.analysis-tab-content .el-icon-document {
+  transform: scale(1);
 }
 .manager-table {
   position: relative;

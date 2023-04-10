@@ -4,14 +4,14 @@ export const showLoading = (state) => {
 
 export const userInfo = (state) => {
   if (JSON.stringify(state.userInfo) === '{}' || Object.keys(state.userInfo).length === 0) {
-    state.userInfo = JSON.parse(window.sessionStorage.getItem('MSAP-userInfo'))
+    state.userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo'))
   }
   return state.userInfo
 }
 
 export const hotWordsSearchObj = (state) => {
   if (JSON.stringify(state.hotWordsSearchObj) === '{}' || Object.keys(state.hotWordsSearchObj).length === 0) {
-    state.hotWordsSearchObj = JSON.parse(window.sessionStorage.getItem('MSAP-hotWordsSearchObj'))
+    state.hotWordsSearchObj = JSON.parse(window.sessionStorage.getItem('DSAP-hotWordsSearchObj'))
   }
   return state.hotWordsSearchObj
 }

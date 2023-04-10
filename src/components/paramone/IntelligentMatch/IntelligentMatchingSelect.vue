@@ -104,7 +104,7 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！') // 打开加载提示框
-      this.userInfo = JSON.parse(window.sessionStorage.getItem('MSAP-userInfo'))
+      this.userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo'))
       if (this.userInfo) {
         this.setperm()
       } else {
@@ -136,7 +136,7 @@ export default {
       this.$bus.$emit('openHeaderMenuItem', 'paramOne_intelligentMatching', hideMenuObj, disabledMenuObj) // 修改头部显示效果
     },
     setperm () {
-      this.userInfo = JSON.parse(window.sessionStorage.getItem('MSAP-userInfo'))
+      this.userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo'))
       for (let i = 0; i < this.userInfo.menuList.length; i++) {
         if (this.userInfo.menuList[i]['ID'] === '7001' || this.userInfo.menuList[i]['ID'] === 7001) { // 如果是7001 则表示有工程参数编辑权限
           this.paramOneEditAuthority = true

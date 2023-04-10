@@ -2472,7 +2472,6 @@ export default {
 
               this.$refs.fdvTable.doLayout()
             }
-            console.log(this.fdvChartDataArr, 'fdvChartDataArr----test')
           } else {
             // 清空表格数据
             this.fdvDialogColumnData = []

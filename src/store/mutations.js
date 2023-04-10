@@ -9,7 +9,7 @@ const mutations = {
     state.showLoading = false
   },
   [types.USER_INFO] (state, payload) {
-    window.sessionStorage.setItem('MSAP-userInfo', JSON.stringify(payload))
+    window.sessionStorage.setItem('DSAP-userInfo', JSON.stringify(payload))
     state.userInfo = payload
   },
   [types.ANALYSIS_PARAMS] (state, payload) {

@@ -48,7 +48,7 @@
             <el-form-item label="系统权限:">
             <el-checkbox-group v-model="userForm.type">
             <el-checkbox label="多租户管理平台" name="type"></el-checkbox>
-            <el-checkbox label="dsap" name="type"></el-checkbox>
+            <el-checkbox label="DSAP" name="type"></el-checkbox>
 <!--            <el-checkbox label="东航飞行MSAP" name="type"></el-checkbox>-->
 <!--            <el-checkbox label="东航机务MSAP" name="type"></el-checkbox>-->
 <!--            <el-checkbox label="东航运控MSAP" name="type"></el-checkbox>-->
@@ -248,8 +248,8 @@ export default {
           this.$store.commit('HIDE_LOADING', '拼命加载中！') // 隐藏加载框
           console.log('logout~~~:', response)
           this.$store.commit('USER_INFO', {}) // 临时存放用户信息
-          window.sessionStorage.removeItem('MSAP-userInfo') // 删除浏览器用户信息
-          window.sessionStorage.removeItem('MSAP-sublineAllData') // 删除浏览器辅助线信息
+          window.sessionStorage.removeItem('DSAP-userInfo') // 删除浏览器用户信息
+          window.sessionStorage.removeItem('DSAP-sublineAllData') // 删除浏览器辅助线信息
           /**
            * 地址会有两种：
               1、/dsap/index.html

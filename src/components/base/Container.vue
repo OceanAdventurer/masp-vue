@@ -25,7 +25,13 @@
     <el-header style="height: 45px;">
       <div class="nav-menu-header" v-show="menuListArr.length > 0">
         <div class="nav-menu-header-left" :style="isCollapsed ? 'width: 181px;' : ''">
-          <h2>{{ isCollapsed ? 'DSAP分析系统' : 'DSAP' }}</h2>
+          <div class="system_title" v-if='isCollapsed'>
+            <p style='font-size:16px; color:#fff;font-weight:700;margin: 7px 0;text-align:center'>中国民航安全数据</p>
+            <p style='font-size:16px; color:#fff;font-weight:700; margin: 0;text-align:center'>共享分析平台</p>
+          </div>
+          <div class="system_title" v-else>
+            <h2>DSAP</h2>
+          </div>
         </div>
 <!--        <div v-show="isCollapsed" class="logo-div"></div>-->
         <div :class="[rotateIcon, headerLogo]"></div>
@@ -148,7 +154,7 @@
                 <img :src="item.src" :title="item.title">
                 <span :class="item.value === 'audit_list' ? 'tips_red' : ''">
                   {{item.title}}
-                  <span v-if='isShowTips'>99+</span>
+                  <span v-if='isShowTips'>{{approve+handle}}</span>
                 </span>
               </el-dropdown-item>
             </el-dropdown-menu>
@@ -179,6 +185,7 @@
 </template>
 
 <script>
+import { removeWatermark, setWaterMark } from '../../assets/js/waterMark.js'
 import * as menu from 'assets/js/menuData'
 import { mapState } from 'vuex'
 import image0 from '@/assets/images/task_list.png'
@@ -228,10 +235,12 @@ export default {
       noMenuData: '',
       dialogVisible: false,
       options: [],
-      value: 'http://172.20.42.144:8080/dsap/index.html#/home',
+      value: 'http://172.20.42.144:8080/DSAP/index.html#/home',
       iconGroups: [],
-      isShowTips: true,
-      newTips: true
+      isShowTips: false,
+      // newTips: true,
+      approve: 0,
+      handle: 0
     }
   },
   computed: {
@@ -307,11 +316,12 @@ export default {
     this.iconGroups.forEach(item => {
       this.$bus.$off(item.value)
     })
+    removeWatermark()
   },
   methods: {
     cancelSystem () {
       this.dialogVisible = false
-      this.value = 'http://172.20.42.144:8080/dsap/index.html#/home'
+      this.value = 'http://172.20.42.144:8080/DSAP/index.html#/home'
     },
     changrSystem () {
       window.open(this.value, '_self')
@@ -512,10 +522,10 @@ export default {
       }
     },
     handleCommand (data) {
-      data.name = 'dsap'
+      data.name = 'DSAP'
       let val = data.val
       // let name = data.name
-      localStorage.setItem('currentSystem', 'dsap')
+      localStorage.setItem('currentSystem', 'DSAP')
       if (val.slice(0, 4) === 'http') {
         window.location.href = val
       } else {
@@ -567,9 +577,13 @@ export default {
             return false
           }
           let resultData = response.data.result.data
+
+          const { userName } = resultData || {}
           this.$store.commit('USER_INFO', resultData) // 临时存放用户信息
+          setWaterMark('DSAP', userName)
           this.$util.UserData = resultData
           this.getData(resultData)
+          this.getAuditTips()
         } else if (response.data.status === 'E1001') { // 没有登录
           this.$util.logBackIn(response.data)
         } else {
@@ -577,6 +591,23 @@ export default {
         }
       }).catch(response => {
         // this.$message.error('用户信息获取失败! ')
+      })
+    },
+    getAuditTips () {
+      this.$axios({
+        url: 'modelMotion/getApproveAndHandle'
+      }).then(res => {
+        console.log(res, 'res---test')
+        const {APPROVE = 0, HANDLE = 0} = res
+        this.approve = APPROVE
+        this.handle = HANDLE
+        if ((APPROVE + HANDLE) > 0) {
+          this.isShowTips = true
+        } else {
+          this.isShowTips = false
+        }
+      }).catch(err => {
+        console.log(err)
       })
     },
     // 获取菜单
@@ -602,8 +633,8 @@ export default {
           this.$store.commit('HIDE_LOADING', '拼命加载中！') // 隐藏加载框
           console.log('logout~~~:', response)
           this.$store.commit('USER_INFO', {}) // 临时存放用户信息
-          window.sessionStorage.removeItem('MSAP-userInfo') // 删除浏览器用户信息
-          window.sessionStorage.removeItem('MSAP-sublineAllData') // 删除浏览器辅助线信息
+          window.sessionStorage.removeItem('DSAP-userInfo') // 删除浏览器用户信息
+          window.sessionStorage.removeItem('DSAP-sublineAllData') // 删除浏览器辅助线信息
           /**
            * 地址会有两种：
               1、/dsap/index.html
@@ -649,7 +680,7 @@ export default {
         this.$confirm('确认关闭？')
           .then(_ => {
             this.dialogVisible = false
-            this.value = 'http://172.20.42.144:8080/dsap/index.html#/home'
+            this.value = 'http://172.20.42.144:8080/DSAP/index.html#/home'
             done()
           })
           .catch(_ => {})
@@ -721,9 +752,9 @@ export default {
   }
 .el-menu-vertical-msap:not(.el-menu--collapse) {
   width: 180px;
-  height: 100%;
+  padding-top: 15px;
+  height: calc(100% - 15px);
   min-height: 300px;
-
   margin-bottom: 0;
   overflow: hidden;
   background-color: #2a436f;
@@ -835,7 +866,10 @@ export default {
   border-bottom-color: transparent;
   border-style: solid;
 }
-
+p.system_title {
+  font-size: 14px!important;
+  color: #fff!important;
+}
 .main-content #elMain .el-dropdown-link.el-dropdown-selfdefine {
   /* width: 101px; */
   display: inline-block;
@@ -1008,7 +1042,7 @@ export default {
   }
   .nav-menu-header-left {
     width: 64px;
-    height: 45px;
+    /* height: 45px; */
   }
   .logo-div {
     width: 116px;
@@ -1039,7 +1073,7 @@ export default {
   }
   .nav-menu-header-left {
     width: 64px;
-    height: 35px;
+    /* height: 35px; */
   }
   .headerLogo {
     height: 44px;

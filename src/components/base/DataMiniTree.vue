@@ -234,7 +234,7 @@ export default {
     }
   },
   mounted () { // 点击其他目录节点时新增，则input重新获取焦点
-    this.userInfo = JSON.parse(window.sessionStorage.getItem('MSAP-userInfo'))
+    this.userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo'))
     var self = this
     this.$nextTick(() => {
       this.$refs['treeInput' + self.data.ID].focus()

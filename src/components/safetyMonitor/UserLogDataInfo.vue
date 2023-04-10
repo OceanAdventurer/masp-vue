@@ -233,7 +233,7 @@ export default {
       })
     },
     closeAuth (row) {
-      let userInfo = JSON.parse(window.sessionStorage.getItem('MSAP-userInfo'))
+      let userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo'))
       if (userInfo.userName === row.logUser) {
         this.$message.warning('不能关闭自己的权限! ')
         return

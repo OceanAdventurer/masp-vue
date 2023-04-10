@@ -288,7 +288,7 @@ export default {
       this.renameNodeFun(this.treeData, null, 'node')
     })
     this.$nextTick(() => {
-      this.userInfo = JSON.parse(window.sessionStorage.getItem('MSAP-userInfo'))
+      this.userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo'))
       console.log('分析参数当前用户userInfo{}', this.userInfo)
       if (this.userInfo) {
         this.getTree()
@@ -626,7 +626,7 @@ export default {
     },
     // 子节点击事件 加载中间及右侧数据
     handleNodeClick (data, node, nodeCommpent) {
-      this.userInfo = JSON.parse(window.sessionStorage.getItem('MSAP-userInfo'))
+      this.userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo'))
       var hideMenuObj = { // 不显示二级菜单的数据；如果需要不显示某些二级菜单，在这里请把二级菜单的键值设置false；如果都显示，则下面的方法直接传空对象即为：{}
       }
       let disabledMenuObj = {}
