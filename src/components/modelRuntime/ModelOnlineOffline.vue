@@ -17,9 +17,6 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="类别名称:">
-              <el-input v-model.trim="form.categoryName" clearable placeholder="类别名称" style="width: 120px; "/>
-            </el-form-item>
             <el-form-item label="所属用户:">
               <el-input v-model.trim="form.modelUser" clearable placeholder="所属用户" style="width: 120px; "/>
             </el-form-item>
@@ -60,12 +57,6 @@
               label="模型类别"
               :formatter="modelFormatter"
               :show-overflow-tooltip="true"
-              width="100px">
-            </el-table-column>
-            <el-table-column
-              prop="categoryName"
-              label="类别名称"
-              :show-overflow-tooltip="true"
               width="200px">
             </el-table-column>
             <el-table-column
@@ -82,9 +73,10 @@
             </el-table-column>
             <el-table-column label="操作" width="300px">
               <template slot-scope="scope">
-                <el-button size="mini" round @click.native="showOptInfo(scope.row)">查看</el-button>
+                <el-button class="opt-button" size="mini" round @click.native="showModel(scope.row)">查看模型</el-button>
                 <el-button v-if="showButton(3, scope.row)" size="mini" round @click.native="online(scope.row)">上线</el-button>
                 <el-button v-if="showButton(4, scope.row)" size="mini" round @click.native="offline(scope.row)">下线</el-button>
+                <el-button size="mini" round @click.native="showOptInfo(scope.row)">操作记录</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -103,7 +95,7 @@
       </div>
     </div>
 
-    <el-dialog :title="modelOpt.title" class="model-opt-dialog" :visible.sync="modelOpt.modelDialog" @close='closeDialog'>
+    <el-dialog :close-on-click-modal="false" :title="modelOpt.title" class="model-opt-dialog" :visible.sync="modelOpt.modelDialog" @close='closeDialog'>
       <el-form :model="modelOpt" label-width="80px" :rules="rules"  ref="modelOpt">
         <el-form-item label="模型名称:">
           <el-input v-model="modelOpt.modelName" style="width: 350px;" disabled/>
@@ -124,7 +116,7 @@
         </el-form>
     </el-dialog>
 
-    <el-dialog title="操作记录" class="model-opt-list-dialog" :visible.sync="modelOptList.modelOptDialog" @close='closeOptListDialog'>
+    <el-dialog :close-on-click-modal="false" title="操作记录" class="model-opt-list-dialog" :visible.sync="modelOptList.modelOptDialog" @close='closeOptListDialog'>
       <el-table
         :row-style="{height:'38px'}"
         :cell-style="{padding:'0px'}"
@@ -177,8 +169,6 @@ export default {
   components: {},
   data () {
     return {
-      // 是否有审批权限
-      approve: false,
       typeList: [],
       stateList: [
         {label: '已上线', value: '70'},
@@ -187,7 +177,6 @@ export default {
       form: {
         modelName: '',
         categoryType: '',
-        categoryName: '',
         modelUser: '',
         modelState: ''
       },
@@ -221,8 +210,6 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      // 是否有审批权限
-      this.hasApprove()
       // 初始化列表
       this.initList()
       // 查询模型分类
@@ -269,17 +256,6 @@ export default {
         this.$message.error('查询失败! ')
       })
     },
-    hasApprove () {
-      this.approve = false
-      this.$axios({
-        url: '/modelMotion/hasApprove',
-        method: 'get'
-      }).then(res => {
-        this.approve = res.data
-      }).catch(res => {
-        this.$message.error('查询审批权限失败! ')
-      })
-    },
     getModelCategory () {
       this.typeList = []
       this.$axios({
@@ -296,6 +272,14 @@ export default {
         }
       }).catch(res => {
         this.$message.error('查询模型分类失败! ')
+      })
+    },
+    showModel (row) {
+      this.$bus.$emit('sendingInfo', {
+        treeType: row.treeType,
+        treeNode: row.treeNode,
+        treeName: row.treeName,
+        name: row.modelName
       })
     },
     showOptInfo (row) {
@@ -386,9 +370,9 @@ export default {
     // 操作按钮权限
     showButton (showType, row) {
       if (showType === 3) {
-        if (this.approve && (row.modelState === '50' || row.modelState === '80')) return true
+        if (row.modelState === '50' || row.modelState === '80') return true
       } else if (showType === 4) {
-        if (this.approve && row.modelState === '70') return true
+        if (row.modelState === '70') return true
       }
       return false
     },

@@ -17,9 +17,6 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="类别名称:">
-              <el-input v-model.trim="form.categoryName" clearable placeholder="类别名称" style="width: 120px; "/>
-            </el-form-item>
             <el-form-item label="所属用户:">
               <el-input v-model.trim="form.modelUser" clearable placeholder="所属用户" style="width: 120px; "/>
             </el-form-item>
@@ -50,12 +47,6 @@
               label="模型类别"
               :formatter="modelFormatter"
               :show-overflow-tooltip="true"
-              width="100px">
-            </el-table-column>
-            <el-table-column
-              prop="categoryName"
-              label="类别名称"
-              :show-overflow-tooltip="true"
               width="200px">
             </el-table-column>
             <el-table-column
@@ -64,12 +55,14 @@
               :show-overflow-tooltip="true"
               width="200px">
             </el-table-column>
-            <el-table-column label="操作" width="300px">
+            <el-table-column label="操作" width="520px">
               <template slot-scope="scope">
-                <el-button size="mini" round @click.native="showOptInfo(scope.row)">查看</el-button>
-                <el-button v-if="showButton(1, scope.row)" size="mini" round @click.native="modelApprove(scope.row)">审批</el-button>
-                <el-button v-if="showButton(5, scope.row)" size="mini" round @click.native="reject( scope.row)">驳回</el-button>
-                <el-button v-if="showButton(6, scope.row)" size="mini" round @click.native="transfer(scope.row)">转办</el-button>
+                <el-button class="opt-button" size="mini" round @click.native="showPublishInfo(scope.row)">查看审批单</el-button>
+                <el-button class="opt-button" size="mini" round @click.native="showModel(scope.row)">查看模型</el-button>
+                <el-button class="opt-button" v-if="showButton(1, scope.row)" size="mini" round @click.native="modelApprove(scope.row)">审批</el-button>
+                <el-button class="opt-button" v-if="showButton(5, scope.row)" size="mini" round @click.native="reject( scope.row)">驳回</el-button>
+                <el-button class="opt-button" v-if="showButton(6, scope.row)" size="mini" round @click.native="transfer(scope.row)">转办</el-button>
+                <el-button class="opt-button" size="mini" round @click.native="showOptInfo(scope.row)">操作记录</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -88,7 +81,7 @@
       </div>
     </div>
 
-    <el-dialog :title="modelOpt.title" class="model-opt-dialog" :visible.sync="modelOpt.modelDialog" @close='closeDialog'>
+    <el-dialog :close-on-click-modal="false" :title="modelOpt.title" class="model-opt-dialog" :visible.sync="modelOpt.modelDialog" @close='closeDialog'>
       <el-form :model="modelOpt" label-width="80px" :rules="rules"  ref="modelOpt">
           <el-form-item label="模型名称:">
             <el-input v-model="modelOpt.modelName" style="width: 350px;" disabled/>
@@ -126,7 +119,7 @@
         </el-form>
     </el-dialog>
 
-    <el-dialog title="操作记录" class="model-opt-list-dialog" :visible.sync="modelOptList.modelOptDialog" @close='closeOptListDialog'>
+    <el-dialog :close-on-click-modal="false" title="操作记录" class="model-opt-list-dialog" :visible.sync="modelOptList.modelOptDialog" @close='closeOptListDialog'>
       <el-table
         :row-style="{height:'38px'}"
         :cell-style="{padding:'0px'}"
@@ -170,6 +163,37 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
+    <el-dialog :close-on-click-modal="false" title="审批单" :visible.sync="publishInfoForm.showPublishDia">
+      <div class="event-dialog-content">
+        <el-form label-width="80px">
+          <el-row>
+            <el-col :span='12'>
+              <el-form-item label="分析名称：" prop="modelName">
+                <span>{{publishInfoForm.modelName}}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span='12'>
+              <el-form-item label="模型分类：" prop="modelType">
+                <span>{{publishInfoForm.modelTypeName}}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="备注：" prop="explain">
+            <span>{{publishInfoForm.explain}}</span>
+          </el-form-item>
+          <el-form-item label="提交人：" prop="submitBy">
+            <span>{{publishInfoForm.submitBy}}</span>
+          </el-form-item>
+          <el-form-item label="提交时间：" prop="submitTime">
+            <span>{{publishInfoForm.submitTime}}</span>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 <script>
@@ -179,13 +203,10 @@ export default {
   components: {},
   data () {
     return {
-      // 是否有审批权限
-      approve: false,
       typeList: [],
       form: {
         modelName: '',
         categoryType: '',
-        categoryName: '',
         modelUser: '',
         modelState: ''
       },
@@ -215,7 +236,15 @@ export default {
       modelOptList: {
         modelOptDialog: false,
         dataList: []
-
+      },
+      publishInfoForm: {
+        showPublishDia: false,
+        modelName: '',
+        modelType: '',
+        modelTypeName: '',
+        explain: '',
+        submitBy: '',
+        submitTime: ''
       }
     }
   },
@@ -223,8 +252,6 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      // 是否有审批权限
-      this.hasApprove()
       // 初始化列表
       this.initList()
       // 查询模型分类
@@ -273,17 +300,6 @@ export default {
         this.$message.error('查询失败! ')
       })
     },
-    hasApprove () {
-      this.approve = false
-      this.$axios({
-        url: '/modelMotion/hasApprove',
-        method: 'get'
-      }).then(res => {
-        this.approve = res.data
-      }).catch(res => {
-        this.$message.error('查询审批权限失败! ')
-      })
-    },
     getModelCategory () {
       this.typeList = []
       this.$axios({
@@ -318,6 +334,51 @@ export default {
         }
       }).catch(res => {
         this.$message.error('查询用户列表失败! ')
+      })
+    },
+    showPublishInfo (row) {
+      this.publishInfoForm.modelName = ''
+      this.publishInfoForm.modelType = ''
+      this.publishInfoForm.modelTypeName = ''
+      this.publishInfoForm.explain = ''
+      this.publishInfoForm.submitBy = ''
+      this.publishInfoForm.submitTime = ''
+
+      this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！')
+      this.$axios({
+        url: '/modelMotion/publishInfo',
+        method: 'post',
+        params: { modelId: row.modelId }
+      }).then(res => {
+        if (!res.data) {
+          this.$store.commit('HIDE_LOADING', '拼命加载中！')
+          this.$message.error('审批单不存在! ')
+          return
+        }
+        let info = res.data
+        this.publishInfoForm.modelName = row.modelName
+        this.publishInfoForm.modelType = row.categoryType
+        if (this.publishInfoForm.modelType) {
+          let obj = this.typeList.find(item => item.value === row.categoryType)
+          if (obj) this.publishInfoForm.modelTypeName = obj.label
+        }
+        this.publishInfoForm.explain = info.explain
+        this.publishInfoForm.submitBy = info.optUser
+        this.publishInfoForm.submitTime = info.optTime
+
+        this.publishInfoForm.showPublishDia = true
+        this.$store.commit('HIDE_LOADING', '拼命加载中！')
+      }).catch(res => {
+        this.$store.commit('HIDE_LOADING', '拼命加载中！')
+        this.$message.error('查询失败! ')
+      })
+    },
+    showModel (row) {
+      this.$bus.$emit('sendingInfo', {
+        treeType: row.treeType,
+        treeNode: row.treeNode,
+        treeName: row.treeName,
+        name: row.modelName
       })
     },
     showOptInfo (row) {
@@ -412,9 +473,9 @@ export default {
     // 操作按钮权限
     showButton (showType, row) {
       if (showType === 1 || showType === 5) {
-        if (this.approve && (row.modelState === '20' || row.modelState === '40')) return true
+        if (row.modelState === '20' || row.modelState === '40') return true
       } else if (showType === 6) {
-        if (this.approve && row.modelState === '20') return true
+        if (row.modelState === '20') return true
       }
       return false
     },
