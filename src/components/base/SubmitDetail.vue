@@ -56,7 +56,7 @@
       <el-table-column prop="modelName" label="名称"></el-table-column>
       <el-table-column prop="categoryType" label="模型类别">
         <template slot-scope="scope">
-          <div>{{typeList.filter(item => {if (item.code === scope.categoryType) return item.label}) }}</div>
+          <div>{{typeList.find(item => item.code === (scope.categoryType || '0001')).name}}</div>
         </template>
       </el-table-column>
       <el-table-column prop="optUser" label="审批人"></el-table-column>
@@ -65,10 +65,10 @@
           <div>{{scope.modelState}}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="CREATETIME" label="提交时间"></el-table-column>
+      <el-table-column prop="createTime" label="提交时间"></el-table-column>
       <el-table-column prop="optTime" label="处理时间"></el-table-column>
       <!-- <el-table-column prop="currentNode" label="当前节点"></el-table-column> -->
-      <el-table-column prop="TRANSFER_USER" label="处理人"></el-table-column>
+      <el-table-column prop="transferUser" label="处理人"></el-table-column>
     </el-table>
     </div>
     <span slot="footer" class="dialog-footer">
@@ -131,20 +131,10 @@ export default {
             method: 'post',
             data: obj
           }).then(res => {
-            console.log(res, 'res---test')
               if (res.status === 200) {
-                const {data: {content, pageSize, pageNo, recordCount}} = res
-                content.map(item => {
-                  if (item.is_hidden === '1') {
-                    item.is_hidden = true
-                  } else {
-                    item.is_hidden = false
-                  }
-                })
-                this.flightTableData = content
-                this.pageSize = pageSize
-                this.currentPage = pageNo
-                this.total = recordCount
+                this.submitData = res.data || []
+              } else {
+                this.submitData = []
               }
               this.$store.commit('HIDE_LOADING', '加载中！')
             }).catch(err => {

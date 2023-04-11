@@ -1,11 +1,12 @@
 <template>
-  <div class="safe_content w100 h100">
+  <div class="model_run_time w100 h100">
     <div class="model_type_title">
-      <el-radio-group v-model="modelType" v-for='item in typeList' :key='item.code' @change='queryTable'>
-        <el-radio-button :label="item.name" ></el-radio-button>
+      <el-radio-group v-model="modelType" v-for='item in typeList' :key='item.code' @input='queryTable' size="small">
+        <el-radio-button :label="item.code">{{item.name}}</el-radio-button>
       </el-radio-group>
     </div>
-    <div class="manager-table df df-fd-r" id="managerTableRef" v-if='onlineModelList.length > 0'>
+    <!-- v-if='onlineModelList.length > 0' -->
+    <div class="manager-table df df-fd-r" id="managerTableRef" >
         <el-table
           ref="managerTableCon"
           :data="onlineModelList"
@@ -15,9 +16,9 @@
           fit>
           <!-- :header-row-class-name="headerRowClassName"
           :row-class-name="tableRowClassName" -->
-          <el-table-column prop="NAME" label="名称" width="auto" align="left"></el-table-column>
-          <el-table-column prop="TYPE" label="分析类型" width="90" align="left"></el-table-column>
-          <el-table-column prop="CREATETIME" label="修改日期" align="left" width="160"></el-table-column>
+          <el-table-column prop="modelName" label="名称" align="left"></el-table-column>
+          <el-table-column prop="modelType" label="分析类型" align="left"></el-table-column>
+          <el-table-column prop="onlineTime" label="上线时间" width="160"></el-table-column>
           <!-- <el-table-column label="操作" width="150" align="left">
             <template slot-scope="scope">
               <div class="row-icon-group">
@@ -41,7 +42,7 @@ export default {
   data () {
     return {
       onlineModelList: [],
-      modelType: '0001',
+      modelType: '',
       typeList: []
     }
   },
@@ -49,11 +50,11 @@ export default {
     ModelApprove
   },
   created () {
-      this.getTypeList()
+    this.getTypeList()
+    this.modelType = '0001'
   },
   mounted () {
     this.$bus.$on('modelRuntimeMenu', (val) => {
-      this.tabName = val
       this.queryTable()
     })
   },
@@ -76,9 +77,9 @@ export default {
         this.$store.commit('HIDE_LOADING', '加载中！')
       })
     },
-    queryTable () {
-      let modelType = this.modelType
-      console.log(modelType, 'v---test')
+    queryTable (val) {
+      val = val || this.modelType
+      console.log(val, 'v---test')
     }
   }
 }
@@ -89,5 +90,11 @@ export default {
   }
   .h100 {
     height: 100%;
+  }
+  .model_run_time .model_type_title {
+    padding: 20px 10px ;
+  }
+  .model_run_time .model_type_title .el-radio-group {
+    margin-right: 10px;
   }
 </style>

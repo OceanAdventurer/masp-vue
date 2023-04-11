@@ -112,18 +112,16 @@
                     >
                     </el-option>
                   </el-select>
-                  <span v-else>{{publishInfoForm.categoryType}}</span>
+                  <span v-else>{{typeList.find(item => item.code === publishInfoForm.categoryType).name}}</span>
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-form-item label="备注" prop="explain">
+            <el-form-item label="备注" prop="explain" v-show="publishInfoForm.modelState==='待提交'">
               <el-input type="textarea"
                 :rows="3"
-                v-if="publishInfoForm.modelState==='待提交'"
                 v-model.trim="publishInfoForm.explain"
                 clearable
                 placeholder="请输入发布原因，有效期等信息"/>
-              <span v-else>{{publishInfoForm.explain}}</span>
             </el-form-item>
             <el-row style='padding-top: 15px' v-if="publishInfoForm.modelState==='待审批'">
               <el-card
@@ -132,7 +130,7 @@
                 :key="index"
               >
                 <h4>状态：{{activity.modelStateLabel}}</h4>
-                <p>意见：{{activity.explain}}</p>
+                <p>备注：{{activity.explain}}</p>
                 <p>处理人：{{activity.optUser}}</p>
               </el-card>
             </el-row>
@@ -152,18 +150,18 @@
                   </el-card>
                 </el-timeline-item>
               </el-timeline> -->
-            <el-form-item label="提交人" prop="submitBy">
-              <span disabled>{{publishInfoForm.submitBy}}</span>
+            <el-form-item label="提交人" prop="submitBy" v-show="publishInfoForm.modelState==='待提交'">
+              <span>{{publishInfoForm.submitBy}}</span>
             </el-form-item>
-            <el-form-item label="提交时间" prop="submitTime">
-              <span disabled>{{publishInfoForm.submitTime}}</span>
+            <el-form-item label="提交时间" prop="submitTime" v-show="publishInfoForm.modelState==='待提交'">
+              <span>{{publishInfoForm.submitTime}}</span>
               <!-- <el-date-picker v-model="publishInfoForm.subTime" format='yyyy-MM-dd' type="date" disabled></el-date-picker> -->
             </el-form-item>
           </el-form>
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button size="mini" @click="managerRowPublish()">取  消</el-button>
-          <el-button type="primary" size="mini" @click="handlerPublish()">发布</el-button>
+          <el-button size="mini" @click="managerRowPublish('publishDiaRef')">取  消</el-button>
+          <el-button type="primary" size="mini" @click="handlerPublish('publishDiaRef')">{{publishInfoForm.modelState === '待提交' ? '发布' : '确定'}}</el-button>
         </div>
       </el-dialog>
     </div>
@@ -416,10 +414,6 @@ export default {
     },
     auditingInfo (id) {
       this.$store.commit('SHOW_LOADING', '加载中...')
-      let obj = {
-        modelId: id
-      }
-      console.log(obj, 'obj--test')
       this.$axios({
         url: '/modelMotion/showModelApproveDetail',
         method: 'get',
@@ -427,7 +421,6 @@ export default {
           modelId: id
         }
       }).then(res => {
-        console.log(res, 'res----test')
         if (res.status === 200) {
           const {optUser, optTime, modelStateLabel} = res.data[0]
          this.publishInfoForm = res.data[0] || []
@@ -442,7 +435,7 @@ export default {
         console.log(err)
       })
     },
-    handlerPublish () { // 提交发布
+    handlerPublish (refName) { // 提交发布
       this.$refs['publishDiaRef'].validate(valid => {
         if (valid) { // 查询table数据
           this.$store.commit('SHOW_LOADING', '加载中...')
@@ -450,10 +443,6 @@ export default {
           obj.treeNode = this.treeNode
           obj.treeType = this.treeType
           obj.treeName = this.treeName
-          // obj.modelState = undefined
-          // obj.submitBy = undefined
-          // obj.submitTime = undefined
-          // obj.modelName = undefined
           this.$axios({
             url: '/modelMotion/submit',
             method: 'post',
@@ -468,13 +457,15 @@ export default {
                   message: '操作成功',
                   type: 'success'
                 })
+                this.$refs[refName].resetFields()
+                this.getAnalysisRecord(this.currentTreeId) // 重新查询子集数据
                 this.publishInfoForm = {}
                 this.treeNode = ''
                 this.treeType = ''
                 this.treeName = ''
               }
             }
-            this.$store.commit('HIDE_LOADING', '加载中！')
+            if (this.$refs['publishDiaRef']) this.$store.commit('HIDE_LOADING', '加载中！')
           }).catch(err => {
             this.$store.commit('HIDE_LOADING', '加载中！')
             console.log(err)
@@ -486,7 +477,7 @@ export default {
       })
     },
     managerRowPublish (row) { // 发布模型分析弹窗
-      console.log(row, 'row---test')
+      if (this.$refs['publishDiaRef']) this.$refs['publishDiaRef'].resetFields()
       if (row) {
         this.publishInfoForm.modelName = row.NAME
         this.publishInfoForm.modelId = row.ID
@@ -506,7 +497,6 @@ export default {
       }
       this.publishInfoForm.submitTime = year + '-' + month + '-' + date // 提交日期
       this.publishDiaShow = !this.publishDiaShow
-      this.$refs['publishDiaRef'].resetFields()
     },
     managerRowDetail (row) {
       this.auditingInfo(row.ID)
@@ -1179,7 +1169,7 @@ export default {
     },
     submitNewFileDataPublicMethods (params, funType) { // 提交新建分析中的数据
       console.log(123)
-      this.$store.commit('SHOW_LOADING', '正在提交数据，请稍等！') // 打开加载提示框
+      this.$store.commit('SHOW_LOADING', '正在查询数据，请稍等！') // 打开加载提示框
       console.log('submitNewFileDataPublicMethods~~~:', JSON.stringify(params))
       let tempUrl = '/submit/submitAnalysis'
       if (funType === 'addSublineComponent') {
@@ -2030,5 +2020,10 @@ export default {
 }
 .publish_dia .el-form-item__label-wrap {
   margin-left: 0 !important;
+}
+</style>
+<style>
+.publish_dia .publish_dialog_content .el-card .el-card__body {
+  padding: 0 20px;
 }
 </style>

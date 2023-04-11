@@ -676,8 +676,7 @@
                       </el-option>
                     </el-select>
                   </div>
-                  <div class="df df-fd-c df-jc-fs df-ai-fs w100 data-point" v-show="attrSixRadio === '11'">
-                    <el-select v-model="dynamicTime">
+                  <div class="df df-fd-c df-jc-fs df-ai-fs w100 data-point" v-show="attrSixRadio === '11'"><el-select v-model="dynamicTime">
                       <el-option
                         v-for="item in dynamicRange"
                         :key='item.value'
@@ -686,6 +685,11 @@
                       >
                       </el-option>
                     </el-select>
+                    <!-- <ul class='dynamic_time'>
+                      <li v-for="item in testRange" :key='item.value'>
+                        <span @click="changeDynamicData('-')">-</span><el-input type='number' v-model='item.dynamicTime'></el-input><span @click="changeDynamicData('+')">+</span>{{item.label}}
+                      </li>
+                    </ul> -->
                   </div>
                 </div>
                 <!-- 筛选配置属性中第七种类型 非搜索类型-->
@@ -1129,6 +1133,12 @@ export default {
         {value: 'halfYear', label: '半年'},
         {value: 'nineMonths', label: '九个月'},
         {value: 'year', label: '一年'}
+      ],
+      testRange: [
+        {index: 0, value: 'h', label: '小时', disabled: false, dynamicTime: 0},
+        {index: 1, value: 'day', label: '天', disabled: false, dynamicTime: 0},
+        {index: 2, value: 'month', label: '月', disabled: false, dynamicTime: 0},
+        {index: 3, value: 'year', label: '年', disabled: false, dynamicTime: 0}
       ],
       pageSize: 10, // 每页显示条目数
       pagerCount: 11, // 页码按钮的数量
@@ -1747,6 +1757,15 @@ export default {
       }) //.catch(response => {
       //   that.$message.error('数据权限获取失败! ')
       // })
+    },
+    changeDynamicData (mark) {
+      let num = this.dynamicTime
+      if (mark === '-') {
+        this.dynamicTime = num--
+      } else {
+        this.dynamicTime = num++
+      }
+      console.log(mark, this.dynamicTime, 'test----changeDynamicData')
     },
     rowDropSort () { // 行拖拽排序
       // TODO: 表格排序功能
@@ -5836,7 +5855,13 @@ export default {
   /*margin-right: 4px;*/
   margin-top: 6px;
 }
-
+.data-point .dynamic_time li {
+  list-style: none;
+}
+.data-point .dynamic_time li .el-input {
+  width: 80px;
+  margin-right: 5px;
+}
 /* ========================= */
 .tree-content {
   position: relative;

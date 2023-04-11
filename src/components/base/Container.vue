@@ -597,7 +597,7 @@ export default {
       this.$axios({
         url: 'modelMotion/getApproveAndHandle'
       }).then(res => {
-        const {APPROVE = 0, HANDLE = 0} = res
+        const {APPROVE = 0, HANDLE = 0} = res.data
         this.approve = APPROVE
         this.handle = HANDLE
         if ((this.approve + this.handle) > 0) {
