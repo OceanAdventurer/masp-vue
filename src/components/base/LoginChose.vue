@@ -183,7 +183,7 @@ export default {
   }
 .el-menu-vertical-msap:not(.el-menu--collapse) {
   width: 180px;
-  height: 100%;
+  height: calc(100% - 15px);
   min-height: 300px;
 
   margin-bottom: 0;

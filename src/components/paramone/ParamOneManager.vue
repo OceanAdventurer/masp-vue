@@ -366,7 +366,7 @@
                           <i slot="suffix" class="el-input__icon el-icon-search" @click="searchContent(searchCondition)"></i>
                       </el-input>
                   </div>
-                  <div class="content_list" style="height: calc(99% - 55px)">
+                  <div class="content_list" style="height: calc(99% - 80px)">
                       <el-table :data="tableArr" height="100%" highlight-current-row  width="90%" border :row-style="{height:'38px'}"
                       :cell-style="{padding:'0px'}" :header-row-style="{height:'38px'}" :header-cell-style="{padding:'0px'}" ref="multipleTable"
                                 @row-click="rowClick"   @selection-change="handleSelectionChange">
@@ -386,22 +386,21 @@
                           </el-table-column>
                       </el-table>
                   </div>
-<!--                  &lt;!&ndash; pager-count=3 &ndash;&gt;-->
-<!--                  <div class="content_page" >-->
-<!--                      <el-pagination-->
-<!--                        @size-change="handleSizeChange"-->
-<!--                        @current-change="currentChangeClick"-->
-<!--                        @prev-click="prevClick"-->
-<!--                        @next-click="nextClick"-->
-<!--                        v-model="currentPage"-->
-<!--                        background-->
-<!--                        :page-sizes="[10, 15, 20]"-->
-<!--                        :page-size="pageSize"-->
-<!--                        :current-page.sync="currentPage"-->
-<!--                        :total="totalCount"-->
-<!--                        layout="sizes, prev, pager, next, total">-->
-<!--                      </el-pagination>-->
-<!--                  </div>-->
+                 <div class="content_page" style='height: 40px'>
+                     <el-pagination
+                       @size-change="handleSizeChange"
+                       @current-change="currentChangeClick"
+                       @prev-click="prevClick"
+                       @next-click="nextClick"
+                       v-model="currentPage"
+                       background
+                       :page-sizes="[10, 15, 20]"
+                       :page-size="pageSize"
+                       :current-page.sync="currentPage"
+                       :total="totalCount"
+                       layout="sizes, prev, pager, next, total">
+                     </el-pagination>
+                  </div>
               </el-tab-pane>
           </el-tabs>
       </div>
@@ -1131,6 +1130,10 @@ export default {
         let versionList = []
         if (data.content.length > 0) {
           for (var obj of data.content) {
+            this.totalCount = data.recordCount
+            this.pageCount = data.pageCount
+            this.pageSize = data.pageSize
+            this.currentPage = data.pageNo
             var type = ''
             if (obj.TYPE === 'one') {
               type = '工程函数'
