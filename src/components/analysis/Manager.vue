@@ -37,12 +37,12 @@
           <el-table-column label="操作" width="150" align="left">
             <template slot-scope="scope">
               <div class="row-icon-group">
-                <div class="icon-edit tab-icon-set mr10" title="编辑分析" v-show='scope.row.modelState == undefined' @click="managerRowEdit(scope.row)"></div>
+                <div class="icon-edit tab-icon-set mr10" title="编辑分析" v-show="scope.row.modelState == '' || scope.row.modelState == '待审批'" @click="managerRowEdit(scope.row)"></div>
                 <div class="icon-view tab-icon-set mr10" title="提交分析" @click="managerRowView(scope.row)"></div>
                 <div class="icon-copy tab-icon-set mr10" title="复制分析" @click="managerRowCopy(scope.row)"></div>
-                <div class="el-icon-upload tab-icon-set mr10" title="发布分析" v-show='scope.row.modelState == undefined' @click="managerRowPublish(scope.row)"></div>
-                <div class="el-icon-document tab-icon-set mr10" title="审批详情" v-show='scope.row.modelState =="待审批"' @click="managerRowDetail(scope.row)"></div>
-                <div class="icon-delete tab-icon-set mr10" title="删除分析" v-show='scope.row.modelState == undefined' @click="managerRowDelete(scope.$index, managerTableData)"></div>
+                <div class="el-icon-upload tab-icon-set mr10" title="发布分析" v-show="scope.row.modelState == ''" @click="managerRowPublish(scope.row)"></div>
+                <div class="el-icon-document tab-icon-set mr10" title="审批详情" v-show="scope.row.modelState == '待审批'" @click="managerRowDetail(scope.row)"></div>
+                <div class="icon-delete tab-icon-set mr10" title="删除分析" v-show="scope.row.modelState == ''" @click="managerRowDelete(scope.$index, managerTableData)"></div>
               </div>
             </template>
           </el-table-column>
@@ -130,11 +130,10 @@
                 style='margin-bottom: 5px'
                 v-for="(activity, index) in workFlow"
                 :key="index"
-                :color='activity.color'
               >
-                <h4>状态：{{activity.hanldeType}}</h4>
-                <p>处理人：{{activity.handlerBy}}</p>
-                <p>意见：{{activity.handlerOpinion}}</p>
+                <h4>状态：{{activity.modelStateLabel}}</h4>
+                <p>意见：{{activity.explain}}</p>
+                <p>处理人：{{activity.optUser}}</p>
               </el-card>
             </el-row>
               <!-- <el-timeline :reverse="reverse">
@@ -289,25 +288,22 @@ export default {
     })
     this.workFlow = [
         {
-          handlerBy: 'zhangsan',
-          handleTime: '2023-04-07 09:30:22',
-          hanldeType: '待处理',
-          handlerOpinion: '此模型高度不够，请重新确认再提交。',
-          color: '#667391'
+          optUser: 'zhangsan',
+          optTime: '2023-04-07 09:30:22',
+          modelStateLabel: '待处理',
+          explain: '此模型高度不够，请重新确认再提交。'
         },
         {
-          handlerBy: 'hangkeyuan',
-          handleTime: '2023-04-07 13:45:52',
-          hanldeType: '待审批',
-          handlerOpinion: '已修改高度，请确认。',
-          color: '#667391'
+          optUser: 'hangkeyuan',
+          optTime: '2023-04-07 13:45:52',
+          modelStateLabel: '待审批',
+          explain: '已修改高度，请确认。'
         },
         {
-          handlerBy: 'zhangsan',
-          handleTime: '2023-04-07 15:45:52',
-          hanldeType: '已审批',
-          handlerOpinion: '确认。',
-          color: '#667391'
+          optUser: 'zhangsan',
+          optTime: '2023-04-07 15:45:52',
+          modelStateLabel: '已审批',
+          explain: '确认。'
         }
       ]
     // document.getElementById('managerTableRef').addEventListener('click', // 点击表格时重新设置表格的宽度
@@ -433,11 +429,12 @@ export default {
       }).then(res => {
         console.log(res, 'res----test')
         if (res.status === 200) {
-          const {modelUser, optTime, modelStateLabel} = res.data[0]
+          const {optUser, optTime, modelStateLabel} = res.data[0]
          this.publishInfoForm = res.data[0] || []
-         this.publishInfoForm.submitBy = modelUser
+         this.publishInfoForm.submitBy = optUser
          this.publishInfoForm.submitTime = optTime
          this.publishInfoForm.modelState = modelStateLabel
+         this.workFlow = res.data
         }
         this.$store.commit('HIDE_LOADING', '加载中！')
       }).catch(err => {
@@ -1040,7 +1037,6 @@ export default {
         if (response.data.status === '0') {
           let resultData = response.data.result.data
           if (resultData.length > 0) {
-            resultData[0].modelState = '待审批'
             this.managerTableData = resultData
             this.totalCount = resultData.length // 显示表格数据总条数
             this.currentTreeId = id // 存储当前点击节点的编号，修改子集时使用
