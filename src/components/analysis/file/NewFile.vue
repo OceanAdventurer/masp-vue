@@ -557,6 +557,7 @@
                 <div class="m20 df df-fd-c df-jc-fs df-ai-fs" v-show="currentFilterConfigRowAttr === 6">
                   <el-radio v-model="attrSixRadio" @change="changeAttrSixRadio" label="3" class="mb10 mt10 w100">按时间段查询</el-radio>
                   <el-radio v-model="attrSixRadio" @change="changeAttrSixRadio" label="4" class="mb10 mt10 w100">按时间点查询</el-radio>
+                  <el-radio v-model="attrSixRadio" @change="changeAttrSixRadio" label="11" class="mb10 mt10 w100">按动态时间查询</el-radio>
 
                   <div class="df df-fd-c df-jc-fs df-ai-fs w100" v-show="attrSixRadio === '3'">
                     <div class="df df-fd-r df-jc-c df-ai-c">
@@ -672,6 +673,17 @@
                         :label="item.label"
                         :value="item.value"
                         size="mini">
+                      </el-option>
+                    </el-select>
+                  </div>
+                  <div class="df df-fd-c df-jc-fs df-ai-fs w100 data-point" v-show="attrSixRadio === '11'">
+                    <el-select v-model="dynamicTime">
+                      <el-option
+                        v-for="item in dynamicRange"
+                        :key='item.value'
+                        :label="item.label"
+                        :value="item.value"
+                      >
                       </el-option>
                     </el-select>
                   </div>
@@ -1000,7 +1012,7 @@
         </div>
       </div>
       <div class="file-new-bottom">
-        <el-button @click="assemblyNewFileParams(false)" type="primary" size="mini">提交</el-button>
+        <el-button @click="assemblyNewFileParams(false)" type="primary" size="mini">查看</el-button>
         <el-button @click="assemblyNewFileParams(true)" type="primary" size="mini">保存</el-button>
         <el-button @click="openCopySaveDialog" type="primary" size="mini">另存为</el-button>
       </div>
@@ -1106,6 +1118,18 @@ export default {
         exportGroupCount: '',
         checkedTimeZone: true
       },
+      dynamicTime: 'threeDays',
+      dynamicRange: [
+        {value: 'today', label: '当天'},
+        {value: 'threeDays', label: '3天'},
+        {value: 'fiveDays', label: '5天'},
+        {value: 'week', label: '一周'},
+        {value: 'month', label: '一个月'},
+        {value: 'threeMonths', label: '三个月'},
+        {value: 'halfYear', label: '半年'},
+        {value: 'nineMonths', label: '九个月'},
+        {value: 'year', label: '一年'}
+      ],
       pageSize: 10, // 每页显示条目数
       pagerCount: 11, // 页码按钮的数量
       totalCount: 0, // 总条目数
@@ -1369,7 +1393,8 @@ export default {
         'attrFourRadio': '4',
         'attrSixRadio': {
           '3': '37',
-          '4': '38'
+          '4': '38',
+          '11': '39'
         },
         'attrSevenRadio': '12',
         'attrEightRadio': '13'
@@ -3564,7 +3589,10 @@ export default {
       this.resetFilterTableConditionsData(this.currentFilterConfigRowId, this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions'], tempStr, true)
     },
     changeAttrSixRadio (value) { // 筛选配置→属性六
+    console.log(value, 'value----test')
       let expressionId = this.expressionData['attrSixRadio'][value]
+      console.log(this.expressionData, 'this.expressionData---test')
+      console.log(expressionId, 'expressionId---test')
       this.isSubmit = false // 设置禁止提交状态
       this.attrSixRadio = value
       this.resetAttrSixDefaultData(false)

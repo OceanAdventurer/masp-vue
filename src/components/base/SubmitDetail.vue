@@ -4,13 +4,13 @@
       <el-form ref="filtersRef" :model= "filtersForm" :rules="filtesRules" label-width="80px">
         <el-row>
           <el-col :span=6>
-            <el-form-item label="类型" prop="type">
-              <el-select v-model="filtersForm.type">
+            <el-form-item label="模型类别" prop="categoryType">
+              <el-select v-model="filtersForm.categoryType">
                 <el-option
                   v-for="item in typeList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 >
                 </el-option>
               </el-select>
@@ -18,20 +18,20 @@
           </el-col>
           <el-col :span=6>
             <el-form-item label="审批状态">
-              <el-select v-model="filtersForm.type">
+              <el-select v-model="filtersForm.modelState">
                 <el-option
                   v-for="item in statusList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item"
+                  :label="item"
+                  :value="item"
                 >
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span=7>
-            <el-form-item label="提交日期" prop="submitTime">
-            <el-date-picker v-model="filtersForm.submitTime" format='yyyy-MM-dd' type="date"></el-date-picker>
+            <el-form-item label="提交日期" prop="createTime">
+            <el-date-picker v-model="filtersForm.createTime" format='yyyy-MM-dd' type="date"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span=2 :offset="1">
@@ -53,21 +53,22 @@
       <!-- :header-row-class-name="headerRowClassName"
       :row-class-name="tableRowClassName"> -->
       <el-table-column type='index' label="序号" width="100" align="left"></el-table-column>
-      <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="type" label="类型">
+      <el-table-column prop="modelName" label="名称"></el-table-column>
+      <el-table-column prop="categoryType" label="模型类别">
         <template slot-scope="scope">
-          <div>{{scope.type}}</div>
+          <div>{{typeList.filter(item => {if (item.code === scope.categoryType) return item.label}) }}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="auditBy" label="审批人"></el-table-column>
-      <el-table-column prop="status" label="状态">
+      <el-table-column prop="optUser" label="审批人"></el-table-column>
+      <el-table-column prop="modelState" label="审批状态">
         <template slot-scope="scope">
-          <div>{{scope.status}}</div>
+          <div>{{scope.modelState}}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="submitTime" label="提交时间"></el-table-column>
-      <el-table-column prop="auditTime" label="审批时间"></el-table-column>
-      <el-table-column prop="currentNode" label="流转节点"></el-table-column>
+      <el-table-column prop="CREATETIME" label="提交时间"></el-table-column>
+      <el-table-column prop="optTime" label="处理时间"></el-table-column>
+      <!-- <el-table-column prop="currentNode" label="当前节点"></el-table-column> -->
+      <el-table-column prop="TRANSFER_USER" label="处理人"></el-table-column>
     </el-table>
     </div>
     <span slot="footer" class="dialog-footer">
@@ -82,16 +83,19 @@ export default {
   data () {
     return {
       dialogVisible: false,
-      typeList: [
-        {label: '基础风险分析', value: 1},
-        {label: '核心风险分析', value: 2},
-        {label: '专题分析', value: 3}
-      ],
-      statusList: [], // 状态列表
+      typeList: [],
+      statusList: [
+        '待提交',
+        '待审批',
+        '待办理',
+        '已审批',
+        '已上线',
+        '已下线'
+      ], // 状态列表
       filtersForm: { // 筛选条件集合
-        status: '', // 审批状态
-        type: '', // 类型
-        submitTime: this.$moment().startOf('day') // 提交日期
+        modelState: '', // 审批状态
+        categoryType: '', // 类型
+        createTime: '' // 提交日期
       },
       filtesRules: { // 必填规则
         // flightDate: [
@@ -102,55 +106,74 @@ export default {
     }
   },
   mounted () {
+    // this.$nextTick(() => {
+    // })
     this.$bus.$on('submit_details', () => {
       this.dialogVisible = true
+      this.queryTableInfo()
+      this.getTypeList()
     })
   },
   methods: {
-
-    queryTableInfo (val) { // 查询航班数据
+    queryTableInfo (val) { // 查询审批详情
       // this.$refs['filtersRef'].validate(valid => {
       //    if (valid) { // 查询table数据
-      //       const {flightDate, flightNo, arrAirport, depAirport, tailNo} = this.filtersForm
-      //       this.$store.commit('SHOW_LOADING', '加载中...')
-      //       this.$axios({
-      //         url: '/flightControl/searchFlight',
-      //         method: 'get',
-      //         params: {
-      //           flightDate: this.$moment(flightDate).format('YYYY-MM-DD'),
-      //           flightNo,
-      //           arrAirport,
-      //           depAirport,
-      //           tailNo,
-      //           pageNo: val || 1,
-      //           pageSize: this.pageSize
-      //         }
-      //       }).then(res => {
-      //         if (res.status === 200) {
-      //           const {data: {content, pageSize, pageNo, recordCount}} = res
-      //           content.map(item => {
-      //             if (item.is_hidden === '1') {
-      //               item.is_hidden = true
-      //             } else {
-      //               item.is_hidden = false
-      //             }
-      //           })
-      //           this.flightTableData = content
-      //           this.pageSize = pageSize
-      //           this.currentPage = pageNo
-      //           this.total = recordCount
-      //         }
-      //         this.$store.commit('HIDE_LOADING', '加载中！')
-      //       }).catch(err => {
-      //         console.log(err)
-      //         this.$message.error('请求响应失败，请稍后重试！')
-      //         this.$store.commit('HIDE_LOADING', '加载中！')
-      //       })
+            const {modelState, categoryType} = this.filtersForm
+            let obj = {
+              modelState,
+              categoryType
+              // createTime
+            }
+            this.$store.commit('SHOW_LOADING', '加载中...')
+            this.$axios({
+            url: '/modelMotion/showModelApproveNode',
+            method: 'post',
+            data: obj
+          }).then(res => {
+            console.log(res, 'res---test')
+              if (res.status === 200) {
+                const {data: {content, pageSize, pageNo, recordCount}} = res
+                content.map(item => {
+                  if (item.is_hidden === '1') {
+                    item.is_hidden = true
+                  } else {
+                    item.is_hidden = false
+                  }
+                })
+                this.flightTableData = content
+                this.pageSize = pageSize
+                this.currentPage = pageNo
+                this.total = recordCount
+              }
+              this.$store.commit('HIDE_LOADING', '加载中！')
+            }).catch(err => {
+              console.log(err)
+              this.$message.error('请求响应失败，请稍后重试！')
+              this.$store.commit('HIDE_LOADING', '加载中！')
+            })
       //     } else {
       //       console.log('error submit!!')
       //       return false
       //     }
       // })
+    },
+    getTypeList () {
+      this.$store.commit('SHOW_LOADING', '加载中...')
+      this.$axios({
+        url: '/modelMotion/getModelCategory',
+        method: 'get'
+        }).then(res => {
+        if (res.status === 200) {
+          let list = res.data || []
+          this.typeList = list
+        } else {
+          this.$message.error('操作失败，请稍后重试！')
+        }
+        this.$store.commit('HIDE_LOADING', '加载中！')
+      }).catch(err => {
+        console.log(err)
+        this.$store.commit('HIDE_LOADING', '加载中！')
+      })
     }
   }
 }

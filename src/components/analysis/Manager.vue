@@ -91,7 +91,7 @@
     </div>
     <div class="publish_dia">
       <el-dialog :close-on-click-modal="false" title="发布信息" :visible.sync="publishDiaShow">
-        <div class="event-dialog-content">
+        <div class="publish_dialog_content" style="max-height: 350px;overflow: auto">
           <el-form ref="publishDiaRef" :model= "publishInfoForm" :rules="publishInfoRules" label-width="80px" label-position='right'>
             <el-row>
               <el-col :span='12'>
@@ -417,6 +417,41 @@ export default {
       }
       this.publicParmas = {}
     },
+    auditingInfo (id) {
+      this.$store.commit('SHOW_LOADING', '加载中...')
+      let obj = {
+        modelId: id
+      }
+      console.log(obj, 'obj--test')
+      this.$axios({
+        url: '/modelMotion/showModelApproveDetail',
+        method: 'get',
+        data: {
+          modelId: id
+        }
+      }).then(res => {
+        console.log(res, 'res----test')
+        if (res.status === 200) {
+          if (res.data.massage === '模型提交错误，当前状态：待审批') {
+            this.$message.error(res.data.message)
+          } else {
+            this.publishDiaShow = false
+            this.$message({
+              message: '操作成功',
+              type: 'success'
+            })
+            this.publishInfoForm = {}
+            this.treeNode = ''
+            this.treeType = ''
+            this.treeName = ''
+          }
+        }
+        this.$store.commit('HIDE_LOADING', '加载中！')
+      }).catch(err => {
+        this.$store.commit('HIDE_LOADING', '加载中！')
+        console.log(err)
+      })
+    },
     handlerPublish () { // 提交发布
       this.$refs['publishDiaRef'].validate(valid => {
         if (valid) { // 查询table数据
@@ -434,18 +469,21 @@ export default {
             method: 'post',
             data: obj
           }).then(res => {
-            if (res.data.status === '0') {
-              this.publishDiaShow = false
-              this.$message({
-                message: '操作成功',
-                type: 'success'
-              })
-              this.publishInfoForm = {}
-              this.treeNode = ''
-              this.treeType = ''
-              this.treeName = ''
+            if (res.status === 200) {
+              if (res.data.massage === '模型提交错误，当前状态：待审批') {
+                this.$message.error(res.data.message)
+              } else {
+                this.publishDiaShow = false
+                this.$message({
+                  message: '操作成功',
+                  type: 'success'
+                })
+                this.publishInfoForm = {}
+                this.treeNode = ''
+                this.treeType = ''
+                this.treeName = ''
+              }
             }
-            this.$message.error(res.data.message)
             this.$store.commit('HIDE_LOADING', '加载中！')
           }).catch(err => {
             this.$store.commit('HIDE_LOADING', '加载中！')
@@ -459,6 +497,9 @@ export default {
     },
     managerRowPublish (row) { // 发布模型分析弹窗
       console.log(row, 'row---test')
+      if (row.modelState === '待审批') {
+        this.auditingInfo(row.ID)
+      }
       if (row) {
         this.publishInfoForm.modelName = row.NAME
         this.publishInfoForm.modelId = row.ID
@@ -1005,7 +1046,7 @@ export default {
         if (response.data.status === '0') {
           let resultData = response.data.result.data
           if (resultData.length > 0) {
-            console.log(resultData)
+            resultData[0].modelState = '待审批'
             this.managerTableData = resultData
             this.totalCount = resultData.length // 显示表格数据总条数
             this.currentTreeId = id // 存储当前点击节点的编号，修改子集时使用
@@ -1920,6 +1961,11 @@ export default {
   padding-top: 15px;
   border-right: 1px solid #DDDDDD;
   border-bottom: 1px solid #DDDDDD;
+}
+.publish_dia .el-dialog {
+  /* max-height: 500px; */
+  height: 300px;
+  overflow: auto;
 }
 .tree-head-icon {
   margin: -5px 10px 10px;

@@ -331,7 +331,7 @@ export default {
       this.iconGroups = [
         {src: image0, title: '任务详情', value: 'task_list'},
         {src: image1, title: '变更日志', value: 'change_data'},
-        {src: image2, title: '审批列表', value: 'audit_list'},
+        {src: image2, title: '待办列表', value: 'audit_list'},
         {src: image3, title: '提交详情', value: 'submit_details'},
         {src: image4, title: '帮助', value: 'help_manual'}
       ]
@@ -597,11 +597,10 @@ export default {
       this.$axios({
         url: 'modelMotion/getApproveAndHandle'
       }).then(res => {
-        console.log(res, 'res---test')
         const {APPROVE = 0, HANDLE = 0} = res
         this.approve = APPROVE
         this.handle = HANDLE
-        if ((APPROVE + HANDLE) > 0) {
+        if ((this.approve + this.handle) > 0) {
           this.isShowTips = true
         } else {
           this.isShowTips = false
