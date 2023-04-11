@@ -41,7 +41,7 @@
                 <div class="icon-view tab-icon-set mr10" title="提交分析" @click="managerRowView(scope.row)"></div>
                 <div class="icon-copy tab-icon-set mr10" title="复制分析" @click="managerRowCopy(scope.row)"></div>
                 <div class="el-icon-upload tab-icon-set mr10" title="发布分析" v-show='scope.row.modelState == undefined' @click="managerRowPublish(scope.row)"></div>
-                <div class="el-icon-document tab-icon-set mr10" title="审批详情" v-show='scope.row.modelState =="待审批"' @click="managerRowPublish(scope.row)"></div>
+                <div class="el-icon-document tab-icon-set mr10" title="审批详情" v-show='scope.row.modelState =="待审批"' @click="managerRowDetail(scope.row)"></div>
                 <div class="icon-delete tab-icon-set mr10" title="删除分析" v-show='scope.row.modelState == undefined' @click="managerRowDelete(scope.$index, managerTableData)"></div>
               </div>
             </template>
@@ -128,7 +128,7 @@
             <el-row style='padding-top: 15px' v-if="publishInfoForm.modelState==='待审批'">
               <el-card
                 style='margin-bottom: 5px'
-                v-for="(activity, index) in auditInfo"
+                v-for="(activity, index) in workFlow"
                 :key="index"
                 :color='activity.color'
               >
@@ -223,7 +223,8 @@ export default {
       auditInfo: [], // 审批流程
       treeNode: '',
       treeType: '',
-      treeName: ''
+      treeName: '',
+      workFlow: []
     }
   },
   watch: {
@@ -286,29 +287,29 @@ export default {
         this.publicParmas = nodeObj
       }
     })
-    this.auditInfo = [
-      {
-        handlerBy: 'zhangsan',
-        handleTime: '2023-04-07 09:30:22',
-        hanldeType: '待处理',
-        handlerOpinion: '此模型高度不够，请重新确认再提交。',
-        color: '#667391'
-      },
-      {
-        handlerBy: 'hangkeyuan',
-        handleTime: '2023-04-07 13:45:52',
-        hanldeType: '待审批',
-        handlerOpinion: '已修改高度，请确认。',
-        color: '#667391'
-      },
-      {
-        handlerBy: 'zhangsan',
-        handleTime: '2023-04-07 15:45:52',
-        hanldeType: '已审批',
-        handlerOpinion: '确认。',
-        color: '#667391'
-      }
-    ]
+    this.workFlow = [
+        {
+          handlerBy: 'zhangsan',
+          handleTime: '2023-04-07 09:30:22',
+          hanldeType: '待处理',
+          handlerOpinion: '此模型高度不够，请重新确认再提交。',
+          color: '#667391'
+        },
+        {
+          handlerBy: 'hangkeyuan',
+          handleTime: '2023-04-07 13:45:52',
+          hanldeType: '待审批',
+          handlerOpinion: '已修改高度，请确认。',
+          color: '#667391'
+        },
+        {
+          handlerBy: 'zhangsan',
+          handleTime: '2023-04-07 15:45:52',
+          hanldeType: '已审批',
+          handlerOpinion: '确认。',
+          color: '#667391'
+        }
+      ]
     // document.getElementById('managerTableRef').addEventListener('click', // 点击表格时重新设置表格的宽度
     //   function (e) {
     //     setTimeout(() => {
@@ -426,25 +427,17 @@ export default {
       this.$axios({
         url: '/modelMotion/showModelApproveDetail',
         method: 'get',
-        data: {
+        params: {
           modelId: id
         }
       }).then(res => {
         console.log(res, 'res----test')
         if (res.status === 200) {
-          if (res.data.massage === '模型提交错误，当前状态：待审批') {
-            this.$message.error(res.data.message)
-          } else {
-            this.publishDiaShow = false
-            this.$message({
-              message: '操作成功',
-              type: 'success'
-            })
-            this.publishInfoForm = {}
-            this.treeNode = ''
-            this.treeType = ''
-            this.treeName = ''
-          }
+          const {modelUser, optTime, modelStateLabel} = res.data[0]
+         this.publishInfoForm = res.data[0] || []
+         this.publishInfoForm.submitBy = modelUser
+         this.publishInfoForm.submitTime = optTime
+         this.publishInfoForm.modelState = modelStateLabel
         }
         this.$store.commit('HIDE_LOADING', '加载中！')
       }).catch(err => {
@@ -497,9 +490,6 @@ export default {
     },
     managerRowPublish (row) { // 发布模型分析弹窗
       console.log(row, 'row---test')
-      if (row.modelState === '待审批') {
-        this.auditingInfo(row.ID)
-      }
       if (row) {
         this.publishInfoForm.modelName = row.NAME
         this.publishInfoForm.modelId = row.ID
@@ -520,6 +510,10 @@ export default {
       this.publishInfoForm.submitTime = year + '-' + month + '-' + date // 提交日期
       this.publishDiaShow = !this.publishDiaShow
       this.$refs['publishDiaRef'].resetFields()
+    },
+    managerRowDetail (row) {
+      this.auditingInfo(row.ID)
+      this.publishDiaShow = true
     },
     getTypeList () {
       this.$store.commit('SHOW_LOADING', '加载中...')

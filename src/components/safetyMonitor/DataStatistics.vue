@@ -12,7 +12,7 @@ export default {
   components: {},
   data () {
     return {
-      url: '/dsap/user/ssoDMS?type=3'
+      url: '/dsap/safetyMonitor/tableauView'
     }
   },
   created () {

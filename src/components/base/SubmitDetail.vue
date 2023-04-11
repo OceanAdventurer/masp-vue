@@ -118,17 +118,21 @@ export default {
     queryTableInfo (val) { // 查询审批详情
       // this.$refs['filtersRef'].validate(valid => {
       //    if (valid) { // 查询table数据
-            const {modelState, categoryType} = this.filtersForm
-            let obj = {
-              modelState,
-              categoryType
-              // createTime
-            }
+            // const {modelState, categoryType} = this.filtersForm
+            // let obj = {
+            //   modelState,
+            //   categoryType
+            //   // createTime
+            // }
+            // encodeURIComponent(modelState)
             this.$store.commit('SHOW_LOADING', '加载中...')
             this.$axios({
             url: '/modelMotion/showModelApproveNode',
-            method: 'post',
-            data: obj
+            method: 'get',
+            params: {
+              // modelState,
+              'categoryType': '001'
+            }
           }).then(res => {
             console.log(res, 'res---test')
               if (res.status === 200) {
