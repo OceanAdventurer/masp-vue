@@ -99,6 +99,7 @@
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="initList">查询</el-button>
+<!--              <el-button type="primary" @click="dataExport">导出</el-button>-->
             </el-form-item>
           </el-form>
         </div>
@@ -404,6 +405,45 @@ export default {
       this.currentPage = 1
       this.getList()
     },
+    dataExport () {
+      let params = {
+        ...this.form
+      }
+      this.$axios({
+        url: '/weather/flight/export',
+        method: 'post',
+        data: JSON.stringify(params),
+        headers: {
+          'Content-type': 'application/json;charset=UTF-8'
+        },
+        responseType: 'blob'
+      }).then(res => {
+        this.$store.commit('HIDE_LOADING', '拼命加载中！')
+        let contentDispositionStr = res.headers['content-disposition']
+        let contentDispositionArr = contentDispositionStr.split('=')
+        let fileName = contentDispositionArr[1] // 获取文件名字
+        let blobType = res.headers['content-type'] // 获取类型
+        let blob = new Blob([res.data], {type: blobType})
+        if ('download' in document.createElement('a')) { // 非IE下载
+          const eLink = document.createElement('a')
+          eLink.download = fileName
+          eLink.style.display = 'none'
+          eLink.href = URL.createObjectURL(blob)
+          document.body.appendChild(eLink)
+          eLink.click()
+          URL.revokeObjectURL(eLink.href) // 释放URL 对象
+          document.body.removeChild(eLink)
+        } else { // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
+        this.$message({
+          message: '数据导出成功！',
+          type: 'success'
+        })
+      }).catch(res => {
+        this.$store.commit('HIDE_LOADING', '拼命加载中！')
+      })
+    },
     getList () {
       this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！')
       // 起飞时间
@@ -441,7 +481,6 @@ export default {
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
       }).catch(res => {
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
-        this.$message.error('查询失败! ')
       })
     },
     showInfo (row) {
@@ -457,7 +496,6 @@ export default {
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
       }).catch(res => {
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
-        this.$message.error('查询失败! ')
       })
     },
     closeDialog () {

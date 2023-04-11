@@ -297,7 +297,6 @@ export default {
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
       }).catch(res => {
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
-        this.$message.error('查询失败! ')
       })
     },
     getModelCategory () {
@@ -314,8 +313,6 @@ export default {
             })
           })
         }
-      }).catch(res => {
-        this.$message.error('查询模型分类失败! ')
       })
     },
     getAllUserList () {
@@ -332,8 +329,6 @@ export default {
             })
           })
         }
-      }).catch(res => {
-        this.$message.error('查询用户列表失败! ')
       })
     },
     showPublishInfo (row) {
@@ -370,7 +365,6 @@ export default {
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
       }).catch(res => {
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
-        this.$message.error('查询失败! ')
       })
     },
     showModel (row) {
@@ -394,7 +388,6 @@ export default {
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
       }).catch(res => {
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
-        this.$message.error('查询失败! ')
       })
     },
     // 审批
@@ -444,7 +437,6 @@ export default {
           }
         }).catch(res => {
           this.$store.commit('HIDE_LOADING', '拼命加载中！')
-          this.$message.error('请求失败! ')
         })
       }).catch(() => {
         this.$message.info('已取消！')
