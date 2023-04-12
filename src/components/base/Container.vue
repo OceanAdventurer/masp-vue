@@ -286,7 +286,6 @@ export default {
       that.setCurrentName(eName)
     })
     this.$bus.$on('sendingInfo', obj => {
-      console.log(obj, 'obj---sendingInfo-test')
       that.openNavMenuItem('analysis', obj)
     })
     document.getElementById('app').addEventListener('click',
@@ -384,6 +383,7 @@ export default {
         this.showSettingCategoryDefault = false
         let obj = publicParmas || {}
         this.$bus.$emit('analysisMenu')
+        obj.modelState = '已上线'
         this.$bus.$emit('sendToManager', obj)
       } else if (this.navMenu === 'weather') { // 天气，默认打开航班天气页面
         this.$bus.$emit('weatherAddTab', {enName: 'flight_weather', zhName: '航班天气', isClosable: false, parent: name})

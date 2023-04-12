@@ -12,7 +12,7 @@ module.exports = {
     assetsSubDirectory: 'static',
 
     // 编译发布的根目录，可配置为资源服务器域名或 CDN 域名
-    assetsPublicPath: '/DSAP/',
+    assetsPublicPath: '/dsap/',
     // assetsPublicPath: '/',
 
     // dev服务器使用http-proxy-middleware进行代理,定义代理规则

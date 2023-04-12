@@ -867,7 +867,7 @@ export default {
             name: name,
             parentId: pid,
             type: type,
-            userId: this.$store.getters.userInfo.userId || 'DSAP' // 暂时是默认值
+            userId: this.$store.getters.userInfo.userId || 'dsap' // 暂时是默认值
           },
           headers: {
             //'Content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -985,7 +985,7 @@ export default {
             parentId: pid,
             type: type,
             id: id,
-            userId: this.$store.getters.userInfo.userName || 'DSAP' // 暂时是默认值
+            userId: this.$store.getters.userInfo.userName || 'dsap' // 暂时是默认值
           },
           headers: {
             'Content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
