@@ -6,33 +6,42 @@
       </el-radio-group>
     </div>
     <!-- v-if='onlineModelList.length > 0' -->
-    <div class="manager-table df df-fd-r" id="managerTableRef" >
+    <div class="manager-table df df-fd-r w100" id="managerTableRef" >
         <el-table
           ref="managerTableCon"
           :data="onlineModelList"
           height="100%"
           width="100%"
+          border
           highlight-current-row
           fit>
           <!-- :header-row-class-name="headerRowClassName"
           :row-class-name="tableRowClassName" -->
-          <el-table-column prop="modelName" label="名称" align="left"></el-table-column>
-          <el-table-column prop="modelType" label="分析类型" align="left"></el-table-column>
-          <el-table-column prop="onlineTime" label="上线时间" width="160"></el-table-column>
-          <!-- <el-table-column label="操作" width="150" align="left">
+          <el-table-column prop="modelName" label="模型名称" align="left"></el-table-column>
+          <!-- <el-table-column prop="modelType" label="分析类型" align="left"></el-table-column> -->
+          <el-table-column prop="modelState" label="模型状态" align="left">已上线</el-table-column>
+          <el-table-column prop="modelUser" label="提交人" align="left"></el-table-column>
+          <!-- <el-table-column prop="onlineTime" label="上线时间" width="160"></el-table-column> -->
+          <el-table-column label="操作" width="150" align="left">
             <template slot-scope="scope">
               <div class="row-icon-group">
-                <div class="icon-edit tab-icon-set mr10" title="编辑分析" v-show="scope.row.modelState == '' || scope.row.modelState == '待审批'" @click="managerRowEdit(scope.row)"></div>
-                <div class="icon-view tab-icon-set mr10" title="提交分析" @click="managerRowView(scope.row)"></div>
-                <div class="icon-copy tab-icon-set mr10" title="复制分析" @click="managerRowCopy(scope.row)"></div>
-                <div class="el-icon-upload tab-icon-set mr10" title="发布分析" v-show="scope.row.modelState == ''" @click="managerRowPublish(scope.row)"></div>
-                <div class="el-icon-document tab-icon-set mr10" title="审批详情" v-show="scope.row.modelState == '待审批'" @click="managerRowDetail(scope.row)"></div>
-                <div class="icon-delete tab-icon-set mr10" title="删除分析" v-show="scope.row.modelState == ''" @click="managerRowDelete(scope.$index, managerTableData)"></div>
+                <el-button class="opt-button" size="mini" round @click="checkDetail(scope.row)">查看模型</el-button>
               </div>
             </template>
-          </el-table-column> -->
+          </el-table-column>
         </el-table>
-      </div>
+    </div>
+    <div class="model-approve-table-pagination df df-jc-fe df-ai-c">
+      <el-pagination
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pageNo"
+        :page-size="pageSize"
+        layout="prev, pager, next, total"
+        :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
@@ -43,7 +52,10 @@ export default {
     return {
       onlineModelList: [],
       modelType: '',
-      typeList: []
+      typeList: [],
+      pageSize: 20,
+      pageNo: 1,
+      total: 0
     }
   },
   components: {
@@ -59,6 +71,14 @@ export default {
     })
   },
   methods: {
+    handleSizeChange (val) {
+      // console.log(`每页 ${val} 条`)
+    },
+    handleCurrentChange (val) {
+      // console.log(`当前页: ${val}`)
+      this.pageNo = val
+      this.queryTable()
+    },
     getTypeList () {
       this.$store.commit('SHOW_LOADING', '加载中...')
       this.$axios({
@@ -77,9 +97,42 @@ export default {
         this.$store.commit('HIDE_LOADING', '加载中！')
       })
     },
+    checkDetail (row) {
+      this.$bus.$emit('sendingInfo', {
+        treeType: row.treeType,
+        treeNode: row.treeNode,
+        treeName: row.treeName,
+        name: row.modelName
+      })
+    },
     queryTable (val) {
-      val = val || this.modelType
-      console.log(val, 'v---test')
+      this.$store.commit('SHOW_LOADING', '加载中...')
+      this.$axios({
+        url: '/modelMotion/showModelPageList',
+        method: 'post',
+        data: {
+          categoryType: this.modelType,
+          pageNo: this.pageNo,
+          pageSize: this.pageSize
+        }
+        }).then(res => {
+        if (res.status === 200) {
+          this.onlineModelList = res.data.content || []
+          this.pageNo = res.data.pageNo
+          this.pageSize = res.data.pageSize
+          this.total = res.data.recordCount
+        } else {
+          this.onlineModelList = []
+          this.$message.error('操作失败，请稍后重试！')
+          this.pageNo = 1
+          this.pageSize = 20
+          this.total = 0
+        }
+        this.$store.commit('HIDE_LOADING', '加载中！')
+      }).catch(err => {
+        console.log(err)
+        this.$store.commit('HIDE_LOADING', '加载中！')
+      })
     }
   }
 }
@@ -96,5 +149,9 @@ export default {
   }
   .model_run_time .model_type_title .el-radio-group {
     margin-right: 10px;
+  }
+  .model_run_time .manager-table {
+    min-height: 300px;
+    height: calc(100% - 150px);
   }
 </style>

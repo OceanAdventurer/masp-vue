@@ -867,7 +867,7 @@ export default {
             name: name,
             parentId: pid,
             type: type,
-            userId: this.$store.getters.userInfo.userId || 'dsap' // 暂时是默认值
+            userId: this.$store.getters.userInfo.userId || 'DSAP' // 暂时是默认值
           },
           headers: {
             //'Content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -985,7 +985,7 @@ export default {
             parentId: pid,
             type: type,
             id: id,
-            userId: this.$store.getters.userInfo.userName || 'dsap' // 暂时是默认值
+            userId: this.$store.getters.userInfo.userName || 'DSAP' // 暂时是默认值
           },
           headers: {
             'Content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -1770,7 +1770,7 @@ export default {
         this.getAnalysisRecord(this.$store.state.managerTreeNodeId)
       }
     },
-    // {"message":"请先登录","status":"E1001","result":{"data":"http://id.ceair.com:7777/oam/server/logout?end_url=http://dsap-bi.ceair.com"}}
+    // {"message":"请先登录","status":"E1001","result":{"data":"http://id.ceair.com:7777/oam/server/logout?end_url=http://DSAP-bi.ceair.com"}}
     logBackIn (data) {
       const that = this
       // if (!window.tipLock) {
