@@ -406,6 +406,7 @@ export default {
       this.getList()
     },
     dataExport () {
+      this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！')
       let params = {
         ...this.form
       }
@@ -419,9 +420,10 @@ export default {
         responseType: 'blob'
       }).then(res => {
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
-        let contentDispositionStr = res.headers['content-disposition']
+        let contentDispositionStr = decodeURIComponent(res.headers['content-disposition'], 'UTF-8')
         let contentDispositionArr = contentDispositionStr.split('=')
         let fileName = contentDispositionArr[1] // 获取文件名字
+        console.log('fileName: ' + fileName)
         let blobType = res.headers['content-type'] // 获取类型
         let blob = new Blob([res.data], {type: blobType})
         if ('download' in document.createElement('a')) { // 非IE下载
