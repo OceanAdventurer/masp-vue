@@ -33,16 +33,23 @@
           :row-class-name="tableRowClassName">
           <el-table-column prop="NAME" label="名称" width="auto" align="left"></el-table-column>
           <el-table-column prop="TYPE" label="分析类型" width="90" align="left"></el-table-column>
+          <el-table-column prop="modelState" label="模型状态" width="90" align="left">
+            <template slot-scope="scope">
+              <div>
+                {{scope.row.modelState || '待提交'}}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column prop="CREATETIME" label="修改日期" align="left" width="160"></el-table-column>
-          <el-table-column label="操作" width="150" align="left">
+          <el-table-column label="操作" width="180" align="left">
             <template slot-scope="scope">
               <div class="row-icon-group">
                 <div class="icon-edit tab-icon-set mr10" title="编辑分析" v-show="scope.row.modelState == '' || scope.row.modelState == '待审批'" @click="managerRowEdit(scope.row)"></div>
-                <div class="icon-view tab-icon-set mr10" title="提交分析" @click="managerRowView(scope.row)"></div>
+                <div class="icon-view tab-icon-set mr10" title="查看分析" @click="managerRowView(scope.row)"></div>
                 <div class="icon-copy tab-icon-set mr10" title="复制分析" @click="managerRowCopy(scope.row)"></div>
                 <div class="el-icon-upload tab-icon-set mr10" title="发布分析" v-show="scope.row.modelState == ''" @click="managerRowPublish(scope.row)"></div>
-                <div class="el-icon-document tab-icon-set mr10" title="审批详情" v-show="scope.row.modelState == '待审批'" @click="managerRowDetail(scope.row)"></div>
-                <div class="icon-delete tab-icon-set mr10" title="删除分析" v-show="scope.row.modelState == ''" @click="managerRowDelete(scope.$index, managerTableData)"></div>
+                <div class="el-icon-view tab-icon-set mr10" title="审批详情" v-show="scope.row.modelState !== '' && scope.row.modelState !== '待提交'" @click="managerRowDetail(scope.row)"></div>
+                <div class="icon-delete tab-icon-set mr10" title="删除分析" v-show="scope.row.modelState == '' || scope.row.modelState == '待提交'" @click="managerRowDelete(scope.$index, managerTableData)"></div>
               </div>
             </template>
           </el-table-column>
@@ -103,7 +110,7 @@
             <el-row>
               <el-col :span='12'>
                 <el-form-item label="模型分类" prop="categoryType">
-                  <el-select v-model="publishInfoForm.categoryType" v-if="publishInfoForm.modelState==='待提交'">
+                  <el-select v-model="publishInfoForm.categoryType" v-if="publishInfoForm.modelState === '待提交'">
                     <el-option
                       v-for="item in typeList"
                       :key="item.code"
@@ -112,26 +119,26 @@
                     >
                     </el-option>
                   </el-select>
-                  <span v-else>{{typeList.find(item => item.code === publishInfoForm.categoryType).name}}</span>
+                  <span v-else>{{typeList.find(item => item.code === publishInfoForm.categoryType) && typeList.find(item => item.code === publishInfoForm.categoryType).name || ''}}</span>
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-form-item label="备注" prop="explain" v-show="publishInfoForm.modelState==='待提交'">
+            <el-form-item label="备注" prop="explain" v-show="publishInfoForm.modelState ==='待提交' || optTypeLabel === '驳回'">
               <el-input type="textarea"
                 :rows="3"
                 v-model.trim="publishInfoForm.explain"
                 clearable
                 placeholder="请输入发布原因，有效期等信息"/>
             </el-form-item>
-            <el-row style='padding-top: 15px' v-if="publishInfoForm.modelState==='待审批'">
+            <el-row style='padding-top: 15px' v-if="workFlow.length > 0">
               <el-card
                 style='margin-bottom: 5px'
                 v-for="(activity, index) in workFlow"
                 :key="index"
               >
-                <h4>状态：{{activity.modelStateLabel}}</h4>
+                <h4>操作类型：{{activity.optTypeLabel}}</h4>
                 <p>备注：{{activity.explain}}</p>
-                <p>处理人：{{activity.optUser}}</p>
+                <p>处理人：{{activity.optUser}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 处理时间：{{activity.optTime}}</p>
               </el-card>
             </el-row>
               <!-- <el-timeline :reverse="reverse">
@@ -150,10 +157,10 @@
                   </el-card>
                 </el-timeline-item>
               </el-timeline> -->
-            <el-form-item label="提交人" prop="submitBy" v-show="publishInfoForm.modelState==='待提交'">
+            <el-form-item label="提交人" prop="submitBy" v-show="publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
               <span>{{publishInfoForm.submitBy}}</span>
             </el-form-item>
-            <el-form-item label="提交时间" prop="submitTime" v-show="publishInfoForm.modelState==='待提交'">
+            <el-form-item label="提交时间" prop="submitTime" v-show="publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
               <span>{{publishInfoForm.submitTime}}</span>
               <!-- <el-date-picker v-model="publishInfoForm.subTime" format='yyyy-MM-dd' type="date" disabled></el-date-picker> -->
             </el-form-item>
@@ -221,7 +228,8 @@ export default {
       treeNode: '',
       treeType: '',
       treeName: '',
-      workFlow: []
+      workFlow: [],
+      optTypeLabel: '待提交'
     }
   },
   watch: {
@@ -284,26 +292,6 @@ export default {
         this.publicParmas = nodeObj
       }
     })
-    this.workFlow = [
-        {
-          optUser: 'zhangsan',
-          optTime: '2023-04-07 09:30:22',
-          modelStateLabel: '待处理',
-          explain: '此模型高度不够，请重新确认再提交。'
-        },
-        {
-          optUser: 'hangkeyuan',
-          optTime: '2023-04-07 13:45:52',
-          modelStateLabel: '待审批',
-          explain: '已修改高度，请确认。'
-        },
-        {
-          optUser: 'zhangsan',
-          optTime: '2023-04-07 15:45:52',
-          modelStateLabel: '已审批',
-          explain: '确认。'
-        }
-      ]
     // document.getElementById('managerTableRef').addEventListener('click', // 点击表格时重新设置表格的宽度
     //   function (e) {
     //     setTimeout(() => {
@@ -422,12 +410,21 @@ export default {
         }
       }).then(res => {
         if (res.status === 200) {
-          const {optUser, optTime, modelStateLabel} = res.data[0]
-         this.publishInfoForm = res.data[0] || []
-         this.publishInfoForm.submitBy = optUser
-         this.publishInfoForm.submitTime = optTime
-         this.publishInfoForm.modelState = modelStateLabel
-         this.workFlow = res.data
+          if (res.data.length > 0) {
+            // const {optUser, optTime} = res.data[0]
+            // this.publishInfoForm = res.data[0] || []
+            this.optTypeLabel = res.data[0].optTypeLabel
+            this.publishInfoForm.explain = res.data.find(item => item.optTypeLabel === '提交').explain
+            this.publishInfoForm.submitBy = res.data[0].optUser
+            this.publishInfoForm.submitTime = res.data[0].optTime
+            this.publishInfoForm.categoryType = res.data[0].categoryType
+            this.publishInfoForm.categoryName = res.data[0].categoryName
+            this.publishInfoForm.modelName = res.data[0].modelName
+            this.publishInfoForm.modelId = res.data[0].modelId
+            this.workFlow = res.data
+          } else {
+            this.workFlow = []
+          }
         }
         this.$store.commit('HIDE_LOADING', '加载中！')
       }).catch(err => {
@@ -448,7 +445,7 @@ export default {
             method: 'post',
             data: obj
           }).then(res => {
-            if (res.status === 200) {
+            if (res.status === 200 && res.data.result) {
               if (res.data.massage === '模型提交错误，当前状态：待审批') {
                 this.$message.error(res.data.message)
               } else {
@@ -463,7 +460,10 @@ export default {
                 this.treeNode = ''
                 this.treeType = ''
                 this.treeName = ''
+                this.optTypeLabel = ''
               }
+            } else {
+              this.$message.error(res.data.message)
             }
             if (this.$refs['publishDiaRef']) this.$store.commit('HIDE_LOADING', '加载中！')
           }).catch(err => {
@@ -477,6 +477,8 @@ export default {
       })
     },
     managerRowPublish (row) { // 发布模型分析弹窗
+      this.publishInfoForm = {}
+      this.workFlow = []
       if (this.$refs['publishDiaRef']) this.$refs['publishDiaRef'].resetFields()
       if (row) {
         this.publishInfoForm.modelName = row.NAME
@@ -500,6 +502,7 @@ export default {
     },
     managerRowDetail (row) {
       this.auditingInfo(row.ID)
+      this.publishInfoForm.modelState = row.modelState
       this.publishDiaShow = true
     },
     getTypeList () {
@@ -1965,13 +1968,16 @@ export default {
 }
 .analysis-tab-content .el-icon-thumb,
 .analysis-tab-content .el-icon-upload,
-.analysis-tab-content .el-icon-document  {
+.analysis-tab-content .el-icon-view {
   transform: scale(1.3);
   padding-top: 1px;
   color: #637394;
 }
-.analysis-tab-content .el-icon-document {
-  transform: scale(1);
+.analysis-tab-content .tab-icon-set {
+  width: 16px;
+}
+.analysis-tab-content .el-icon-view {
+  padding-top: 3px;
 }
 .manager-table {
   position: relative;

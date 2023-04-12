@@ -393,6 +393,7 @@ export default {
       } else if (this.navMenu === 'modelRuntime') { // 模型运行区
         this.$bus.$emit('modelRuntimeMenu', 'modelRuntime_approve')
       } else if (this.navMenu === 'runtimeManage') { // 模型运行管理区
+        this.isShowTips = false
         this.$bus.$emit('runtimeManageMenu', 'runtimeManage_approve')
       } else { // 点击的是其他菜单则隐藏，否则会导致二级菜单不出来
         this.showSettingCategoryDefault = false // 隐藏

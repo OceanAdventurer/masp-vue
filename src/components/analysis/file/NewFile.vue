@@ -676,7 +676,8 @@
                       </el-option>
                     </el-select>
                   </div>
-                  <div class="df df-fd-c df-jc-fs df-ai-fs w100 data-point" v-show="attrSixRadio === '11'"><el-select v-model="dynamicTime">
+                  <div class="df df-fd-c df-jc-fs df-ai-fs w100 data-point" v-show="attrSixRadio === '11'">
+                    <!-- <el-select v-model="dynamicTime">
                       <el-option
                         v-for="item in dynamicRange"
                         :key='item.value'
@@ -684,7 +685,27 @@
                         :value="item.value"
                       >
                       </el-option>
+                    </el-select> -->
+                    <el-select v-model="dynamicType" class="type_class" @change="changeDynamicData">
+                      <el-option
+                        v-for="item in typeRange"
+                        :key='item.value'
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                      </el-option>
                     </el-select>
+                    <div class="dynamic_time">
+                      <el-input-number type="nummber" v-model="dynamicTimeStart" :min="0"></el-input-number>
+                      <!-- {{dynamicType === 'day' ? '天' : dynamicType === 'week' ? '周' : dynamicType === 'month' ? '月' : '年'}}前 -->
+                      {{dynamicType === 'day' ? '天' : dynamicType === 'month' ? '月' : '年'}}前
+                      <el-input-number type="nummber" v-model="dynamicTimeEnd" :min="0"></el-input-number>
+                      {{dynamicType === 'day' ? '天' : dynamicType === 'month' ? '月' : '年'}}后
+                      <!-- {{dynamicType === 'day' ? '天' : dynamicType === 'week' ? '周' : dynamicType === 'month' ? '月' : '年'}}后 -->
+                    </div>
+                    <div class="dynamic_time_button">
+                      <el-button type="primary" @click="changeAccordDayStartDate">确定</el-button>
+                    </div>
                     <!-- <ul class='dynamic_time'>
                       <li v-for="item in testRange" :key='item.value'>
                         <span @click="changeDynamicData('-')">-</span><el-input type='number' v-model='item.dynamicTime'></el-input><span @click="changeDynamicData('+')">+</span>{{item.label}}
@@ -1122,24 +1143,6 @@ export default {
         exportGroupCount: '',
         checkedTimeZone: true
       },
-      dynamicTime: 'threeDays',
-      dynamicRange: [
-        {value: 'today', label: '当天'},
-        {value: 'threeDays', label: '3天'},
-        {value: 'fiveDays', label: '5天'},
-        {value: 'week', label: '一周'},
-        {value: 'month', label: '一个月'},
-        {value: 'threeMonths', label: '三个月'},
-        {value: 'halfYear', label: '半年'},
-        {value: 'nineMonths', label: '九个月'},
-        {value: 'year', label: '一年'}
-      ],
-      testRange: [
-        {index: 0, value: 'h', label: '小时', disabled: false, dynamicTime: 0},
-        {index: 1, value: 'day', label: '天', disabled: false, dynamicTime: 0},
-        {index: 2, value: 'month', label: '月', disabled: false, dynamicTime: 0},
-        {index: 3, value: 'year', label: '年', disabled: false, dynamicTime: 0}
-      ],
       pageSize: 10, // 每页显示条目数
       pagerCount: 11, // 页码按钮的数量
       totalCount: 0, // 总条目数
@@ -1241,6 +1244,33 @@ export default {
       attrSixRadio: '', // 筛选配置第六类属性radio值
       accordDayStartDate: '', // 筛选配置第六类属性中按天范围开始日期
       accordDayEndDate: '', // 筛选配置第六类属性中按天范围结束日期
+      dynamicTime: 'threeDays',
+      dynamicTimeStart: 0, // 筛选配置第七类属性中按动态范围开始日期
+      dynamicTimeEnd: 0, // 筛选配置第七类属性中按动态范围结束日期
+      dynamicType: 'day',
+      typeRange: [
+        {value: 'day', label: '天'},
+        // {value: 'week', label: '周'},
+        {value: 'month', label: '月'},
+        {value: 'year', label: '年'}
+      ],
+      dynamicRange: [
+        {value: 'today', label: '当天'},
+        {value: 'threeDays', label: '3天'},
+        {value: 'fiveDays', label: '5天'},
+        {value: 'week', label: '一周'},
+        {value: 'month', label: '一个月'},
+        {value: 'threeMonths', label: '三个月'},
+        {value: 'halfYear', label: '半年'},
+        {value: 'nineMonths', label: '九个月'},
+        {value: 'year', label: '一年'}
+      ],
+      testRange: [
+        {index: 0, value: 'h', label: '小时', disabled: false, dynamicTime: 0},
+        {index: 1, value: 'day', label: '天', disabled: false, dynamicTime: 0},
+        {index: 2, value: 'month', label: '月', disabled: false, dynamicTime: 0},
+        {index: 3, value: 'year', label: '年', disabled: false, dynamicTime: 0}
+      ],
       // dataPointYArr: [
       //   {value: 2017, label: '2017年'},
       //   {value: 2018, label: '2018年'},
@@ -1759,12 +1789,14 @@ export default {
       // })
     },
     changeDynamicData (mark) {
-      let num = this.dynamicTime
-      if (mark === '-') {
-        this.dynamicTime = num--
-      } else {
-        this.dynamicTime = num++
-      }
+      this.dynamicTimeStart = 0
+      this.dynamicTimeEnd = 0
+      // let num = this.dynamicTime
+      // if (mark === '-') {
+      //   this.dynamicTime = num--
+      // } else {
+      //   this.dynamicTime = num++
+      // }
       console.log(mark, this.dynamicTime, 'test----changeDynamicData')
     },
     rowDropSort () { // 行拖拽排序
@@ -2779,7 +2811,8 @@ export default {
       }
       this.accordDayStartDate = '' // 筛选配置第六类属性中按天范围开始日期
       this.accordDayEndDate = '' // 筛选配置第六类属性中按天范围结束日期
-
+      this.dynamicTimeStart = 0 // 筛选配置第六类属性中动态范围
+      this.dynamicTimeEnd = 0 // 筛选配置第六类属性中按天动态范围
       this.dataPointY = []
       this.dataPointM = []
       this.dataPointD = []
@@ -3608,12 +3641,13 @@ export default {
       this.resetFilterTableConditionsData(this.currentFilterConfigRowId, this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions'], tempStr, true)
     },
     changeAttrSixRadio (value) { // 筛选配置→属性六
-    console.log(value, 'value----test')
+      console.log(value, 'value----test')
       let expressionId = this.expressionData['attrSixRadio'][value]
       console.log(this.expressionData, 'this.expressionData---test')
       console.log(expressionId, 'expressionId---test')
       this.isSubmit = false // 设置禁止提交状态
       this.attrSixRadio = value
+      this.alertTitle = ''
       this.resetAttrSixDefaultData(false)
       this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['operatordId'] = expressionId
       this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['attrRadioValue'] = value
@@ -3654,8 +3688,9 @@ export default {
     },
     changeAccordDayStartDate (value) { // 筛选配置→属性六→按天→开始日期
       let tempStr = ''
+      let tempSqlStr = ''
+      let expressionId = this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['operatordId']
       let columnName = this.filterConfigTableDataObj[this.currentFilterConfigRowId]['columnName']
-
       if (columnName === 'FLIGHT_DATE') {
         if (new Date(this.accordDayStartDate).getTime() > new Date(this.accordDayEndDate).getTime()) {
           return false
@@ -3666,19 +3701,51 @@ export default {
         }
       }
 
-      if (this.$util.isDefine(this.accordDayStartDate) && this.$util.isDefine(this.accordDayEndDate)) {
+      if ((this.$util.isDefine(this.accordDayStartDate) && this.$util.isDefine(this.accordDayEndDate)) ||
+        this.dynamicTimeStart || this.dynamicTimeEnd
+      ) {
         if (columnName === 'FLIGHT_DATE') {
-          tempStr = this.$moment(this.accordDayStartDate).format('YYYY-MM-DD') + '~' + this.$moment(this.accordDayEndDate).format('YYYY-MM-DD')
+          console.log(expressionId, 'expressionId---test')
+          console.log(this.dynamicType, 'this.dynamicType---test')
+          if (expressionId === '39') { // 按动态时间查询
+            if (this.dynamicType === 'day') { // 以天为单位
+              tempStr = this.$moment().subtract(this.dynamicTimeStart, 'days').format('YYYY-MM-DD') + '~' + this.$moment().add(this.dynamicTimeEnd, 'days').format('YYYY-MM-DD')
+              console.log(tempStr, 'tempStr----test')
+              tempSqlStr = columnName + ' >= \'' + '-' + this.dynamicTimeStart + '天' + '\' and ' + columnName + ' < \'' + this.dynamicTimeEnd + '天' + '\''
+            } else if (this.dynamicType === 'month') {
+              tempStr = this.$moment().subtract(-this.dynamicTimeStart, 'months').format('YYYY-MM-DD') + '~' + this.$moment().add(this.dynamicTimeEnd, 'months').format('YYYY-MM-DD')
+              tempSqlStr = columnName + ' >= \'' + '-' + this.dynamicTimeStart + '月' + '\' and ' + columnName + ' < \'' + this.dynamicTimeEnd + '月' + '\''
+            } else {
+              tempStr = this.$moment().month(-this.dynamicTimeStart).format('YYYY-MM-DD') + '~' + this.$moment().month(this.dynamicTimeEnd).format('YYYY-MM-DD')
+              tempSqlStr = columnName + ' >= \'' + '-' + this.dynamicTimeStart + '年' + '\' and ' + columnName + ' < \'' + this.dynamicTimeEnd + '年' + '\''
+            }
+          } else {
+            this.accordDayStartDate = value
+            tempStr = this.$moment(this.accordDayStartDate).format('YYYY-MM-DD') + '~' + this.$moment(this.accordDayEndDate).format('YYYY-MM-DD')
+            tempSqlStr = columnName + ' >= \'' + this.$moment(this.accordDayStartDate).format('YYYY-MM-DD') + '\' and ' + columnName + ' < \'' + this.$moment(this.accordDayEndDate).add(1, 'days').format('YYYY-MM-DD') + '\''
+          }
         } else {
-          tempStr = this.$moment(this.accordDayStartDate).format('YYYY-MM-DD HH:mm:ss') + '~' + this.$moment(this.accordDayEndDate).format('YYYY-MM-DD HH:mm:ss')
+          if (expressionId === '39') { // 按动态时间查询
+            if (this.dynamicType === 'day') { // 以天为单位
+              tempStr = this.$moment().subtract(this.dynamicTimeStar, 'days').format('YYYY-MM-DD HH:mm:ss') + '~' + this.$moment().add(this.dynamicTimeEnd, 'days').format('YYYY-MM-DD HH:mm:ss')
+              // tempSqlStr = columnName + ' >= \'' + this.$moment(this.dynamicTimeStart).format('YYYY-MM-DD HH:mm:ss') + '\' and ' + columnName + ' < \'' + this.$moment(this.dynamicTimeEnd).format('YYYY-MM-DD HH:mm:ss') + '\''
+              tempSqlStr = columnName + ' >= \'' + '-' + this.dynamicTimeStart + '天' + '\' and ' + columnName + ' < \'' + this.dynamicTimeEnd + '天' + '\''
+            } else if (this.dynamicType === 'month') {
+              tempStr = this.$moment().month(-this.dynamicTimeStart).format('YYYY-MM-DD HH:mm:ss') + '~' + this.$moment().month(this.dynamicTimeEnd).format('YYYY-MM-DD HH:mm:ss')
+              tempSqlStr = columnName + ' >= \'' + '-' + this.dynamicTimeStart + '月' + '\' and ' + columnName + ' < \'' + this.dynamicTimeEnd + '月' + '\''
+            } else {
+              tempStr = this.$moment().month(-this.dynamicTimeStart).format('YYYY-MM-DD') + '~' + this.$moment().month(this.dynamicTimeEnd).format('YYYY-MM-DD')
+              tempSqlStr = columnName + ' >= \'' + '-' + this.dynamicTimeStart + '年' + '\' and ' + columnName + ' < \'' + this.dynamicTimeEnd + '年' + '\''
+            }
+          } else {
+            this.accordDayStartDate = value
+            tempStr = this.$moment(this.accordDayStartDate).format('YYYY-MM-DD HH:mm:ss') + '~' + this.$moment(this.accordDayEndDate).format('YYYY-MM-DD HH:mm:ss')
+            tempSqlStr = columnName + ' >= \'' + this.$moment(this.accordDayStartDate).format('YYYY-MM-DD HH:mm:ss') + '\' and ' + columnName + ' < \'' + this.$moment(this.accordDayEndDate).format('YYYY-MM-DD HH:mm:ss') + '\''
+          }
         }
       }
-      let tempSqlStr = columnName + ' >= \'' + this.$moment(this.accordDayStartDate).format('YYYY-MM-DD HH:mm:ss') + '\' and ' + columnName + ' < \'' + this.$moment(this.accordDayEndDate).format('YYYY-MM-DD HH:mm:ss') + '\''
-      if (columnName === 'FLIGHT_DATE') {
-        tempSqlStr = columnName + ' >= \'' + this.$moment(this.accordDayStartDate).format('YYYY-MM-DD') + '\' and ' + columnName + ' < \'' + this.$moment(this.accordDayEndDate).add(1, 'days').format('YYYY-MM-DD') + '\''
-      }
-
-      this.accordDayStartDate = value
+      console.log(tempStr, 'tempStr-----test')
+      console.log(tempSqlStr, 'tempSqlStr-----test')
       this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['paramValueOne'] = columnName === 'FLIGHT_DATE' ? this.$moment(this.accordDayStartDate).format('YYYY-MM-DD') : this.$moment(this.accordDayStartDate).format('YYYY-MM-DD HH:mm:ss')
       this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['condition'] = tempSqlStr
       this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['filterName'] = tempStr
@@ -5507,10 +5574,30 @@ export default {
 .export_quantity .el-form-item__content{
   width: 193px;
 }
+.data-point .dynamic_time .el-input-number {
+  width: 70px;
+  margin-right: 5px;
+}
+.data-point .dynamic_time .el-input-number .el-input__inner {
+  width: 70px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.data-point .dynamic_time .el-input-number .el-input-number__decrease,
+.data-point .dynamic_time .el-input-number .el-input-number__increase {
+  width: 16px;
+  height: 30px;
+  line-height: 30px;
+  top: 5px;
+}
 </style>
 <style scoped>
 .hide {
   display: none !important;
+}
+.data-point .dynamic_time_button {
+  width: 100%;
+  text-align: center;
 }
 .file-new-container {
   position: absolute;
@@ -5855,12 +5942,11 @@ export default {
   /*margin-right: 4px;*/
   margin-top: 6px;
 }
-.data-point .dynamic_time li {
-  list-style: none;
+.data-point .type_class {
+  margin-bottom: 20px;
 }
-.data-point .dynamic_time li .el-input {
-  width: 80px;
-  margin-right: 5px;
+.data-point .dynamic_time {
+  margin-bottom: 20px;
 }
 /* ========================= */
 .tree-content {
