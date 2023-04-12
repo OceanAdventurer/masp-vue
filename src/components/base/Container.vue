@@ -517,9 +517,17 @@ export default {
     },
     openDia (menu) {
       this.$bus.$emit(menu.val)
-      if (menu.val === 'audit_list') { // 跳转到审批列表页面
-        this.openNavMenuItem('runtimeManage')
+      if (menu.val === 'audit_list') {
+        // 跳转到审批列表页面
         this.isShowTips = false
+        let userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo')) || {}
+        const {menuList = []} = userInfo
+        let approve = menuList.find(item => item.URL === 'approve')
+        if (approve.ID && this.approve > 0) {
+          this.openNavMenuItem('runtimeManage')
+        } else {
+          this.openNavMenuItem('runtimeManage_handle')
+        }
       }
     },
     handleCommand (data) {

@@ -103,7 +103,8 @@
             <el-row>
               <el-col :span='12'>
                 <el-form-item label="分析名称" prop="modelName" width='350'>
-                  <el-input v-model="publishInfoForm.modelName" disabled></el-input>
+                  <el-input v-model="publishInfoForm.modelName" disabled  v-if="publishInfoForm.modelState === '待提交'"></el-input>
+                  <span v-else>{{publishInfoForm.modelName}}</span>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -137,7 +138,7 @@
                 :key="index"
               >
                 <h4>操作类型：{{activity.optTypeLabel}}</h4>
-                <p>备注：{{activity.explain}}</p>
+                <p>{{activity.optTypeLabel === '提交' ? '备注：' : '意见：' }}{{activity.explain}}</p>
                 <p>处理人：{{activity.optUser}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 处理时间：{{activity.optTime}}</p>
               </el-card>
             </el-row>
