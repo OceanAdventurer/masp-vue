@@ -856,7 +856,7 @@ export default {
         console.log(submitAnalysisParams)
       }
 
-      this.postExcelFile(submitAnalysisParams, '/dsap/export/exportTableConfig')
+      this.postExcelFile(submitAnalysisParams, '/DSAP/export/exportTableConfig')
 
       /* let that = this
       let timer = setInterval(function () {

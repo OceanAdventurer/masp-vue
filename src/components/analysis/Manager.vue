@@ -1037,6 +1037,9 @@ export default {
               let row = resultData.filter(item => {
                 return item.NAME === this.publicParmas.modelName
               })
+               // modelState: '待提交' // 模型的审批状态 待提交、待审批、待办理、已审批、已上线、已下线
+              // if (this.publicParmas.modelState === '待') {
+              // }
               this.managerRowEdit(row[0])
             }
           } else {

@@ -11,7 +11,7 @@ import UserManage from 'components/UserManagement/UserManage'
 Vue.use(Router)
 const router = new Router({
   // mode: 'history',
-  // base: '/dsap/',
+  // base: '/DSAP/',
   routes: [
     {
       path: '/home',
@@ -54,7 +54,7 @@ export default router
 
 /* export default new Router({
   // mode: 'history',
-  // base: '/dsap/',
+  // base: '/DSAP/',
   routes: [
     {
       path: '/home',

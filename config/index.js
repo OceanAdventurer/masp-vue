@@ -12,11 +12,11 @@ module.exports = {
     assetsSubDirectory: 'static',
 
     // 编译发布的根目录，可配置为资源服务器域名或 CDN 域名
-    assetsPublicPath: '/dsap/',
+    assetsPublicPath: '/DSAP/',
     // assetsPublicPath: '/',
 
     // dev服务器使用http-proxy-middleware进行代理,定义代理规则
-    proxyTable: {  // 到请求/users现在会被代理到请求http://172.20.42.144:8080/dsap/users
+    proxyTable: {  // 到请求/users现在会被代理到请求http://172.20.42.144:8080/DSAP/users
       '/**': {
         // target: 'http://10.18.21.122:8081/', // 代理接口的域名   http://localhost:8081/ | http://172.20.42.143:8080/ | http://172.20.42.144:8080/
         // target: 'http://10.62.103.242:8080/', // 后台詹龙飞服务器
