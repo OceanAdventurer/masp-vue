@@ -362,9 +362,29 @@ export default {
     handleClose (key, keyPath) {
       console.log(key, keyPath)
     },
-    openNavMenuItem (name, publicParmas) { // 头部一级菜单显示效果
+    openNavMenuItem (name, publicParmas, flag) { // 头部一级菜单显示效果
       this.activeIndex = name
       this.navMenu = name // 激活左边导航菜单
+
+      // 设置模型审批、上下线权限
+      let userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo'))
+      if (userInfo && this.headerTwoData.runtimeManage) {
+        // 获取菜单权限
+        let menuList = userInfo.menuList
+        if (menuList && menuList.length > 0) {
+          let approveObj = menuList.find(item => item.URL === 'approve')
+          if (approveObj) {
+            let obj = this.headerTwoData.runtimeManage.find(item => item.enName === 'approve')
+            if (obj) obj.isShow = true
+          }
+          let onOfflineObj = menuList.find(item => item.URL === 'onOffline')
+          if (onOfflineObj) {
+            let obj = this.headerTwoData.runtimeManage.find(item => item.enName === 'onlineOffline')
+            if (obj) obj.isShow = true
+          }
+        }
+      }
+
       this.headerMenu = this.headerTwoData[this.navMenu][0].parent + '_' + this.headerTwoData[this.navMenu][0].enName // 激活头部一级导航菜单
       this.headerTwoValue = this.getHeaderTwoValue() // 点击头部一级菜单时赋值二级菜单值
       if (this.navMenu === 'setting') { // 如果点击的是设置，显目录配置的默认菜单
@@ -394,7 +414,11 @@ export default {
         this.$bus.$emit('modelRuntimeMenu', 'modelRuntime_approve')
       } else if (this.navMenu === 'runtimeManage') { // 模型运行管理区
         this.isShowTips = false
-        this.$bus.$emit('runtimeManageMenu', 'runtimeManage_approve')
+        if (flag) {
+          this.$bus.$emit('runtimeManageMenu', 'runtimeManage_approve')
+        } else {
+          this.$bus.$emit('runtimeManageMenu', 'runtimeManage_handle')
+        }
       } else { // 点击的是其他菜单则隐藏，否则会导致二级菜单不出来
         this.showSettingCategoryDefault = false // 隐藏
       }
@@ -524,9 +548,9 @@ export default {
         const {menuList = []} = userInfo
         let approve = menuList.find(item => item.URL === 'approve')
         if (approve.ID && this.approve > 0) {
-          this.openNavMenuItem('runtimeManage')
+          this.openNavMenuItem('runtimeManage', {}, true)
         } else {
-          this.openNavMenuItem('runtimeManage_handle')
+          this.openNavMenuItem('runtimeManage')
         }
       }
     },

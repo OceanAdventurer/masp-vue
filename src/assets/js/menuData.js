@@ -43,9 +43,9 @@ export const menuData = {
       { enName: 'approve', zhName: '模型运行', parent: 'modelRuntime', isShow: true }
     ],
     runtimeManage: [ // 左侧设置菜单数据
-      { enName: 'approve', zhName: '模型审批', parent: 'runtimeManage', isShow: true },
       { enName: 'handle', zhName: '模型办理', parent: 'runtimeManage', isShow: true },
-      { enName: 'onlineOffline', zhName: '上下线管理', parent: 'runtimeManage', isShow: true }
+      { enName: 'approve', zhName: '模型审批', parent: 'runtimeManage', isShow: false },
+      { enName: 'onlineOffline', zhName: '上下线管理', parent: 'runtimeManage', isShow: false }
     ],
     setting: [ // 左侧设置菜单数据
       { enName: 'set', zhName: '权限设置', parent: 'setting', isShow: true },

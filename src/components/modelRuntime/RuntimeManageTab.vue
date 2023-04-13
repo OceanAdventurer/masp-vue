@@ -27,6 +27,13 @@ export default {
     ModelHandle,
     ModelOnlineOffline
   },
+    watch: {
+      tabName (newVal, oldVal) {
+        if (this.$util.isDefine(newVal) && newVal === 'runtimeManage_approve') {
+          this.$bus.$emit('openHeaderMenuItem', 'runtimeManage_approve')
+        }
+      }
+    },
   mounted () {
     this.$bus.$on('runtimeManageMenu', (val) => {
       this.tabName = val
