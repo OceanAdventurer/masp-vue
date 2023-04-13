@@ -311,7 +311,8 @@ export default {
   destroyed () { // 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。
     this.$bus.$off('openHeaderMenu') // 移除自定义事件监听器。
     this.$bus.$off('openHeaderMenuItem') // 移除自定义事件监听器。
-    this.$bus.$off('setCurrentName')
+    this.$bus.$off('setCurrentName') // 移除自定义事件监听器。
+    this.$bus.$off('sendingInfo')
     this.iconGroups.forEach(item => {
       this.$bus.$off(item.value)
     })
@@ -427,7 +428,7 @@ export default {
       console.log('openHeaderMenuItem:~~~', name, hideDataObj, disabledDataObj)
       this.headerMenu = name // 激活头部一级导航菜单
 
-      if (name.indexOf('analysis_') > -1) {
+      if (name && name.indexOf('analysis_') > -1) {
         this.headerMenu = 'analysis_file'
       }
 
@@ -516,8 +517,9 @@ export default {
             this.menuListObj[t] = false
           }
         }
-
-        if (tempListObj.analysis) { // 显示默认的菜单
+        if (this.$route.query.type) { // 航科院系统携带参数跳转页面
+          this.navMenu = this.$route.query.type === 'weather' ? 'weather' : 'modelRuntime'
+        } else if (tempListObj.analysis) { // 显示默认的菜单
           this.navMenu = 'analysis'
         } else {
           this.navMenu = mlist[0]['URL']

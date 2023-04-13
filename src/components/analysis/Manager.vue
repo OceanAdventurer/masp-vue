@@ -286,9 +286,9 @@ export default {
           ID: obj.treeNode,
           TREETYPE: obj.treeType,
           NAME: obj.treeName,
-          modelName: obj.name
+          modelName: obj.name,
+          type: obj.type
         }
-        this.$refs['managerTreeRef'].setCurrentKey(obj.treeNode)
         this.managerTreeNodeHandleClick(nodeObj)
         this.publicParmas = nodeObj
       }
@@ -327,7 +327,6 @@ export default {
       return 'table-row-class-name'
     },
     managerRowView (row) { // 重新提交新建分析参数
-      console.log('view', JSON.stringify(row.CONTENT))
       if (this.$util.isDefine(row.CONTENT) && this.$util.isNotEmptyObject(row.CONTENT)) {
         let flag = false
         if (row.CONTENT.filter.length > 0) {
@@ -377,9 +376,8 @@ export default {
       //   }
       // }, 50)
     },
-    managerRowEdit (row) { // 重新编辑新建分析参数
+    managerRowEdit (row, type) { // 重新编辑新建分析参数
       console.log('edit', row)
-
       if (this.$util.isDefine(row.CONTENT) && this.$util.isNotEmptyObject(row.CONTENT)) {
         this.$store.commit('ANALYSIS_PARAMS_ID', row.ID) // 保存生成的编号，fdv图表显示查询使用
 
@@ -397,7 +395,7 @@ export default {
       } else if (this.$util.isDefine(row.CONTENT.dhbParamObj) && this.$util.isNotEmptyObject(row.CONTENT.dhbParamObj)) {
         this.$bus.$emit('analysisAddTab', {enName: 'analysis_dhbcsdb', zhName: row.CONTENT.fileNewName, isClosable: true, parent: 'analysis_file', count: 0})
       } else {
-        this.$bus.$emit('analysisAddTab', {enName: 'analysis_file_new', zhName: row.CONTENT.fileNewName, isClosable: true, parent: 'analysis_file', count: 0, type: row.TYPE})
+        this.$bus.$emit('analysisAddTab', {enName: 'analysis_file_new', zhName: row.CONTENT.fileNewName, isClosable: true, parent: 'analysis_file', count: 0, type: row.TYPE}, type)
       }
       this.publicParmas = {}
     },
@@ -1038,10 +1036,11 @@ export default {
               let row = resultData.filter(item => {
                 return item.NAME === this.publicParmas.modelName
               })
-               // modelState: '待提交' // 模型的审批状态 待提交、待审批、待办理、已审批、已上线、已下线
-              // if (this.publicParmas.modelState === '待') {
-              // }
-              this.managerRowEdit(row[0])
+              if (this.publicParmas.type === 'view') {
+                this.managerRowView(row[0])
+              } else {
+                this.managerRowEdit(row[0], 'view')
+              }
             }
           } else {
             this.$message('暂无数据！')

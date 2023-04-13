@@ -1017,7 +1017,7 @@
       </div>
       <div class="file-new-bottom">
         <el-button @click="assemblyNewFileParams(false)" type="primary" size="mini">查看</el-button>
-        <el-button @click="assemblyNewFileParams(true)" type="primary" size="mini">保存</el-button>
+        <el-button @click="assemblyNewFileParams(true)" type="primary" size="mini" v-show="stateType">保存</el-button>
         <el-button @click="openCopySaveDialog" type="primary" size="mini">另存为</el-button>
       </div>
     </div>
@@ -1108,6 +1108,9 @@ export default {
       type: String
     },
     analysisType: {
+      type: String
+    },
+    stateType: {
       type: String
     }
   },
@@ -1695,7 +1698,6 @@ export default {
       this.getGcTree()
       this.rowDropSort()
     })
-    console.log(this.$moment().add(0, 'days').format('YYYY-MM-DD'), 'test---------')
     let tempAnalysisParams = this.$store.state.analysisParams
     if (this.$util.isNotEmptyObject(tempAnalysisParams)) {
       if (this.$util.isDefine(tempAnalysisParams.ANALYSISCATEGORYID)) { // 初始化分析管理传来的分析参数数据
@@ -1757,13 +1759,9 @@ export default {
     },
     changeDynamicData (mark) {
       this.dynamicTime = 0
-      // let num = this.dynamicTime
-      // if (mark === '-') {
-      //   this.dynamicTime = num--
-      // } else {
-      //   this.dynamicTime = num++
-      // }
-      console.log(mark, this.dynamicTime, 'test----changeDynamicData')
+      this.isSubmit = false // 设置禁止提交状态
+      // this.resetAttrSixDefaultData(false)
+      this.resetFilterTableConditionsData(this.currentFilterConfigRowId, this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions'], '', true)
     },
     rowDropSort () { // 行拖拽排序
       // TODO: 表格排序功能
@@ -2719,6 +2717,9 @@ export default {
             if (tempObj.attrRadioFlag === '3') {
               this.accordDayStartDate = tempObj.paramValueOne
               this.accordDayEndDate = tempObj.paramValueTwo
+            } else if (tempObj.attrRadioFlag === '11') {
+              this.dynamicTime = tempObj.dynamicTime
+              this.dynamicType = tempObj.dynamicType
             } else {
               let dateObj = JSON.parse('{' + tempObj.condition + '}')
               if (!this.$util.isNotEmptyObject(dateObj)) {
@@ -3608,8 +3609,6 @@ export default {
     changeAttrSixRadio (value) { // 筛选配置→属性六
       console.log(value, 'value----test')
       let expressionId = this.expressionData['attrSixRadio'][value]
-      console.log(this.expressionData, 'this.expressionData---test')
-      console.log(expressionId, 'expressionId---test')
       this.isSubmit = false // 设置禁止提交状态
       this.attrSixRadio = value
       this.alertTitle = ''
@@ -3683,80 +3682,86 @@ export default {
       this.resetFilterTableConditionsData(this.currentFilterConfigRowId, this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions'], tempStr, true)
     },
     getDynamicDateRange () {
-      let tempStr = ''
-      let tempSqlStr = ''
       let time = this.dynamicTime
-      let columnName = this.filterConfigTableDataObj[this.currentFilterConfigRowId]['columnName']
-      let formatters = columnName === 'FLIGHT_DATE' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'
-      if (this.dynamicType === 'day') { // 以天为单位
-          if (time < 0) { // 过去时间
-            time = Math.abs(time)
-            tempStr = this.$moment().subtract(time, 'days').format(formatters) + '~' + this.$moment().add(0, 'days').format(formatters)
-            tempSqlStr = columnName + ' >= \'' + this.$moment().subtract(time, 'days').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'days').format(formatters)
-          } else if (this.dynamicTime > 0) { // 未来
-            tempStr = this.$moment().add(0, 'days').format(formatters) + '~' + this.$moment().add(time, 'days').format(formatters)
-            tempSqlStr = columnName + ' >= \'' + this.$moment().add(0, 'days').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'days').format(formatters)
-          } else { // 当天
-            tempStr = this.$moment().subtract(0, 'days').format(formatters)
-            tempSqlStr = columnName + ' = \'' + this.$moment().subtract(0, 'days').format(formatters)
-          }
-        } else if (this.dynamicType === 'month') { // 月份
-          if (time < 0) { // 前数月
-            time = Math.abs(time)
-            tempStr = this.$moment().subtract(time, 'months').startOf('month').format(formatters) + '~' + this.$moment().subtract(time, 'months').endOf('month').format(formatters)
-            // tempSqlStr = columnName + this.$moment().subtract(time, 'months').startOf('month').format(formatters) + '-' + this.$moment().subtract(time, 'months').endOf('month').format(formatters)
-            tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'months').endOf('month').format(formatters) + '\' and ' + ' < \'' + this.$moment().subtract(time - 1, 'months').startOf('month').format(formatters)
-          } else if (time > 0) { // 未来数月
-            tempStr = this.$moment().add(time, 'months').startOf('month').format(formatters) + '~' + this.$moment().add(time, 'months').endOf('month').format(formatters)
-            tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'months').endOf('month').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'months').startOf('month').format(formatters)
-          } else { // 本月
-            tempStr = this.$moment().subtract(0, 'months').startOf('month').format(formatters) + '~' + this.$moment().add(0, 'months').endOf('month').format(formatters)
-            tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'months').endOf('month').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'months').startOf('month').format(formatters)
-          }
-        } else if (this.dynamicType === 'year') { // 年份
-          if (time < 0) { // 前数月
-            time = Math.abs(time)
-            tempStr = this.$moment().subtract(time, 'years').startOf('year').format(formatters) + '~' + this.$moment().subtract(time, 'years').endOf('year').format(formatters)
-            // tempSqlStr = columnName + this.$moment().subtract(time, 'year').startOf('year').format(formatters) + '-' + this.$moment().subtract(time, 'year').endOf('year').format(formatters)
-            tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'year').endOf('year').format(formatters) + '\' and ' + ' < \'' + this.$moment().subtract(time - 1, 'year').startOf('year').format(formatters)
-          } else if (time > 0) { // 未来数月
-            tempStr = this.$moment().add(time, 'years').startOf('year').format(formatters) + '~' + this.$moment().add(time, 'years').endOf('year').format(formatters)
-            tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'year').endOf('year').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'years').startOf('year').format(formatters)
-          } else { // 本月
-            tempStr = this.$moment().subtract(0, 'years').startOf('year').format(formatters) + '~' + this.$moment().add(0, 'years').endOf('year').format(formatters)
-            tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'years').endOf('year').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'years').startOf('year').format(formatters)
-          }
-        } else if (this.dynamicType === 'week') { // 周度
-          if (time < 0) {
-            time = Math.abs(time)
-            tempStr = this.$moment().subtract(time, 'weeks').startOf('week').format(formatters) + '~' + this.$moment().subtract(time, 'weeks').endOf('week').format(formatters)
-            tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'week').endOf('week').format(formatters) + '\' and ' + ' < \'' + this.$moment().subtract(time - 1, 'week').startOf('week').format(formatters)
-          } else if (time > 0) { // 未来数周
-            tempStr = this.$moment().add(time, 'weeks').startOf('week').format(formatters) + '~' + this.$moment().add(time, 'weeks').endOf('week').format(formatters)
-            tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'week').endOf('week').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'weeks').startOf('week').format(formatters)
-          } else { // 本周
-            tempStr = this.$moment().subtract(0, 'weeks').startOf('week').format(formatters) + '~' + this.$moment().add(0, 'weeks').endOf('week').format(formatters)
-            tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'weeks').endOf('week').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'weeks').startOf('week').format(formatters)
-          }
-        } else { // 季度
-          if (time < 0) {
-            time = Math.abs(time)
-            tempStr = this.$moment().subtract(time, 'quarters').startOf('quarter').format(formatters) + '~' + this.$moment().subtract(time, 'quarters').endOf('quarter').format(formatters)
-            tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'quarter').endOf('quarter').format(formatters) + '\' and ' + ' < \'' + this.$moment().subtract(time - 1, 'quarter').startOf('quarter').format(formatters)
-          } else if (time > 0) { // 未来数周
-            tempStr = this.$moment().add(time, 'quarters').startOf('quarter').format(formatters) + '~' + this.$moment().add(time, 'quarters').endOf('quarter').format(formatters)
-            tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'quarter').endOf('quarter').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'quarters').startOf('quarter').format(formatters)
-          } else { // 本周
-            tempStr = this.$moment().subtract(0, 'quarters').startOf('quarter').format(formatters) + '~' + this.$moment().add(0, 'quarters').endOf('quarter').format(formatters)
-            tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'quarters').endOf('quarter').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'quarters').startOf('quarter').format(formatters)
-          }
-      }
-      console.log(tempSqlStr, 'tempSqlStr---test')
-      console.log(tempStr, 'tempStr---test')
-      this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['paramValueOne'] = this.$moment(this.dynamicTime).format(formatters)
+      const {tempStr, tempSqlStr} = this.getTypeTime(this.dynamicType, time) || {}
+      this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['paramValueOne'] = tempStr.split('~')[0]
+      this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['paramValueTwo'] = tempStr.split('~')[1]
       this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['condition'] = tempSqlStr
       this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['filterName'] = tempStr
+      this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['dynamicType'] = this.dynamicType
+      this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['dynamicTime'] = this.dynamicTime
       this.resetFilterTableConditionsData(this.currentFilterConfigRowId, this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions'], tempStr, true)
+    },
+    getTypeTime (type, time, columnName) {
+      let tempStr = ''
+      let tempSqlStr = ''
+      columnName = columnName || this.filterConfigTableDataObj[this.currentFilterConfigRowId]['columnName']
+      let formatters = columnName === 'FLIGHT_DATE' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'
+      if (type === 'day') { // 以天为单位
+        if (time < 0) { // 过去时间
+          time = Math.abs(time)
+          tempStr = this.$moment().subtract(time, 'days').format(formatters) + '~' + this.$moment().add(0, 'days').format(formatters)
+          // tempSqlStr = columnName + ' >= \'' + this.$moment().subtract(time, 'days').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'days').format(formatters)
+          tempSqlStr = `${columnName}>=${this.$moment().subtract(time, 'days').format(formatters)} and < ${this.$moment().add(1, 'days').format(formatters)}`
+        } else if (this.dynamicTime > 0) { // 未来
+          tempStr = this.$moment().add(0, 'days').format(formatters) + '~' + this.$moment().add(time, 'days').format(formatters)
+          tempSqlStr = columnName + ' >= \'' + this.$moment().add(0, 'days').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'days').format(formatters)
+        } else { // 当天
+          tempStr = this.$moment().subtract(0, 'days').format(formatters)
+          tempSqlStr = columnName + ' = \'' + this.$moment().subtract(0, 'days').format(formatters)
+        }
+      } else if (type === 'month') { // 月份
+        if (time < 0) { // 前数月
+          time = Math.abs(time)
+          tempStr = this.$moment().subtract(time, 'months').startOf('month').format(formatters) + '~' + this.$moment().subtract(time, 'months').endOf('month').format(formatters)
+          // tempSqlStr = columnName + this.$moment().subtract(time, 'months').startOf('month').format(formatters) + '-' + this.$moment().subtract(time, 'months').endOf('month').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'months').endOf('month').format(formatters) + '\' and ' + ' < \'' + this.$moment().subtract(time - 1, 'months').startOf('month').format(formatters)
+        } else if (time > 0) { // 未来数月
+          tempStr = this.$moment().add(time, 'months').startOf('month').format(formatters) + '~' + this.$moment().add(time, 'months').endOf('month').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'months').endOf('month').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'months').startOf('month').format(formatters)
+        } else { // 本月
+          tempStr = this.$moment().subtract(0, 'months').startOf('month').format(formatters) + '~' + this.$moment().add(0, 'months').endOf('month').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'months').endOf('month').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'months').startOf('month').format(formatters)
+        }
+      } else if (type === 'year') { // 年份
+        if (time < 0) { // 前数月
+          time = Math.abs(time)
+          tempStr = this.$moment().subtract(time, 'years').startOf('year').format(formatters) + '~' + this.$moment().subtract(time, 'years').endOf('year').format(formatters)
+          // tempSqlStr = columnName + this.$moment().subtract(time, 'year').startOf('year').format(formatters) + '-' + this.$moment().subtract(time, 'year').endOf('year').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'year').endOf('year').format(formatters) + '\' and ' + ' < \'' + this.$moment().subtract(time - 1, 'year').startOf('year').format(formatters)
+        } else if (time > 0) { // 未来数月
+          tempStr = this.$moment().add(time, 'years').startOf('year').format(formatters) + '~' + this.$moment().add(time, 'years').endOf('year').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'year').endOf('year').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'years').startOf('year').format(formatters)
+        } else { // 本月
+          tempStr = this.$moment().subtract(0, 'years').startOf('year').format(formatters) + '~' + this.$moment().add(0, 'years').endOf('year').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'years').endOf('year').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'years').startOf('year').format(formatters)
+        }
+      } else if (type === 'week') { // 周度
+        if (time < 0) {
+          time = Math.abs(time)
+          tempStr = this.$moment().subtract(time, 'weeks').startOf('week').format(formatters) + '~' + this.$moment().subtract(time, 'weeks').endOf('week').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'week').endOf('week').format(formatters) + '\' and ' + ' < \'' + this.$moment().subtract(time - 1, 'week').startOf('week').format(formatters)
+        } else if (time > 0) { // 未来数周
+          tempStr = this.$moment().add(time, 'weeks').startOf('week').format(formatters) + '~' + this.$moment().add(time, 'weeks').endOf('week').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'week').endOf('week').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'weeks').startOf('week').format(formatters)
+        } else { // 本周
+          tempStr = this.$moment().subtract(0, 'weeks').startOf('week').format(formatters) + '~' + this.$moment().add(0, 'weeks').endOf('week').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'weeks').endOf('week').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'weeks').startOf('week').format(formatters)
+        }
+      } else { // 季度
+        if (time < 0) {
+          time = Math.abs(time)
+          tempStr = this.$moment().subtract(time, 'quarters').startOf('quarter').format(formatters) + '~' + this.$moment().subtract(time, 'quarters').endOf('quarter').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'quarter').endOf('quarter').format(formatters) + '\' and ' + ' < \'' + this.$moment().subtract(time - 1, 'quarter').startOf('quarter').format(formatters)
+        } else if (time > 0) { // 未来数周
+          tempStr = this.$moment().add(time, 'quarters').startOf('quarter').format(formatters) + '~' + this.$moment().add(time, 'quarters').endOf('quarter').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'quarter').endOf('quarter').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'quarters').startOf('quarter').format(formatters)
+        } else { // 本周
+          tempStr = this.$moment().subtract(0, 'quarters').startOf('quarter').format(formatters) + '~' + this.$moment().add(0, 'quarters').endOf('quarter').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'quarters').endOf('quarter').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'quarters').startOf('quarter').format(formatters)
+        }
+      }
+      return {tempStr, tempSqlStr}
     },
     blurAccordDayEndDate (event) { // 结束日期失去焦点校验
       console.log('blurAccordDayEndDate', event)
@@ -4315,6 +4320,14 @@ export default {
         this.attrSixRadio = obj.attrRadioFlag
 
         filterStr = obj.paramValueOne
+      } else if (operatordId === '39') {
+        this.attrSixRadio = obj.attrRadioFlag
+        this.dynamicType = obj.dynamicType
+        this.dynamicTime = obj.dynamicTime
+        if (this.dynamicType && this.dynamicTime) {
+          const {tempStr} = this.getTypeTime(this.dynamicType, this.dynamicTime, obj.columnName)
+          filterStr = tempStr
+        }
       }
 
       const tempObj = {
@@ -4727,13 +4740,11 @@ export default {
           if (item.name !== '') {
             tempTableColumnZhName.push(item.name)
           }
-          console.log(item)
           tempTableConfig.push(item) // 临时存放有数据的行
         }
 
         paramStr.tableColumnName = tempTableColumnName.join(',')
         paramStr.tableColumnZhName = tempTableColumnZhName.join(',')
-        console.log(tempTableConfig)
         paramStr.tableConfig = tempTableConfig
       }
 
@@ -4763,10 +4774,8 @@ export default {
           }
         }
       }
-      console.log('assemblyNewFileParams:', JSON.stringify(paramStr))
       if (this.classConfigAxisFourText !== '' && this.classConfigAxisFourText !== '在左侧数据库中选择参数') {
           // let tempExportGroup = this.getTableConfigObj(this.classConfigAxisFourObj)
-          // console.log(tempExportGroup)
           if (this.form.exportGroupNum === '' && this.isDecimal) {
             this.$message.warning('分类配置小数位数不能为空')
             return false
@@ -4790,9 +4799,6 @@ export default {
             this.$message.warning('分类配置排序方式不能为空')
             return false
           } else {
-            console.log(this.classConfigAxisFourObj)
-            console.log(this.classConfigAxisFiveObj)
-            console.log(this.classConfigAxisFourObj === this.classConfigAxisFiveObj)
             if (this.classConfigAxisFourObj.id === this.classConfigAxisFiveObj.id) {
               this.$message.warning('分组列和排序列不能相同！')
               return false
@@ -4924,7 +4930,6 @@ export default {
     },
     getTableConfigObj (obj) {
       let tableConfig = this.$store.state.analysisResultAllData.submitAnalysisParams
-      console.log(tableConfig)
       // let tempObj = {}
       // try {
       //   tableConfig.forEach(element => {
@@ -4958,7 +4963,6 @@ export default {
           likeContent: this.copySaveTreeKeyword
         }
       }).then(response => {
-        console.log('QueryAnalysisRecordCategory~~~:', response)
         this.$store.commit('HIDE_LOADING', '拼命加载中！') // 隐藏加载框
         if (response.data.status === '0') {
           if (this.isStringObject(response.data.result.data)) {
@@ -5011,7 +5015,6 @@ export default {
           'Content-type': 'application/json;charset=UTF-8'
         }
       }).then(response => {
-        console.log('AddAnalysisRecord~~~:', response)
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
         if (response.data.status === '0') {
           this.$message({
@@ -5059,7 +5062,6 @@ export default {
           'Content-type': 'application/json;charset=UTF-8'
         }
       }).then(response => {
-        console.log('EditAnalysisRecord~~~:', response)
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
         if (response.data.status === '0') {
           this.$message({

@@ -94,7 +94,7 @@ export default {
         }
       }
       if (this.lastMenuEnName === 'dataTable_version_list') {
-        this.$refs.dataTable_version_list[0].changeStatus('全部')
+        this.$refs.dataTable_version_list[0] && this.$refs.dataTable_version_list[0].changeStatus('全部')
       }
       this.getMenueByenName(this.lastMenuEnName)
       this.$store.commit('HIDE_LOADING', '正在加载数据，请稍等！') // 打开加载提示框

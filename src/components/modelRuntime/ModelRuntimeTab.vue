@@ -19,7 +19,13 @@
           :row-class-name="tableRowClassName" -->
           <el-table-column prop="modelName" label="模型名称" align="left"></el-table-column>
           <!-- <el-table-column prop="modelType" label="分析类型" align="left"></el-table-column> -->
-          <el-table-column prop="modelState" label="模型状态" align="left">已上线</el-table-column>
+          <el-table-column prop="modelState" label="模型状态" align="left">
+            <template slot-scope="scope">
+              <div class="row-icon-group">
+                {{scope.row.modelState === '70' ? '已上线' : '-'}}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column prop="modelUser" label="提交人" align="left"></el-table-column>
           <!-- <el-table-column prop="onlineTime" label="上线时间" width="160"></el-table-column> -->
           <el-table-column label="操作" width="150" align="left">
@@ -102,7 +108,8 @@ export default {
         treeType: row.treeType,
         treeNode: row.treeNode,
         treeName: row.treeName,
-        name: row.modelName
+        name: row.modelName,
+        type: 'view'
       })
     },
     queryTable (val) {
@@ -133,6 +140,9 @@ export default {
         console.log(err)
         this.$store.commit('HIDE_LOADING', '加载中！')
       })
+    },
+    destroyed () { // 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。
+      this.$bus.$off('sendingInfo') // 移除自定义事件监听器。
     }
   }
 }
