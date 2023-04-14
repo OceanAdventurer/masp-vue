@@ -83,15 +83,13 @@ export default {
     }
   },
   created () {
-    if (!this.$route.query.type) {
-      this.openTab({
-        enName: 'EventManager',
-        zhName: '事件库',
-        isClosable: false,
-        parent: 'paramEvent_eventLibrary',
-        count: 0
-      })
-    }
+    this.openTab({
+      enName: 'EventManager',
+      zhName: '事件库',
+      isClosable: false,
+      parent: 'paramEvent_eventLibrary',
+      count: 0
+    })
   },
   components: {
     EventManager,
