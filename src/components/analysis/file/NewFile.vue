@@ -3685,8 +3685,6 @@ export default {
     getDynamicDateRange () {
       let time = this.dynamicTime
       const {tempStr, tempSqlStr} = this.getTypeTime(this.dynamicType, time) || {}
-      console.log(tempStr, 'tempStr---test')
-      console.log(tempSqlStr, 'tempSqlStr---test')
       this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['paramValueOne'] = tempStr.split('~')[0]
       this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['paramValueTwo'] = tempStr.split('~')[1]
       this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['condition'] = tempSqlStr

@@ -1017,12 +1017,21 @@ export default {
             resultData.forEach(item => {
               if (item.CONTENT && item.CONTENT.filter.length > 0) {
                 item.CONTENT.filter.forEach(para => {
-                  if (para.attrRadioFlag === '11' && para.dynamicType) {
+                  if (para.attrRadioFlag === '11' && para.dynamicType) { // 动态时间拼接
                     const {tempStr, tempSqlStr} = this.getTypeTime(para.dynamicType, para.dynamicTime, para.columnName)
                     para.condition = tempSqlStr
                     para.filterName = tempStr
                     para.paramValueOne = tempStr.split('~')[0]
                     para.paramValueTwo = tempStr.split('~')[1]
+                  }
+                })
+              }
+            })
+            resultData.forEach(item => {
+              if (item.CONTENT && item.CONTENT.filter.length > 0) {
+                item.CONTENT.filter.forEach(para => {
+                  if (para.attrRadioFlag === '11' && para.dynamicType) {
+                    para.filterList = para.filter
                   }
                 })
               }
@@ -1061,23 +1070,19 @@ export default {
         if (time < 0) { // 过去时间
           time = Math.abs(time)
           tempStr = this.$moment().subtract(time, 'days').format(formatters) + '~' + this.$moment().add(0, 'days').format(formatters)
-          // tempSqlStr = columnName + ' >= \'' + this.$moment().subtract(time, 'days').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'days').format(formatters)
-          tempSqlStr = `${columnName} >= this.$moment().subtract(${time}, 'days').format(${formatters}) and < this.$moment().add(1, 'days').format(${formatters})}`
+          tempSqlStr = columnName + ' >= \'' + this.$moment().subtract(time, 'days').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'days').format(formatters)
         } else if (this.dynamicTime > 0) { // 未来
           tempStr = this.$moment().add(0, 'days').format(formatters) + '~' + this.$moment().add(time, 'days').format(formatters)
-          // tempSqlStr = columnName + ' >= \'' + this.$moment().add(0, 'days').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'days').format(formatters)
-          tempSqlStr = `${columnName} >= this.$moment().add(0, 'days').format(${formatters}) < this.$moment().add(${time + 1}, 'days').format(${formatters})`
+          tempSqlStr = columnName + ' >= \'' + this.$moment().add(0, 'days').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'days').format(formatters)
         } else { // 当天
           tempStr = this.$moment().subtract(0, 'days').format(formatters)
-          // tempSqlStr = columnName + ' = \'' + this.$moment().subtract(0, 'days').format(formatters)
-          tempSqlStr = `${columnName} = this.$moment().subtract(0, 'days').format(${formatters})`
+          tempSqlStr = columnName + ' = \'' + this.$moment().subtract(0, 'days').format(formatters)
         }
       } else if (type === 'month') { // 月份
         if (time < 0) { // 前数月
           time = Math.abs(time)
           tempStr = this.$moment().subtract(time, 'months').startOf('month').format(formatters) + '~' + this.$moment().subtract(time, 'months').endOf('month').format(formatters)
-          // tempSqlStr = columnName + this.$moment().subtract(time, 'months').startOf('month').format(formatters) + '-' + this.$moment().subtract(time, 'months').endOf('month').format(formatters)
-          tempSqlStr = `${columnName} > this.$moment().subtract(${time + 1}, 'months').endOf('month').format(${formatters}) and < this.$moment().subtract(${time - 1}, 'months').startOf('month').format(${formatters})`
+          tempSqlStr = columnName + this.$moment().subtract(time, 'months').startOf('month').format(formatters) + '-' + this.$moment().subtract(time, 'months').endOf('month').format(formatters)
         } else if (time > 0) { // 未来数月
           tempStr = this.$moment().add(time, 'months').startOf('month').format(formatters) + '~' + this.$moment().add(time, 'months').endOf('month').format(formatters)
           tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'months').endOf('month').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'months').startOf('month').format(formatters)
