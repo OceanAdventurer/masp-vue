@@ -154,7 +154,7 @@ export default {
                 // console.log(response.data[0]['SYSTEM_URL'])
                 // window.open(response.data[0]['SYSTEM_URL'], '_self')
               } else if (response.data.length === 0) {
-                this.reminderTitle = '<b>您无权限访问此系统，如需开通请联系<br/>飞行体系请邮件发送飞管部孔骏骅，联系方式：kongjunhua@ceair.com;</b><br/><b>其他单位请联系研发中心汪志民，联系方式：zmwang@ceair.com。'
+                this.reminderTitle = '<b>您无权限访问此系统，请联系相应管理员开通。</b>'
               } else {
                 this.reminderTitle = '请选择需要登陆的系统'
                 this.systems = response.data

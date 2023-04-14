@@ -72,9 +72,12 @@ export default {
     this.modelType = '0001'
   },
   mounted () {
-    this.$bus.$on('modelRuntimeMenu', (val) => {
+    this.$nextTick(() => {
       this.queryTable()
     })
+    // this.$bus.$on('modelRuntimeMenu', val => {
+    //   this.queryTable()
+    // })
   },
   methods: {
     handleSizeChange (val) {
@@ -164,4 +167,10 @@ export default {
     min-height: 300px;
     height: calc(100% - 150px);
   }
+</style>
+<style>
+.model_run_time .el-radio-button__orig-radio:checked+.el-radio-button__inner {
+  background-color: #437ACF;
+  border-color: #437ACF;
+}
 </style>

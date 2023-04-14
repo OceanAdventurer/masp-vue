@@ -26,8 +26,8 @@
       <div class="nav-menu-header" v-show="menuListArr.length > 0">
         <div class="nav-menu-header-left" :style="isCollapsed ? 'width: 181px;' : ''">
           <div class="system_title" v-if='isCollapsed'>
-            <p style='font-size:16px; color:#fff;font-weight:700;margin: 7px 0;text-align:center'>中国民航安全数据</p>
-            <p style='font-size:16px; color:#fff;font-weight:700; margin: 0;text-align:center'>共享分析平台</p>
+            <p style='font-size:16px; color:#fff;font-weight:700;margin:10px 0px 4px 0;text-align:center'>中国民航安全数据</p>
+            <p style='font-size:16px; color:#fff;font-weight:700; margin:1px 0;text-align:center'>共享分析平台</p>
           </div>
           <div class="system_title" v-else>
             <h2>DSAP</h2>
@@ -313,6 +313,7 @@ export default {
     this.$bus.$off('openHeaderMenuItem') // 移除自定义事件监听器。
     this.$bus.$off('setCurrentName') // 移除自定义事件监听器。
     this.$bus.$off('sendingInfo')
+    this.$bus.$off('modelRuntimeMenu')
     this.iconGroups.forEach(item => {
       this.$bus.$off(item.value)
     })
@@ -1019,6 +1020,7 @@ p.system_title {
   align-items: center;
   justify-content: center;
   color: #d4d2d5;
+  height: 44px;
 }
 
 /*头部左侧logo*/
@@ -1076,7 +1078,7 @@ p.system_title {
   }
   .nav-menu-header-left {
     width: 64px;
-    /* height: 45px; */
+    height: 44px;
   }
   .logo-div {
     width: 116px;
@@ -1107,7 +1109,7 @@ p.system_title {
   }
   .nav-menu-header-left {
     width: 64px;
-    /* height: 35px; */
+    height: 44px;
   }
   .headerLogo {
     height: 44px;

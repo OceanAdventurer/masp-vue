@@ -142,22 +142,6 @@
                 <p>处理人：{{activity.optUser}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 处理时间：{{activity.optTime}}</p>
               </el-card>
             </el-row>
-              <!-- <el-timeline :reverse="reverse">
-                <el-timeline-item
-                  v-for="(activity, index) in auditInfo"
-                  :key="index"
-                  :color='activity.color'
-                  :timestamp="activity.handleTime">
-                  <el-card
-                    v-for="(activity, index) in auditInfo"
-                    :key="index"
-                    :color='activity.color'>
-                    <h4>状态：{{activity.hanldeType}}</h4>
-                    <p>处理人：{{activity.handlerBy}}</p>
-                    <p>意见：{{activity.handlerOpinion}}</p>
-                  </el-card>
-                </el-timeline-item>
-              </el-timeline> -->
             <el-form-item label="提交人" prop="submitBy" v-show="publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
               <span>{{publishInfoForm.submitBy}}</span>
             </el-form-item>
@@ -169,7 +153,8 @@
         </div>
         <div slot="footer" class="dialog-footer">
           <el-button size="mini" @click="managerRowPublish('publishDiaRef')">取  消</el-button>
-          <el-button type="primary" size="mini" @click="handlerPublish('publishDiaRef')">{{publishInfoForm.modelState === '待提交' ? '发布' : '确定'}}</el-button>
+          <el-button type="primary" size="mini" v-if="publishInfoForm.modelState === '待提交'" @click="handlerPublish('publishDiaRef', 'close')">发布</el-button>
+          <el-button type="primary" size="mini" v-else @click="publishDiaShow=false">确定</el-button>
         </div>
       </el-dialog>
     </div>

@@ -1,11 +1,14 @@
 <style scoped>
-  .tab_file_new {
-    display: flex;
-    flex-direction: row;
-    position: absolute;
-    height: 78vh;
-    width: 100%;
-  }
+.tab_file_new {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  height: 78vh;
+  width: 100%;
+}
+.cm_main_content .el-tabs__content .el-tab-pane.content_tab_pane {
+  margin: 0 auto;
+}
 /* 左侧 */
 .tab_file_new_left {
   height: 95%;
@@ -100,7 +103,6 @@
 }
 
 .content_condition {
-  margin-top:10px;
   display: flex;
   justify-content: space-between;
 }
@@ -108,17 +110,12 @@
 .input_condition {
   width: 40%;
 }
-
-.content_list {
-  margin-top: 10px;
-}
-
 .list_mapped {
   color: #409EFF;
   cursor: pointer;
 }
 
-.content_page {
+.tab_file_new .content_page {
   display: flex;
   height: 80px;
   align-items: center;
@@ -300,20 +297,23 @@
   display: flex;
   flex-direction: row;
 }
-
 .el-tabs__nav{
   transform: translate(11px) !important;
 }
 .el-tabs__content > .el-tab-pane > div {
   position: relative;
-  height: 99%;
+  /* height: 100%; */
+}
+.cm_main_content .content_list {
+  height: calc(100% - 88px);
+  padding-top: 10px;
+}
+.cm_main_content .content_page {
+  height: 40px;
 }
 </style>
 <!-- 写入公共样式文件中并引入到main.js中-->
 <style>
-.main_content .el-tabs__content{
-    height: calc(100% - 40px);
-  }
 /*表格行高（联合表格高度使用）*/
 /* .content_list .el-table td ,.content_list .el-table th { */
   /* padding: 6px; */
@@ -322,7 +322,10 @@
 /* .cm_main_content .el-table--border::after, .el-table--group::after{
   width: 0px !important;
 } */
-
+.cm_main_content .el-tabs__content {
+  height: calc(100% - 40px);
+  padding-top: 10px;
+}
 .el-tabs__item{
   font-size: 12px;
 }
@@ -359,14 +362,14 @@
       <!-- 中间列表 -->
       <div class="main_content cm_main_content">
           <el-tabs value="contentFirst" style="height:100%">
-              <el-tab-pane :label="mainTitle" name="contentFirst" class="content_tab_pane" style="margin-top:10px">
+              <el-tab-pane :label="mainTitle" name="contentFirst" class="content_tab_pane">
                   <div class="content_condition" style="height:28px">
                       <el-checkbox v-model="checked" @change="getUnmapped">只显示未映射字段</el-checkbox>
                       <el-input placeholder="请输入关键字搜索" size="mini" class="input_condition" v-model="searchCondition" @keyup.enter.native="searchContent(searchCondition)">
                           <i slot="suffix" class="el-input__icon el-icon-search" @click="searchContent(searchCondition)"></i>
                       </el-input>
                   </div>
-                  <div class="content_list" style="height: calc(99% - 80px)">
+                  <div class="content_list">
                       <el-table :data="tableArr" height="100%" highlight-current-row  width="90%" border :row-style="{height:'38px'}"
                       :cell-style="{padding:'0px'}" :header-row-style="{height:'38px'}" :header-cell-style="{padding:'0px'}" ref="multipleTable"
                                 @row-click="rowClick"   @selection-change="handleSelectionChange">
@@ -386,7 +389,7 @@
                           </el-table-column>
                       </el-table>
                   </div>
-                 <div class="content_page" style='height: 40px'>
+                 <div class="content_page">
                      <el-pagination
                        @size-change="handleSizeChange"
                        @current-change="currentChangeClick"

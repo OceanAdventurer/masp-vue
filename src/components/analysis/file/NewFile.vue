@@ -1017,7 +1017,7 @@
       </div>
       <div class="file-new-bottom">
         <el-button @click="assemblyNewFileParams(false)" type="primary" size="mini">查看</el-button>
-        <el-button @click="assemblyNewFileParams(true)" type="primary" size="mini" v-show="stateType">保存</el-button>
+        <el-button @click="assemblyNewFileParams(true)" type="primary" size="mini" v-show="!stateType">保存</el-button>
         <el-button @click="openCopySaveDialog" type="primary" size="mini">另存为</el-button>
       </div>
     </div>
@@ -2068,8 +2068,7 @@ export default {
     fileNewNodeClick (data) { // 右侧树状节点点击后显示到中间tab中
       console.log('NewFile@fileNewNodeClick:', data)
       this.treeNodeDesc = ''
-
-      if (data.TYPE === 'PROFILE') {
+      if (data.TYPE === 'PROFILE' || this.stateType) {
         return false
       }
       console.log(this.fileNewContentActiveName)
@@ -2564,7 +2563,9 @@ export default {
     },
     filterConfigTableRowHandle (value) { // 1.设置筛选配置表格中选择当前行的信息；2.临时存储当前行信息，替换表格选中节点的数据；3.重置右侧属性的以前选中的值
       console.log('filterConfigTableRowHandle:', value)
-
+      if (this.stateType) {
+        return
+      }
       this.alertTitle = '' // 清空错误提示信息
       this.logicalValue = ''
       this.hotWordsSearchValue = [] // 清空已经存在的热词搜索数据
@@ -3684,6 +3685,8 @@ export default {
     getDynamicDateRange () {
       let time = this.dynamicTime
       const {tempStr, tempSqlStr} = this.getTypeTime(this.dynamicType, time) || {}
+      console.log(tempStr, 'tempStr---test')
+      console.log(tempSqlStr, 'tempSqlStr---test')
       this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['paramValueOne'] = tempStr.split('~')[0]
       this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['paramValueTwo'] = tempStr.split('~')[1]
       this.filterConfigTableDataObj[this.currentFilterConfigRowId]['filterConditions']['condition'] = tempSqlStr
@@ -3702,20 +3705,22 @@ export default {
           time = Math.abs(time)
           tempStr = this.$moment().subtract(time, 'days').format(formatters) + '~' + this.$moment().add(0, 'days').format(formatters)
           // tempSqlStr = columnName + ' >= \'' + this.$moment().subtract(time, 'days').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'days').format(formatters)
-          tempSqlStr = `${columnName}>=${this.$moment().subtract(time, 'days').format(formatters)} and < ${this.$moment().add(1, 'days').format(formatters)}`
+          tempSqlStr = `${columnName} >= this.$moment().subtract(${time}, 'days').format(${formatters}) and < this.$moment().add(1, 'days').format(${formatters})}`
         } else if (this.dynamicTime > 0) { // 未来
           tempStr = this.$moment().add(0, 'days').format(formatters) + '~' + this.$moment().add(time, 'days').format(formatters)
-          tempSqlStr = columnName + ' >= \'' + this.$moment().add(0, 'days').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'days').format(formatters)
+          // tempSqlStr = columnName + ' >= \'' + this.$moment().add(0, 'days').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'days').format(formatters)
+          tempSqlStr = `${columnName} >= this.$moment().add(0, 'days').format(${formatters}) < this.$moment().add(${time + 1}, 'days').format(${formatters})`
         } else { // 当天
           tempStr = this.$moment().subtract(0, 'days').format(formatters)
-          tempSqlStr = columnName + ' = \'' + this.$moment().subtract(0, 'days').format(formatters)
+          // tempSqlStr = columnName + ' = \'' + this.$moment().subtract(0, 'days').format(formatters)
+          tempSqlStr = `${columnName} = this.$moment().subtract(0, 'days').format(${formatters})`
         }
       } else if (type === 'month') { // 月份
         if (time < 0) { // 前数月
           time = Math.abs(time)
           tempStr = this.$moment().subtract(time, 'months').startOf('month').format(formatters) + '~' + this.$moment().subtract(time, 'months').endOf('month').format(formatters)
           // tempSqlStr = columnName + this.$moment().subtract(time, 'months').startOf('month').format(formatters) + '-' + this.$moment().subtract(time, 'months').endOf('month').format(formatters)
-          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'months').endOf('month').format(formatters) + '\' and ' + ' < \'' + this.$moment().subtract(time - 1, 'months').startOf('month').format(formatters)
+          tempSqlStr = `${columnName} > this.$moment().subtract(${time + 1}, 'months').endOf('month').format(${formatters}) and < this.$moment().subtract(${time - 1}, 'months').startOf('month').format(${formatters})`
         } else if (time > 0) { // 未来数月
           tempStr = this.$moment().add(time, 'months').startOf('month').format(formatters) + '~' + this.$moment().add(time, 'months').endOf('month').format(formatters)
           tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'months').endOf('month').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'months').startOf('month').format(formatters)
@@ -5265,7 +5270,6 @@ export default {
 
     fpcNodeClick (data) { // 右侧树状节点点击后显示到中间tab中
       console.log('FPC@fpcNodeClick:', data)
-
       if (data.DESCRIPTION) {
         this.timeTreeNodeDesc = data.DESCRIPTION
       } else {
@@ -5280,7 +5284,6 @@ export default {
 
     fpcGcNodeClick (data) {
       console.log('FPC@fpcGcNodeClick:', data)
-
       if (data.DESCRIPTION) {
         this.gcTreeNodeDesc = data.DESCRIPTION
       } else {
