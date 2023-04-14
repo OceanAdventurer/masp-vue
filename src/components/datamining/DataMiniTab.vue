@@ -86,9 +86,7 @@ export default {
     DataMingingModefpgrowthResult
   },
   created () {
-    if (!this.$route.query.type) {
-      this.addTable({enName: 'dataMiniMange', zhName: '数据挖掘管理', isClosable: false, parent: 'dataMining_mining'})
-    }
+    this.addTable({enName: 'dataMiniMange', zhName: '数据挖掘管理', isClosable: false, parent: 'dataMining_mining'})
     this.$bus.$on('dataMiningMenu', () => {
       this.getMenueByenName(this.activeTabName, 'dataMining_mining')
     })

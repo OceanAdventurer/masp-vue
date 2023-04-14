@@ -518,14 +518,16 @@ export default {
             this.menuListObj[t] = false
           }
         }
-        if (this.$route.query.type) { // 航科院系统携带参数跳转页面
-          this.navMenu = this.$route.query.type === 'weather' ? 'weather' : 'modelRuntime'
-        } else if (tempListObj.analysis) { // 显示默认的菜单
-          this.navMenu = 'analysis'
-        } else {
-          this.navMenu = mlist[0]['URL']
-        }
-        this.openNavMenuItem(this.navMenu) // 初始化默认显示分析模块一级菜单效果
+        setTimeout(() => {
+          if (this.$route.query.type) { // 航科院系统携带参数跳转页面
+            this.navMenu = this.$route.query.type === 'weather' ? 'weather' : 'modelRuntime'
+          } else if (tempListObj.analysis) { // 显示默认的菜单
+            this.navMenu = 'analysis'
+          } else {
+            this.navMenu = mlist[0]['URL']
+          }
+          this.openNavMenuItem(this.navMenu) // 初始化默认显示分析模块一级菜单效果
+          }, 10)
       }
     },
     isStringObject (obj) {

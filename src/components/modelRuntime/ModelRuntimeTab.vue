@@ -67,17 +67,9 @@ export default {
   created () {
     this.getTypeList()
     this.modelType = '0001'
-    if (this.$route.query.type === 'runTime') {
-      this.queryTable()
-    }
   },
   mounted () {
-    this.$nextTick(() => {
-      this.queryTable()
-    })
-    // this.$bus.$on('modelRuntimeMenu', val => {
-    //   this.queryTable()
-    // })
+    this.queryTable()
   },
   methods: {
     handleSizeChange (val) {
