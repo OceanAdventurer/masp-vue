@@ -525,7 +525,6 @@ export default {
         } else {
           this.navMenu = mlist[0]['URL']
         }
-        this.headerTwoValue = this.getHeaderTwoValue() // 获取二级菜单的值
         this.openNavMenuItem(this.navMenu) // 初始化默认显示分析模块一级菜单效果
       }
     },

@@ -94,9 +94,7 @@
       ModelRuntimeTab,
       RuntimeManageTab
     },
-    created () {
-      console.log('xxx', menu.menuData.headerData)
-    },
+    created () {},
     computed: {
     },
     mounted () {

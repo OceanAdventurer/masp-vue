@@ -50,11 +50,15 @@ export default {
     FlightWeather,
     AirportWeather
   },
+  created () {
+    if (this.$route.query.type === 'weather') {
+      this.addSettingTab({enName: 'flight_weather', zhName: '航班天气', isClosable: false, parent: 'weather_flight'})
+    }
+  },
   mounted () {
     this.$bus.$on('weatherAddTab', (obj) => {
       this.addSettingTab(obj)
     })
-    // this.addSettingTab({enName: 'flight_weather', zhName: '航班天气', isClosable: false, parent: 'weather_flight'})
   },
   props: [
     'menuListObj'

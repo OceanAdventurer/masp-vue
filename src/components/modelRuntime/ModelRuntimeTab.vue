@@ -51,7 +51,6 @@
   </div>
 </template>
 <script>
-const ModelApprove = () => import('components/modelRuntime/ModelApprove')
 
 export default {
   data () {
@@ -64,12 +63,13 @@ export default {
       total: 0
     }
   },
-  components: {
-    ModelApprove
-  },
+  components: {},
   created () {
     this.getTypeList()
     this.modelType = '0001'
+    if (this.$route.query.type === 'runTime') {
+      this.queryTable()
+    }
   },
   mounted () {
     this.$nextTick(() => {
