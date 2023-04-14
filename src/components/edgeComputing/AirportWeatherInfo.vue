@@ -5,7 +5,7 @@
         <div class="airport-weather-table-input df df-jc-c df-ai-c">
           <el-form :inline="true" label-width="70px">
             <el-form-item label="机场:">
-              <el-input v-model.trim="form.aptlcaoCode" disabled clearable placeholder="机场" style="width: 100px; " />
+              <el-input v-model.trim="form.aptlcaoCode" disabled clearable placeholder="全部" style="width: 100px; " />
             </el-form-item>
             <el-form-item label="数据类型:">
               <el-select v-model="form.msgType" clearable placeholder="数据类型" style="width: 100px;">

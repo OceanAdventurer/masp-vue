@@ -41,13 +41,13 @@
               />
             </el-form-item>
             <el-form-item label="起飞机场:">
-              <el-input v-model.trim="form.depAp" clearable placeholder="起飞机场" style="width: 100px; " />
+              <el-input v-model.trim="form.depAp" clearable placeholder="全部" style="width: 100px; " />
             </el-form-item>
             <el-form-item label="着陆机场:">
-              <el-input v-model.trim="form.arrAp" clearable placeholder="着陆机场" style="width: 100px; " />
+              <el-input v-model.trim="form.arrAp" clearable placeholder="全部" style="width: 100px; " />
             </el-form-item>
             <el-form-item label="机型:">
-              <el-select v-model="form.acType" clearable placeholder="机型" filterable style="width: 110px;">
+              <el-select v-model="form.acType" clearable placeholder="全部" filterable style="width: 110px;">
                 <el-option
                   v-for="item in acTypeList"
                   :key="item.value"
@@ -57,13 +57,13 @@
               </el-select>
             </el-form-item>
             <el-form-item label="机号:">
-              <el-input v-model.trim="form.acTail" clearable placeholder="机号" style="width: 100px;" />
+              <el-input v-model.trim="form.acTail" clearable placeholder="全部" style="width: 100px;" />
             </el-form-item>
             <el-form-item label="航班号:">
-              <el-input v-model.trim="form.flightNo" clearable placeholder="航班号" style="width: 100px;" />
+              <el-input v-model.trim="form.flightNo" clearable placeholder="全部" style="width: 100px;" />
             </el-form-item>
             <el-form-item label="是否匹配:">
-              <el-select v-model="form.match" clearable placeholder="是否匹配" style="width: 100px;">
+              <el-select v-model="form.match" clearable placeholder="全部" style="width: 100px;">
                 <el-option
                   v-for="item in matchList"
                   :key="item.value"
@@ -111,6 +111,7 @@
             :header-cell-style="{padding:'0px'}"
             highlight-current-row
             :data="tableData"
+            @sort-change="sortChange"
             height="100%"
             border
             style="width: 100%">
@@ -127,6 +128,7 @@
             <el-table-column
               prop="acTail"
               label="机号"
+              sortable="custom"
               width="100px">
             </el-table-column>
             <el-table-column
@@ -279,7 +281,9 @@ export default {
         arrTimeStart: '',
         arrTimeEnd: '',
         type: [],
-        match: ''
+        match: '',
+        orderName: '',
+        orderType: ''
       },
       currentPage: 1,
       pageSize: 20,
@@ -402,7 +406,11 @@ export default {
       this.depTime = [dateStr + ' 00:00:00', dateStr + ' 23:59:59']
     },
     initList () {
+      // 分页初始化
       this.currentPage = 1
+      // 排序 初始化
+      this.form.orderName = ''
+      this.form.orderType = ''
       this.getList()
     },
     dataExport () {
@@ -484,6 +492,15 @@ export default {
       }).catch(res => {
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
       })
+    },
+    sortChange (params) {
+      this.form.orderName = ''
+      this.form.orderType = ''
+      if (params.prop === 'acTail' && params.order) {
+        this.form.orderName = params.prop
+        this.form.orderType = params.order
+      }
+      this.getList()
     },
     showInfo (row) {
       this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！')

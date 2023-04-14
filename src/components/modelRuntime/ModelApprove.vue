@@ -372,7 +372,8 @@ export default {
         treeType: row.treeType,
         treeNode: row.treeNode,
         treeName: row.treeName,
-        name: row.modelName
+        name: row.modelName,
+        type: 'view'
       })
     },
     showOptInfo (row) {
