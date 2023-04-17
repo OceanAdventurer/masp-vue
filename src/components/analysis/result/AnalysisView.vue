@@ -1877,7 +1877,11 @@ export default {
                   let tempColumnValue = resultData[i].columnname
                   tempArr.push({'columnName': resultData[i].name, 'columnValue': tempColumnValue, 'dimentionDescription': resultData[i].dimentionDescription, type: 'events', eventList: []})
                 } else {
-                  tempColumnValue = '开始:' + resultData[i].begin + '<br>结束:' + resultData[i].end + '<br>严重程度:' + resultData[i].columnname
+                  if (resultData[i].begin === resultData[i].end) {
+                    tempColumnValue = '时间点:' + resultData[i].begin + '<br>值:' + resultData[i].columnname
+                  } else {
+                    tempColumnValue = '开始:' + resultData[i].begin + '<br>结束:' + resultData[i].end + '<br>值:' + resultData[i].columnname
+                  }
 
                   tempArr.push({'columnName': resultData[i].name, 'columnValue': tempColumnValue, 'dimentionDescription': resultData[i].dimentionDescription, type: 'event', begin: resultData[i].begin, end: resultData[i].end})
                 }
