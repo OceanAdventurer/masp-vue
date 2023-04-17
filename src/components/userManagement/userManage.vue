@@ -252,10 +252,10 @@ export default {
           window.sessionStorage.removeItem('DSAP-sublineAllData') // 删除浏览器辅助线信息
           /**
            * 地址会有两种：
-              1、/dsap/index.html
-              2、http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/dsap
+              1、/DSAP/index.html
+              2、http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/DSAP
           */
-          // window.location.href = 'http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/dsap'
+          // window.location.href = 'http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/DSAP'
           if (this.$util.isDefine(response.data.status)) {
             if (response.data.status === '0') {
               let resUrl = response.data.result.data

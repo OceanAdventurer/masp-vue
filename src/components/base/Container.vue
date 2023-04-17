@@ -673,7 +673,7 @@ export default {
           window.sessionStorage.removeItem('DSAP-sublineAllData') // 删除浏览器辅助线信息
           /**
            * 地址会有两种：
-              1、/dsap/index.html
+              1、/DSAP/index.html
               2、http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/DSAP
           */
           // window.location.href = 'http://testohs1.ceair.com:7777/oam/server/logout?end_url=http://172.20.42.143:7777/DSAP'

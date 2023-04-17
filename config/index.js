@@ -25,7 +25,7 @@ module.exports = {
         secure: false,      // 如果是https接口，需要配置这个参数, 默认情况下，不接受运行在HTTPS上，且使用了无效证书的后端服务器
         changeOrigin: false,     // 如果接口跨域，需要进行这个参数配置
         pathRewrite: { // 如果你不想始终传递/api，则需要重写路径
-          // '^/dsap': ''
+          // '^/DSAP': ''
         }
       }
     },

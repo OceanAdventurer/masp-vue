@@ -176,13 +176,13 @@
              </div>
               </span>
               <span v-else-if="creatorId === 7 || creatorId === '7'">
-                <!-- <iframe id="ifid" ref="iframe" src="/dsap/static/groovyIDE/index2.html" width="100%" height="100%"></iframe> -->
+                <!-- <iframe id="ifid" ref="iframe" src="/DSAP/static/groovyIDE/index2.html" width="100%" height="100%"></iframe> -->
                 <!-- 左侧元素 -->
                 <div class="script_left" >
                   <ParamTwoLeft v-on:listenToChildEvent="showMsgFromChild"></ParamTwoLeft>
                 </div>
                 <div class="script_edit">
-                  <iframe id="ifid" ref="iframe" src="/dsap/static/groovyIDE/index2.html" width="100%"></iframe>
+                  <iframe id="ifid" ref="iframe" src="/DSAP/static/groovyIDE/index2.html" width="100%"></iframe>
                 </div>
               </span>
             </div>
@@ -217,7 +217,7 @@
                 <div class="right_shade"></div>
                 <div class="right_content">
 
-                  <iframe id="iframeOrgChart" frameborder="no" border="0" ref="iframeOrgChart" src="/dsap/static/orgChart/color-coded/org_chart.html" ></iframe>
+                  <iframe id="iframeOrgChart" frameborder="no" border="0" ref="iframeOrgChart" src="/DSAP/static/orgChart/color-coded/org_chart.html" ></iframe>
                   <el-button @click="closePopup" style="float:right;margin:10px 26px 0px 0px;">关闭</el-button>
                 </div>
               </div>
