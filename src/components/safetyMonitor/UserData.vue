@@ -233,7 +233,7 @@ export default {
 .el-dialog__wrapper /deep/ .el-dialog {
   margin-top: 10vh !important;
   height: 60%;
-  min-height: 600px;
+  min-height: 500px;
   width: 80%;
   min-width: 800px;
 }
