@@ -1018,7 +1018,7 @@
       <div class="file-new-bottom">
         <el-button @click="assemblyNewFileParams(false)" type="primary" size="mini">查看</el-button>
         <el-button @click="assemblyNewFileParams(true)" type="primary" size="mini" v-show="!stateType">保存</el-button>
-        <el-button @click="openCopySaveDialog" type="primary" size="mini">另存为</el-button>
+        <el-button @click="openCopySaveDialog" type="primary" size="mini" v-show="!stateType">另存为</el-button>
       </div>
     </div>
 

@@ -102,7 +102,7 @@ export default {
         treeNode: row.treeNode,
         treeName: row.treeName,
         name: row.modelName,
-        type: 'view'
+        type: 'detail'
       })
     },
     queryTable (val) {

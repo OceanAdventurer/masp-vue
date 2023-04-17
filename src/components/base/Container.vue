@@ -405,7 +405,6 @@ export default {
         this.showSettingCategoryDefault = false
         let obj = publicParmas || {}
         this.$bus.$emit('analysisMenu')
-        obj.modelState = '已上线'
         this.$bus.$emit('sendToManager', obj)
       } else if (this.navMenu === 'weather') { // 天气，默认打开航班天气页面
         this.$bus.$emit('weatherAddTab', {enName: 'flight_weather', zhName: '航班天气', isClosable: false, parent: name})
@@ -416,6 +415,7 @@ export default {
         this.$bus.$emit('modelRuntimeMenu', 'modelRuntime_approve')
       } else if (this.navMenu === 'runtimeManage') { // 模型运行管理区
         this.isShowTips = false
+          // this.$bus.$emit('runtimeManageMenu', 'runtimeManage_approve')
         if (flag === true) {
           this.$bus.$emit('runtimeManageMenu', 'runtimeManage_approve')
         } else {
@@ -616,6 +616,14 @@ export default {
           let resultData = response.data.result.data
 
           const { userName } = resultData || {}
+          // if (resultData.menuList.length > 0) {
+          //   let isAudit = resultData.menuList.find(item => item.NAME === '运行管理-审批')
+          //   if (isAudit) {
+          //     resultData.isAudit = true
+          //   } else {
+          //     resultData.isAudit = false
+          //   }
+          // }
           this.$store.commit('USER_INFO', resultData) // 临时存放用户信息
           setWaterMark('DSAP', userName)
           this.$util.UserData = resultData

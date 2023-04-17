@@ -1044,9 +1044,9 @@ export default {
                 return item.NAME === this.publicParmas.modelName
               })
               if (this.publicParmas.type === 'view') {
-                this.managerRowView(row[0])
+                this.managerRowEdit(row[0], 'view') // 编辑
               } else {
-                this.managerRowEdit(row[0], 'view')
+                this.managerRowView(row[0], 'detail') // 查看
               }
             }
           } else {
@@ -2109,5 +2109,12 @@ export default {
 <style>
 .publish_dia .publish_dialog_content .el-card .el-card__body {
   padding: 0 20px;
+}
+.publish_dia .el-dialog__wrapper .el-dialog__body {
+  padding: 0 20px 20px 20px;
+}
+.publish_dia .el-dialog__wrapper .el-dialog__header .el-dialog__title {
+  font-size: 14px;
+  font-weight: bold;
 }
 </style>

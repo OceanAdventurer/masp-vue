@@ -40,22 +40,22 @@
               prop="modelName"
               label="模型名称"
               :show-overflow-tooltip="true"
-              min-width="200px">
+              min-width="120px">
             </el-table-column>
             <el-table-column
               prop="categoryType"
               label="模型类别"
               :formatter="modelFormatter"
               :show-overflow-tooltip="true"
-              width="200px">
+              width="120px">
             </el-table-column>
             <el-table-column
               prop="modelUser"
               label="所属用户"
               :show-overflow-tooltip="true"
-              width="200px">
+              width="150px">
             </el-table-column>
-            <el-table-column label="操作" width="300px">
+            <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button class="opt-button" size="mini" round @click.native="showModel(scope.row)">查看模型</el-button>
                 <el-button size="mini" round @click.native="modelHandle(scope.row)">办理</el-button>
@@ -256,7 +256,7 @@ export default {
         treeNode: row.treeNode,
         treeName: row.treeName,
         name: row.modelName,
-        type: 'view'
+        type: 'detail'
       })
     },
     showOptInfo (row) {

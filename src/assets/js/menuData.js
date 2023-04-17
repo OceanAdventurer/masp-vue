@@ -45,6 +45,7 @@ export const menuData = {
     runtimeManage: [ // 左侧设置菜单数据
       { enName: 'handle', zhName: '模型办理', parent: 'runtimeManage', isShow: true },
       { enName: 'approve', zhName: '模型审批', parent: 'runtimeManage', isShow: false },
+      // { enName: 'approve', zhName: '待办列表', parent: 'runtimeManage', isShow: false },
       { enName: 'onlineOffline', zhName: '上下线管理', parent: 'runtimeManage', isShow: false }
     ],
     setting: [ // 左侧设置菜单数据

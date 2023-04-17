@@ -40,25 +40,26 @@
               prop="modelName"
               label="模型名称"
               :show-overflow-tooltip="true"
-              min-width="200px">
+              width="120px">
             </el-table-column>
             <el-table-column
               prop="categoryType"
               label="模型类别"
               :formatter="modelFormatter"
               :show-overflow-tooltip="true"
-              width="200px">
+              width="120px">
             </el-table-column>
             <el-table-column
               prop="modelUser"
               label="所属用户"
               :show-overflow-tooltip="true"
-              width="200px">
+              width="150px">
             </el-table-column>
-            <el-table-column label="操作" width="520px">
+            <el-table-column label="操作" >
               <template slot-scope="scope">
                 <el-button class="opt-button" size="mini" round @click.native="showPublishInfo(scope.row)">查看审批单</el-button>
                 <el-button class="opt-button" size="mini" round @click.native="showModel(scope.row)">查看模型</el-button>
+                <!-- <el-button size="mini" round v-show="scope.row.modelState === '30'" @click.native="modelHandle(scope.row)">处理</el-button> -->
                 <el-button class="opt-button" v-if="showButton(1, scope.row)" size="mini" round @click.native="modelApprove(scope.row)">审批</el-button>
                 <el-button class="opt-button" v-if="showButton(5, scope.row)" size="mini" round @click.native="reject( scope.row)">驳回</el-button>
                 <el-button class="opt-button" v-if="showButton(6, scope.row)" size="mini" round @click.native="transfer(scope.row)">转办</el-button>
@@ -165,7 +166,7 @@
     </el-dialog>
 
     <el-dialog :close-on-click-modal="false" title="审批单" :visible.sync="publishInfoForm.showPublishDia">
-      <div class="event-dialog-content">
+      <div class="audit_detail">
         <el-form label-width="80px">
           <el-row>
             <el-col :span='12'>
@@ -193,6 +194,26 @@
         </el-form>
       </div>
     </el-dialog>
+    <!-- <el-dialog :close-on-click-modal="false" :title="modelOpt.title" class="model-opt-dialog" :visible.sync="modelOpt.modelHandleDialog" @close='closeDialog'>
+      <el-form :model="modelOpt" label-width="80px" :rules="rules"  ref="modelOpt">
+          <el-form-item label="模型名称:">
+            <el-input v-model="modelOpt.modelName" style="width: 350px;" disabled/>
+          </el-form-item>
+          <el-form-item label="意见:" prop="explain">
+            <el-input type="textarea"
+                      :rows="3"
+                      :show-word-limit="true"
+                      :maxlength="50"
+                      v-model.trim="modelOpt.explain"
+                      clearable
+                      placeholder="意见"
+                      style="width: 350px; "/>
+          </el-form-item>
+          <el-form-item class="model-opt-dialog-button">
+            <el-button type="primary" @click="dialogSubmit">确定</el-button>
+          </el-form-item>
+        </el-form>
+    </el-dialog> -->
 
   </div>
 </template>
@@ -208,6 +229,7 @@ export default {
         modelName: '',
         categoryType: '',
         modelUser: '',
+        // 10：已创建｜待提交｜已驳回 /20：已提交｜已办理｜待审批 /30：已转办｜待办理 /40：已办理｜待审批 /50：已审批 /60：已驳回/70已上线｜审批通过/80：已下线
         modelState: ''
       },
       currentPage: 1,
@@ -215,6 +237,7 @@ export default {
       total: 0,
       tableData: [],
       modelOpt: {
+        // modelHandleDialog: false,
         modelDialog: false,
         url: '',
         modelId: '',
@@ -246,6 +269,7 @@ export default {
         submitBy: '',
         submitTime: ''
       }
+      // isAudit: false
     }
   },
   created () {
@@ -258,6 +282,8 @@ export default {
       this.getModelCategory()
       // 查询所有用户
       this.getAllUserList()
+      let userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo')) || {}
+      this.isAudit = userInfo.isAudit || false
     })
   },
   watch: {},
@@ -270,6 +296,10 @@ export default {
       this.currentPage = val
       this.getList()
     },
+    // 办理
+    // modelHandle (row) {
+    //   this.setModelDialog('办理', '/handle', row.modelId, row.modelName, 'modelHandleDialog')
+    // },
     initList () {
       this.currentPage = 1
       this.getList()
@@ -374,6 +404,7 @@ export default {
         treeName: row.treeName,
         name: row.modelName,
         type: 'view'
+        // type: this.isAudit ? 'view' : 'detail' // 审核人去模型编辑页
       })
     },
     showOptInfo (row) {
@@ -404,14 +435,14 @@ export default {
       this.setModelDialog('转办', '/transfer', row.modelId, row.modelName)
     },
     // 设置模型操作参数
-    setModelDialog (type, url, modelId, modelName) {
+    setModelDialog (type, url, modelId, modelName, dialog = 'modelDialog') {
       this.modelOpt.url = url
       this.modelOpt.modelId = modelId
       this.modelOpt.modelName = modelName
       this.modelOpt.title = type
       this.modelOpt.explain = ''
       this.modelOpt.userList = []
-      this.modelOpt.modelDialog = true
+      this.modelOpt[dialog] = true
     },
     modelConfirm (type, modelName, url, params) {
       this.$confirm('您确定要' + type + '模型【' + modelName + '】吗?', '提示', {
@@ -554,5 +585,17 @@ export default {
 .model-opt-list-dialog /deep/ .el-table__body-wrapper {
   height: 350px !important;
   overflow-y: scroll;
+}
+</style>
+<style>
+.model-approve .el-dialog__wrapper .audit_detail .el-form-item {
+  margin-bottom: 0;
+}
+.model-approve .el-dialog__wrapper .el-dialog__body {
+  padding: 0 20px 20px 20px;
+}
+.model-approve .el-dialog__wrapper .el-dialog__header .el-dialog__title {
+  font-size: 14px;
+  font-weight: bold;
 }
 </style>
