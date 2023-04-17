@@ -1,6 +1,6 @@
 <template>
   <div class="header-two">
-    <div class="header-two-title" v-show="headerData[headerTwoValue]">
+    <div class="header-two-title" v-show="headerTwoValue !== 'modelRuntime_approve' && headerTwoValue !== 'weather_flight' && headerData[headerTwoValue]">
       <div
         v-for="item in headerData[headerTwoValue]"
         :key="item.enName"

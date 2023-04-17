@@ -15,14 +15,12 @@
           border
           highlight-current-row
           fit>
-          <!-- :header-row-class-name="headerRowClassName"
-          :row-class-name="tableRowClassName" -->
           <el-table-column prop="modelName" label="模型名称" align="left"></el-table-column>
           <!-- <el-table-column prop="modelType" label="分析类型" align="left"></el-table-column> -->
           <el-table-column prop="modelState" label="模型状态" align="left">
             <template slot-scope="scope">
               <div class="row-icon-group">
-                {{scope.row.modelState === '70' ? '已上线' : '-'}}
+                {{scope.row.modelState === '70' ? '已上线' : scope.row.modelState}}
               </div>
             </template>
           </el-table-column>

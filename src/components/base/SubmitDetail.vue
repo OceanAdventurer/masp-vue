@@ -45,10 +45,9 @@
       :header-row-style="{height:'38px'}"
       :header-cell-style="{padding:'0px'}"
       :data="submitData"
-      height="100%"
+      :height="tableHeight"
       style="width: 100%"
       highlight-current-row
-      fit
       border>
       <!-- :header-row-class-name="headerRowClassName"
       :row-class-name="tableRowClassName"> -->
@@ -68,7 +67,7 @@
       <el-table-column prop="createTime" label="提交时间"></el-table-column>
       <el-table-column prop="optTime" label="处理时间"></el-table-column>
       <!-- <el-table-column prop="currentNode" label="当前节点"></el-table-column> -->
-      <el-table-column prop="transferUser" label="处理人"></el-table-column>
+      <!-- <el-table-column prop="transferUser" label="当前处理人"></el-table-column> -->
     </el-table>
     </div>
     <span slot="footer" class="dialog-footer">
@@ -84,6 +83,7 @@ export default {
     return {
       dialogVisible: false,
       typeList: [],
+      tableHeight: 'calc(100% - 62px)',
       statusList: [
         '待提交',
         '待审批',
@@ -176,6 +176,13 @@ export default {
 <style>
   .submit_detail .el-dialog {
     width: 80%;
+  }
+  .submit_detail .el-dialog .el-dialog__body {
+    /* max-height: 80%; */
+    height: 300px;
+  }
+  .submit_detail .el-dialog .detail_content {
+    height: 100%;
   }
   .submit_detail .el-dialog__body {
     padding: 0 20px

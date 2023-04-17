@@ -416,7 +416,7 @@ export default {
         this.$bus.$emit('modelRuntimeMenu', 'modelRuntime_approve')
       } else if (this.navMenu === 'runtimeManage') { // 模型运行管理区
         this.isShowTips = false
-        if (flag) {
+        if (flag === true) {
           this.$bus.$emit('runtimeManageMenu', 'runtimeManage_approve')
         } else {
           this.$bus.$emit('runtimeManageMenu', 'runtimeManage_handle')
