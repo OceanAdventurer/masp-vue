@@ -321,9 +321,10 @@ export default {
             Cookies.set('storageQuery', JSON.stringify(params), {expires: 7})
             this.toggleIndex++
             const {data = {}} = res
-            if (data.message == "参数不存在") {
+            if (data.message == "参数不存在" || data.message == "参数无数据或非数字型") {
               this.$message.error(data.message)
               this.resetParams()
+              this.frequencyData = []
               return
             }
             const {avg = 0, max = 0, mid = 0, min = 0, thickestValue1 = '',
