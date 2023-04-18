@@ -1038,7 +1038,7 @@
 .el-submenu .el-menu-item {
     height:50px;
     line-height:50px;
-    padding:0 45px;
+    padding:0;
     min-width:200px
 }
 .el-submenu__icon-arrow {

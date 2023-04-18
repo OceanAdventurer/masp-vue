@@ -1070,10 +1070,10 @@ export default {
         if (time < 0) { // 过去时间
           time = Math.abs(time)
           tempStr = this.$moment().subtract(time, 'days').format(formatters) + '~' + this.$moment().add(0, 'days').format(formatters)
-          tempSqlStr = columnName + ' >= \'' + this.$moment().subtract(time, 'days').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'days').format(formatters)
+          tempSqlStr = columnName + ' >= \'' + this.$moment().subtract(time, 'days').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(1, 'days').format(formatters) + '\''
         } else if (this.dynamicTime > 0) { // 未来
           tempStr = this.$moment().add(0, 'days').format(formatters) + '~' + this.$moment().add(time, 'days').format(formatters)
-          tempSqlStr = columnName + ' >= \'' + this.$moment().add(0, 'days').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'days').format(formatters)
+          tempSqlStr = columnName + ' >= \'' + this.$moment().add(0, 'days').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(time + 1, 'days').format(formatters) + '\''
         } else { // 当天
           tempStr = this.$moment().subtract(0, 'days').format(formatters)
           tempSqlStr = columnName + ' = \'' + this.$moment().subtract(0, 'days').format(formatters)
@@ -1082,50 +1082,50 @@ export default {
         if (time < 0) { // 前数月
           time = Math.abs(time)
           tempStr = this.$moment().subtract(time, 'months').startOf('month').format(formatters) + '~' + this.$moment().subtract(time, 'months').endOf('month').format(formatters)
-          tempSqlStr = columnName + this.$moment().subtract(time, 'months').startOf('month').format(formatters) + '-' + this.$moment().subtract(time, 'months').endOf('month').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'months').endOf('month').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().subtract(time - 1, 'months').startOf('month').format(formatters) + '\''
         } else if (time > 0) { // 未来数月
           tempStr = this.$moment().add(time, 'months').startOf('month').format(formatters) + '~' + this.$moment().add(time, 'months').endOf('month').format(formatters)
-          tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'months').endOf('month').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'months').startOf('month').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'months').endOf('month').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(time + 1, 'months').startOf('month').format(formatters) + '\''
         } else { // 本月
           tempStr = this.$moment().subtract(0, 'months').startOf('month').format(formatters) + '~' + this.$moment().add(0, 'months').endOf('month').format(formatters)
-          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'months').endOf('month').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'months').startOf('month').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'months').endOf('month').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(1, 'months').startOf('month').format(formatters) + '\''
         }
       } else if (type === 'year') { // 年份
         if (time < 0) { // 前数月
           time = Math.abs(time)
           tempStr = this.$moment().subtract(time, 'years').startOf('year').format(formatters) + '~' + this.$moment().subtract(time, 'years').endOf('year').format(formatters)
           // tempSqlStr = columnName + this.$moment().subtract(time, 'year').startOf('year').format(formatters) + '-' + this.$moment().subtract(time, 'year').endOf('year').format(formatters)
-          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'year').endOf('year').format(formatters) + '\' and ' + ' < \'' + this.$moment().subtract(time - 1, 'year').startOf('year').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'year').endOf('year').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().subtract(time - 1, 'year').startOf('year').format(formatters) + '\''
         } else if (time > 0) { // 未来数月
           tempStr = this.$moment().add(time, 'years').startOf('year').format(formatters) + '~' + this.$moment().add(time, 'years').endOf('year').format(formatters)
-          tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'year').endOf('year').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'years').startOf('year').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'year').endOf('year').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(time + 1, 'years').startOf('year').format(formatters) + '\''
         } else { // 本月
           tempStr = this.$moment().subtract(0, 'years').startOf('year').format(formatters) + '~' + this.$moment().add(0, 'years').endOf('year').format(formatters)
-          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'years').endOf('year').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'years').startOf('year').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'years').endOf('year').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(1, 'years').startOf('year').format(formatters) + '\''
         }
       } else if (type === 'week') { // 周度
         if (time < 0) {
           time = Math.abs(time)
           tempStr = this.$moment().subtract(time, 'weeks').startOf('week').format(formatters) + '~' + this.$moment().subtract(time, 'weeks').endOf('week').format(formatters)
-          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'week').endOf('week').format(formatters) + '\' and ' + ' < \'' + this.$moment().subtract(time - 1, 'week').startOf('week').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'week').endOf('week').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().subtract(time - 1, 'week').startOf('week').format(formatters) + '\''
         } else if (time > 0) { // 未来数周
           tempStr = this.$moment().add(time, 'weeks').startOf('week').format(formatters) + '~' + this.$moment().add(time, 'weeks').endOf('week').format(formatters)
-          tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'week').endOf('week').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'weeks').startOf('week').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'week').endOf('week').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(time + 1, 'weeks').startOf('week').format(formatters) + '\''
         } else { // 本周
           tempStr = this.$moment().subtract(0, 'weeks').startOf('week').format(formatters) + '~' + this.$moment().add(0, 'weeks').endOf('week').format(formatters)
-          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'weeks').endOf('week').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'weeks').startOf('week').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'weeks').endOf('week').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(1, 'weeks').startOf('week').format(formatters) + '\''
         }
       } else { // 季度
         if (time < 0) {
           time = Math.abs(time)
           tempStr = this.$moment().subtract(time, 'quarters').startOf('quarter').format(formatters) + '~' + this.$moment().subtract(time, 'quarters').endOf('quarter').format(formatters)
-          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'quarter').endOf('quarter').format(formatters) + '\' and ' + ' < \'' + this.$moment().subtract(time - 1, 'quarter').startOf('quarter').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(time + 1, 'quarter').endOf('quarter').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().subtract(time - 1, 'quarter').startOf('quarter').format(formatters) + '\''
         } else if (time > 0) { // 未来数周
           tempStr = this.$moment().add(time, 'quarters').startOf('quarter').format(formatters) + '~' + this.$moment().add(time, 'quarters').endOf('quarter').format(formatters)
-          tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'quarter').endOf('quarter').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(time + 1, 'quarters').startOf('quarter').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().add(time - 1, 'quarter').endOf('quarter').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(time + 1, 'quarters').startOf('quarter').format(formatters) + '\''
         } else { // 本周
           tempStr = this.$moment().subtract(0, 'quarters').startOf('quarter').format(formatters) + '~' + this.$moment().add(0, 'quarters').endOf('quarter').format(formatters)
-          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'quarters').endOf('quarter').format(formatters) + '\' and ' + ' < \'' + this.$moment().add(1, 'quarters').startOf('quarter').format(formatters)
+          tempSqlStr = columnName + ' > \'' + this.$moment().subtract(1, 'quarters').endOf('quarter').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(1, 'quarters').startOf('quarter').format(formatters) + '\''
         }
       }
       return {tempStr, tempSqlStr}
@@ -1251,7 +1251,6 @@ export default {
     submitNewFileDataPublicMethods (params, funType) { // 提交新建分析中的数据
       console.log(123)
       this.$store.commit('SHOW_LOADING', '正在查询数据，请稍等！') // 打开加载提示框
-      console.log('submitNewFileDataPublicMethods~~~:', JSON.stringify(params))
       let tempUrl = '/submit/submitAnalysis'
       if (funType === 'addSublineComponent') {
         tempUrl = '/submit/addGuide' // 添加辅助线
@@ -1807,13 +1806,22 @@ export default {
             tempObj['fpcParamResult'] = response.data.result.data.data
 
             this.$bus.$emit('closeAnalysisTabFun')
-
             this.$bus.$emit('openHeaderMenuItem', 'fpc_result_chart', null, null) // 修改头部显示效果
             this.$bus.$emit('fpcFlightObjHandle', tempObj)
             this.$bus.$emit('analysisAddTab', {enName: 'fpc_result', zhName: '多航班参数对比结果', isClosable: true, parent: 'fpc_result_chart'})
           } else {
             this.$bus.$emit('closeDhbcsdbTabFun')
-
+            // if (tempAnalysisResultAllDataObj.flightInfoData.ishaspermission === 'Y') {
+            //   disabledMenuObj['analysis_view_fdv'] = false
+            //   disabledMenuObj['analysis_view_export'] = false
+            //   disabledMenuObj['analysis_view_template'] = false
+            //   disabledMenuObj['analysis_view_clean'] = false
+            // } else {
+            //   disabledMenuObj['analysis_view_fdv'] = true
+            //   disabledMenuObj['analysis_view_export'] = true
+            //   disabledMenuObj['analysis_view_template'] = true
+            //   disabledMenuObj['analysis_view_clean'] = true
+            // }
             this.$bus.$emit('closeAnalysisTabFun') // 关闭分析结果tab,数据切换时重新打开
             this.$bus.$emit('setDefaultChartType', tempMenuArr[0]) // 设置默认的显示的图表类型
             this.$store.commit('IS_DISABLED_MENU', disabledMenuObj) // 暂时存储需要修改二级菜单的值

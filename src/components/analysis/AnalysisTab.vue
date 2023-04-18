@@ -316,6 +316,8 @@ export default {
           this.analysisTabsValue = newTabName2
 
           this.$bus.$emit('openHeaderMenuItem', 'analysis_view_template', {}, {})
+        } else if (obj.enName === 'analysis_view_clean') {
+          console.log('analysis_view_clean---test')
         } else {
           if (this.$util.isNotEmptyObject(this.$store.state.analysisResultAllData.flightInfoData) &&
             this.$util.isDefine(this.$store.state.analysisResultAllData.flightInfoData.flightid)) { // 有航班id时才可以打开fdv
