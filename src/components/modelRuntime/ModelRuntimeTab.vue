@@ -1,7 +1,7 @@
 <template>
   <div class="model_run_time w100 h100">
     <div class="model_type_title">
-      <el-radio-group v-model="modelType" v-for='item in typeList' :key='item.code' @input='queryTable' size="mini">
+      <el-radio-group v-model="modelType" v-for='item in typeList' :key='item.code' @input='queryTable'>
         <el-radio-button :label="item.code">{{item.name}}</el-radio-button>
       </el-radio-group>
     </div>

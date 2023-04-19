@@ -1,5 +1,5 @@
 <template>
-  <div class="pos-a w100 h100 df df-fd-c">
+  <div class="pos-a w100 h100 df df-fd-c role_permissions">
     <div class="df df-jc-sb df-ai-c pos-r w100 h10" v-show="true">
       <div class="role-permissions-input df df-jc-c df-ai-c w30 ml20">
         <el-input
@@ -32,10 +32,11 @@
         <el-table-column prop="ROLE_NAME" label="角色" width="auto" align="left"></el-table-column>
         <el-table-column label="操作" width="100" align="left">
           <template slot-scope="scope">
-              <div class="row-icon-group">
-                <div class="icon-edit tab-icon-set mr10" title="修改用户角色" @click="showRoleDialog('updateUserRole', scope.row)"></div>
-              </div>
-            </template>
+            <div class="row-icon-group">
+              <div class="icon-edit tab-icon-set mr10" title="修改用户角色" @click="showRoleDialog('updateUserRole', scope.row)"></div>
+              <div class="el-icon-key tab-icon-set" title="重置密码" @click="resetPassword(scope.row)"></div>
+            </div>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -183,6 +184,36 @@ export default {
         this.$message.error(data.message)
       }
     },
+    resetPassword (row) {
+      console.log(row, 'row---test')
+      this.$confirm('此操作将重置密码, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！')
+        let para = {
+          loginName: row.LOGIN_NAME
+        }
+        this.$axios.post('/user/resettingPassword', this.$qs.stringify(para)).then((response) => {
+          this.$store.commit('HIDE_LOADING', '拼命加载中！')
+          var data = response.data
+          if (data.status === '0') {
+            this.$alert(response.data.message, '提示', {
+              confirmButtonText: '确定'
+            })
+          } else {
+            this.$message.error(response.data.message)
+          }
+          this.dialogVisible = false
+        }).catch(response => {
+          this.$store.commit('HIDE_LOADING', '拼命加载中！')
+          this.$message.error(response.data.message)
+        })
+      }).catch(() => {
+        console.log('取消重置')
+      })
+    },
     getRoleListHandle (response) { // 获取角色列表
       console.log('getRoleList~~~:', response)
       let data = response.data
@@ -317,5 +348,18 @@ export default {
 }
 .no-role-data {
   margin-top: 10;
+}
+</style>
+<style>
+.role_permissions .row-icon-group {
+  display: flex;
+}
+.role_permissions .row-icon-group .el-icon-key {
+  width: 16px;
+  height: 16px;
+  color: #5e7396;
+  transform: scale(1.2);
+  font-weight: 700;
+  padding-top: 2px;
 }
 </style>

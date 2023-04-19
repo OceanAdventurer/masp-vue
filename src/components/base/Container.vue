@@ -170,6 +170,7 @@
         <ChangeLogDialog></ChangeLogDialog>
         <HelpDialog></HelpDialog>
         <SubmitDetail></SubmitDetail>
+        <UpdatePassword></UpdatePassword>
         <div class="logout" @click="logoutFun" title="退出">
           <img src="../../assets/images/icon114.png" alt="退出">
         </div>
@@ -193,12 +194,14 @@ import image1 from '@/assets/images/change_data.png'
 import image2 from '@/assets/images/audit_list.png'
 import image3 from '@/assets/images/submit_details.png'
 import image4 from '@/assets/images/helps.png'
+import image5 from '@/assets/images/password_management.png'
 const Loading = () => import('components/base/Loading')
 const HeaderTwo = () => import('components/base/HeaderTwo')
 const DialogPage = () => import('components/base/DialogModal')
 const ChangeLogDialog = () => import('components/base/ChangeLogDialog')
 const HelpDialog = () => import('components/base/HelpDialog')
 const SubmitDetail = () => import('components/base/SubmitDetail')
+const UpdatePassword = () => import('components/base/UpdatePassword')
 
 export default {
   data () {
@@ -266,7 +269,8 @@ export default {
     Loading,
     ChangeLogDialog,
     HelpDialog,
-    SubmitDetail
+    SubmitDetail,
+    UpdatePassword
   },
   created () {
     this.getUserInfo()
@@ -334,6 +338,7 @@ export default {
         {src: image1, title: '变更日志', value: 'change_data'},
         {src: image2, title: '待办列表', value: 'audit_list'},
         {src: image3, title: '提交详情', value: 'submit_details'},
+        {src: image5, title: '密码管理', value: 'password_management'},
         {src: image4, title: '帮助', value: 'help_manual'}
       ]
     },
@@ -544,6 +549,7 @@ export default {
       return {val, name}
     },
     openDia (menu) {
+      console.log(menu, 'menu--test')
       this.$bus.$emit(menu.val)
       if (menu.val === 'audit_list') {
         // 跳转到审批列表页面
