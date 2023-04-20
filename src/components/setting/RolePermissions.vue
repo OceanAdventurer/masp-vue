@@ -185,7 +185,6 @@ export default {
       }
     },
     resetPassword (row) {
-      console.log(row, 'row---test')
       this.$confirm('此操作将重置密码, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

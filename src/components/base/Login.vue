@@ -393,7 +393,6 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-// import JSEncrypt from 'jsencrypt'
 const Loading = () => import('components/base/Loading')
 export default {
   name: 'Login',
@@ -482,10 +481,8 @@ export default {
         return
       }
       this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！') // 打开加载提示框
-      // const encrypt = new JSEncrypt()
       this.$axios.get('/user/login', {params: {
         loginName: this.userName,
-        // password: encrypt.encrypt(this.userPass),
         password: this.userPass,
         timestamp: this.timestamp,
         captcha: this.verificationCode

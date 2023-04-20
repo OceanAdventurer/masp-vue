@@ -21,6 +21,7 @@
 </template>
 
 <script>
+// import JSEncrypt from 'jsencrypt'
 export default {
   data () {
     // var checkAge = (rule, value, callback) => {
@@ -96,6 +97,7 @@ export default {
         if (valid) {
           this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！')
           // const encrypt = new JSEncrypt()
+        // password: encrypt.encrypt(this.userPass),
           const {oldPassword, newPassword} = this.ruleForm
           let timestamp = String(Math.floor(Math.random() * Math.pow(10, 1))) + String((new Date()).getTime())
           const paramStr = {
