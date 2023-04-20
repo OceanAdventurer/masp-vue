@@ -323,7 +323,7 @@
   width: 0px !important;
 } */
 .cm_main_content .el-tabs__content {
-  height: calc(100% - 40px);
+  height: calc(100% - 50px);
   padding-top: 10px;
 }
 .el-tabs__item{
@@ -397,7 +397,7 @@
                        @next-click="nextClick"
                        v-model="currentPage"
                        background
-                       :page-sizes="[10, 15, 20]"
+                       :page-sizes="[10, 15, 20, 50, 75, 100]"
                        :page-size="pageSize"
                        :current-page.sync="currentPage"
                        :total="totalCount"

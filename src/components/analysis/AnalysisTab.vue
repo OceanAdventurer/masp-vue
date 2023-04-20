@@ -317,7 +317,29 @@ export default {
 
           this.$bus.$emit('openHeaderMenuItem', 'analysis_view_template', {}, {})
         } else if (obj.enName === 'analysis_view_clean') {
-          console.log('analysis_view_clean---test')
+          this.$confirm('此操作将进行数据清洗, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！')
+          this.$axios.post({
+            url: '',
+            data: {}
+          }).then(res => {
+            this.$store.commit('HIDE_LOADING', '加载完毕')
+            console.log(res)
+            this.$message({
+              type: 'success',
+              message: '操作成功!'
+            })
+          }).catch(err => {
+            this.$store.commit('HIDE_LOADING', '加载完毕')
+            console.log(err)
+          })
+        }).catch(() => {
+          console.log('cancel')
+        })
         } else {
           if (this.$util.isNotEmptyObject(this.$store.state.analysisResultAllData.flightInfoData) &&
             this.$util.isDefine(this.$store.state.analysisResultAllData.flightInfoData.flightid)) { // 有航班id时才可以打开fdv

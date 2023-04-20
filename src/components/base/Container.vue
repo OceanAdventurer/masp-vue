@@ -806,7 +806,7 @@ export default {
   height: calc(100% - 15px);
   min-height: 300px;
   margin-bottom: 0;
-  overflow: hidden;
+  overflow-y: auto;
   background-color: #2a436f;
   color: #fff;
 }
@@ -844,13 +844,17 @@ export default {
   height: 44px;
   line-height: 44px;
 }
+.el-submenu .el-menu-item { /* 解决二级菜单超宽问题 */
+  padding: 0;
+  min-width: auto;
+}
 
-.todo-list-li {
+/* .todo-list-li {
   position: absolute;
-  bottom: 0;
+  bottom: -50px;
   left: 0;
   right: 0;
-}
+} */
 .el-icon-menu:before {
   content: "";
   display: block;
