@@ -98,14 +98,18 @@
           </el-table-column>
           <el-table-column label="操作" prop="ENABLE" v-if="this.hasMenue">
             <template slot-scope="scope">
-              <el-button size="mini" round @click="openModelDetail(scope.row.ID)">查看 </el-button>
-              <el-button size="mini" round @click.native="switchModelStatus(scope.row.ID)" v-if="scope.row.ENABLE === 0 || scope.row.ENABLE === '0'" >启用</el-button>
-              <el-button size="mini" round @click.native="switchModelStatus(scope.row.ID)" v-else>停用</el-button>
+              <div class="opt_col">
+                <span @click="openModelDetail(scope.row.ID)">查看</span>&nbsp;&nbsp;
+                <span @click="switchModelStatus(scope.row.ID)" v-if="scope.row.ENABLE === 0 || scope.row.ENABLE === '0'">启用</span>
+                <span @click="switchModelStatus(scope.row.ID)" v-else>停用</span>
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="操作" prop="AAA" v-else>
             <template slot-scope="scope">
-              <el-button size="mini" round @click="openModelDetail(scope.row.ID)">查看</el-button>
+              <div class="opt_col">
+                <span @click="openModelDetail(scope.row.ID)">查看</span>
+              </div>
             </template>
           </el-table-column>
         </el-table>

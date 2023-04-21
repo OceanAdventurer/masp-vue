@@ -157,10 +157,6 @@ export default {
   min-height: 300px;
   height: calc(100% - 150px);
 }
-.model_run_time .manager-table .opt_col {
-  color: #437ACF;
-  cursor: pointer;
-}
 </style>
 <style>
 .model_run_time .el-radio-button__orig-radio:checked+.el-radio-button__inner {

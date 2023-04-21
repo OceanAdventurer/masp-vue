@@ -132,11 +132,13 @@
                 <el-table-column prop="USER_LOGIN_NAME" label="用户名"></el-table-column>
                 <el-table-column prop="SYSTEMNAME" label="系统权限"></el-table-column>
                 <el-table-column label="操作" width="200" prop="ENABLE">
-                    <template slot-scope="scope">
-                    <el-button size="mini" round @click="getUserSystem(scope.row)">编辑</el-button>
-                    <!-- <el-button size="mini" type="primary" plain>删除</el-button> -->
-                    <!-- <el-button size="mini" type="danger" plain>禁用</el-button> -->
-                    </template>
+                  <template slot-scope="scope">
+                    <div class="opt_col">
+                      <span @click="getUserSystem(scope.row)">编辑</span>
+                      <!-- <span v-show="scope.row.status === '0'" @click="getUserSystem(scope.row)">删除</span>
+                      <span v-show="scope.row.status === '0'" @click="getUserSystem(scope.row)">禁用</span> -->
+                    </div>
+                  </template>
                 </el-table-column>
             </el-table>
           </div>

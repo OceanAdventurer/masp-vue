@@ -65,8 +65,10 @@
             </el-table-column>
             <el-table-column label="操作" width="180px">
               <template slot-scope="scope">
-                <el-button size="mini" round @click.native="showInfo(scope.row)">查看</el-button>
-                <el-button size="mini" v-show="scope.row.status === '0'" round @click.native="closeAuth(scope.row)">关闭权限</el-button>
+                <div class="opt_col">
+                  <span @click="showInfo(scope.row)">查看</span>&nbsp;&nbsp;
+                  <span v-show="scope.row.status === '0'" @click="closeAuth(scope.row)">关闭权限</span>
+                </div>
               </template>
             </el-table-column>
           </el-table>

@@ -104,7 +104,7 @@
         </div>
     </el-dialog>
     <el-dialog :close-on-click-modal="false" title="操作记录" class="model-opt-list-dialog" :visible.sync="modelOptList.modelOptDialog" @close='closeOptListDialog'>
-      <el-timeline :reverse='true' style="padding:0 20px">
+      <el-timeline :reverse='true' style="padding:0 20px;max-height:300px;overflow:auto">
         <el-timeline-item
           v-for="(activity, index) in modelOptList.dataList"
           :key="index"
@@ -413,10 +413,6 @@ export default {
   height: 350px !important;
   overflow-y: scroll;
 }
-.model-approve .model-approve-table-info .opt_col {
-  color: #437ACF;
-  cursor: pointer;
-}
 </style>
 <style>
 .model-approve .el-dialog__wrapper .el-dialog__header .el-dialog__title {
@@ -439,10 +435,7 @@ export default {
 .model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-success {
   color: #409EFF;
 }
-.manager .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-error {
+.model-approve .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-error {
   color: red;
-}
-.manager .model-opt-list-dialog .el-dialog__body {
- padding-bottom: 0;
 }
 </style>

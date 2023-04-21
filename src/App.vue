@@ -36,4 +36,8 @@ html, body {
 .el-dialog__wrapper .el-dialog__footer {
   border-top: 1px solid #f1f1f1;
 }
+.el-table__body .opt_col {
+  color: #437ACF;
+  cursor: pointer;
+}
 </style>

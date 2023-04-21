@@ -125,7 +125,7 @@
     </el-dialog>
 
     <el-dialog :close-on-click-modal="false" title="操作记录" class="model-opt-list-dialog" :visible.sync="modelOptList.modelOptDialog" @close='closeOptListDialog'>
-      <el-timeline style="padding:0 20px">
+      <el-timeline style="padding:0 20px;max-height:300px;overflow:auto">
         <!-- :icon="workFlow.length < 2 ? '' : activity.optTypeLabel === '驳回' ? 'el-icon-error' : 'el-icon-success'" -->
         <el-timeline-item
           v-for="(activity, index) in modelOptList.dataList"
@@ -615,10 +615,6 @@ export default {
   height: 350px !important;
   overflow-y: scroll;
 }
-.model-approve .model-approve-table-info .opt_col {
-  color: #437ACF;
-  cursor: pointer;
-}
 </style>
 <style>
 .model-approve .el-dialog__wrapper .audit_detail .el-form-item {
@@ -644,10 +640,10 @@ export default {
 .model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-success {
   color: #409EFF;
 }
-.manager .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-error {
+.model-approve .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-error {
   color: red;
 }
-.manager .model-opt-list-dialog .el-dialog__body {
- padding-bottom: 0;
+.model-approve .model-opt-list-dialog .el-dialog__body {
+ /* padding-bottom: 0; */
 }
 </style>

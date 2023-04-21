@@ -150,8 +150,10 @@
           </el-table-column>
           <el-table-column label="操作"  width="200px">
             <template slot-scope="scope">
-              <el-button size="mini" round @click.native="right_click(scope.row)" v-if="hasPerm">编辑</el-button>
-              <el-button size="mini" round @click.native="openRuleDialog(scope.row.ID)">配置清洗规则</el-button>
+              <div class="opt_col">
+                <span @click="right_click(scope.row)" v-if="hasPerm">编辑</span>&nbsp;&nbsp;
+                <span @click="openRuleDialog(scope.row.ID)">配置清洗规则</span>
+              </div>
             </template>
           </el-table-column>
         </el-table>

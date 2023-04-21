@@ -73,10 +73,12 @@
             </el-table-column>
             <el-table-column label="操作" width="300px">
               <template slot-scope="scope">
-                <el-button class="opt-button" size="mini" round @click.native="showModel(scope.row)">查看模型</el-button>
-                <el-button v-if="showButton(3, scope.row)" size="mini" round @click.native="online(scope.row)">上线</el-button>
-                <el-button v-if="showButton(4, scope.row)" size="mini" round @click.native="offline(scope.row)">下线</el-button>
-                <el-button size="mini" round @click.native="showOptInfo(scope.row)">操作记录</el-button>
+                <div class="opt_col">
+                  <span @click="showModel(scope.row)">查看模型</span>&nbsp;&nbsp;
+                  <span v-if="showButton(3, scope.row)" @click="online(scope.row)">上线</span>&nbsp;&nbsp;
+                  <span v-if="showButton(4, scope.row)" @click="offline(scope.row)">下线</span>&nbsp;&nbsp;
+                  <span @click="showOptInfo(scope.row)">操作记录</span>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -117,48 +119,21 @@
     </el-dialog>
 
     <el-dialog :close-on-click-modal="false" title="操作记录" class="model-opt-list-dialog" :visible.sync="modelOptList.modelOptDialog" @close='closeOptListDialog'>
-      <el-table
-        :row-style="{height:'38px'}"
-        :cell-style="{padding:'0px'}"
-        :header-row-style="{height:'38px'}"
-        :header-cell-style="{padding:'0px'}"
-        highlight-current-row
-        :data="modelOptList.dataList"
-        border
-        style="width: 100%; height: 100%;">
-        <el-table-column
-          prop="optTypeLabel"
-          label="操作类型"
-          width="100px">
-        </el-table-column>
-        <el-table-column
-          prop="optUser"
-          label="操作用户"
-          :show-overflow-tooltip="true"
-          width="150px">
-        </el-table-column>
-        <el-table-column
-          prop="optBeforeStateLabel"
-          label="操作前状态"
-          width="100px">
-        </el-table-column>
-        <el-table-column
-          prop="optAfterStateLabel"
-          label="操作后状态"
-          width="100px">
-        </el-table-column>
-        <el-table-column
-          prop="explain"
-          label="意见"
-          :show-overflow-tooltip="true"
-          min-width="150px">
-        </el-table-column>
-        <el-table-column
-          prop="optTime"
-          label="操作时间"
-          width="160px">
-        </el-table-column>
-      </el-table>
+      <el-timeline :reverse='true' style="padding:0 20px;max-height:300px;overflow:auto">
+        <el-timeline-item
+          v-for="(activity, index) in modelOptList.dataList"
+          :key="index"
+          placement='top'
+          :icon="activity.optTypeLabel === '驳回' ? 'el-icon-error' : 'el-icon-success'"
+          :class="activity.optTypeLabel === '驳回' ? 'error' : 'success'"
+          type="primary"
+          :timestamp="`${activity.optTypeLabel}\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0${activity.optTime}`">
+            <el-card>
+              <div class='explain'><span>{{activity.optTypeLabel === '提交' ? '备注：' : '意见：'}}</span><div>{{activity.explain}}</div></div>
+              <span>处理人：{{activity.optUser}}</span>
+            </el-card>
+        </el-timeline-item>
+      </el-timeline>
     </el-dialog>
   </div>
 </template>
@@ -448,16 +423,46 @@ export default {
   align-items: center;
   overflow: scroll;
 }
+.model-approve .el-dialog .el-card__body .explain {
+  display: flex;
+  margin-bottom: 10px;
+}
+.model-approve .el-dialog .el-card__body .explain span {
+  width: 48px;
+  display: inline-block;
+}
+.model-approve .el-dialog .el-card__body .explain div {
+  width: calc(100% - 48px);
+}
 .model-opt-dialog-button {
   margin-left: unset;
 }
 
 .model-opt-list-dialog /deep/ .el-dialog {
-  width: 60%;
-  min-width: 820px;
+  width: 50%;
+  min-width: 500px;
 }
 .model-opt-list-dialog /deep/ .el-table__body-wrapper {
-  height: 350px !important;
+  height: 300px !important;
   overflow-y: scroll;
+}
+.model-approve .model-opt-list-dialog .el-card .el-card__body {
+  padding: 10px 20px;
+  font-size: 12px;
+}
+.model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__tail {
+  border-left: 2px solid #409EFF;
+}
+.model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item.error .el-timeline-item__tail {
+  border-left: 2px solid red;
+}
+.model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal {
+  background-color: #fff;
+}
+.model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-success {
+  color: #409EFF;
+}
+.model-approve .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-error {
+  color: red;
 }
 </style>

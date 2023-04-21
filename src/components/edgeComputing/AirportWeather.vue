@@ -433,10 +433,6 @@ export default {
   width: 100%;
   height: 100%;
 }
-.airport-weather .airport-weather-table-info .opt_col {
-  color: #437ACF;
-  cursor: pointer;
-}
 </style>
 <style>
 .el-tooltip__popper {

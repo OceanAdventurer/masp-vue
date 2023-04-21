@@ -56,8 +56,10 @@
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button size="mini" round @click.native="deleteRole(scope.row.ROLE_NAME)">角色删除</el-button>
-                <el-button size="mini" round @click.native="openMenuRole(scope.row.ROLE_NAME)">菜单权限</el-button>
+                <div class="opt_col">
+                  <span @click="deleteRole(scope.row.ROLE_NAME)">角色删除</span>&nbsp;&nbsp;
+                  <span @click="openMenuRole(scope.row.ROLE_NAME)">菜单权限</span>
+                </div>
               </template>
             </el-table-column>
           </el-table>

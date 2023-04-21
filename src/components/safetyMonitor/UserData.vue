@@ -59,7 +59,9 @@
             </el-table-column>
             <el-table-column label="操作" width="80px">
               <template slot-scope="scope">
-                <el-button size="mini" round @click.native="showInfo(scope.row)">查看</el-button>
+                <div class="opt_col">
+                  <span @click="showInfo(scope.row)">查看</span>
+                </div>
               </template>
             </el-table-column>
           </el-table>

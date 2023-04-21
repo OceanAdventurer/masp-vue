@@ -621,8 +621,4 @@ export default {
   height: 28px;
   line-height: 28px;
 }
-.flight-weather .flight-weather-table-info .opt_col {
-  color: #437ACF;
-  cursor: pointer;
-}
 </style>
