@@ -26,10 +26,10 @@
           </el-table-column>
           <el-table-column prop="modelUser" label="提交人" align="left"></el-table-column>
           <!-- <el-table-column prop="onlineTime" label="上线时间" width="160"></el-table-column> -->
-          <el-table-column label="操作" width="150" align="left">
+          <el-table-column label="操作">
             <template slot-scope="scope">
-              <div class="row-icon-group">
-                <el-button class="opt-button" size="mini" round @click="checkDetail(scope.row)">查看模型</el-button>
+              <div class="opt_col">
+                <span @click="checkDetail(scope.row)">查看模型</span>
               </div>
             </template>
           </el-table-column>
@@ -141,22 +141,26 @@ export default {
 }
 </script>
 <style scoped>
-  .w100 {
-    width: 100%;
-  }
-  .h100 {
-    height: 100%;
-  }
-  .model_run_time .model_type_title {
-    padding: 20px 10px ;
-  }
-  .model_run_time .model_type_title .el-radio-group {
-    margin-right: 10px;
-  }
-  .model_run_time .manager-table {
-    min-height: 300px;
-    height: calc(100% - 150px);
-  }
+.w100 {
+  width: 100%;
+}
+.h100 {
+  height: 100%;
+}
+.model_run_time .model_type_title {
+  padding: 20px 10px ;
+}
+.model_run_time .model_type_title .el-radio-group {
+  margin-right: 10px;
+}
+.model_run_time .manager-table {
+  min-height: 300px;
+  height: calc(100% - 150px);
+}
+.model_run_time .manager-table .opt_col {
+  color: #437ACF;
+  cursor: pointer;
+}
 </style>
 <style>
 .model_run_time .el-radio-button__orig-radio:checked+.el-radio-button__inner {

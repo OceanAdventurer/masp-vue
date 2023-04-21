@@ -57,9 +57,11 @@
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button class="opt-button" size="mini" round @click.native="showModel(scope.row)">查看模型</el-button>
-                <el-button size="mini" round @click.native="modelHandle(scope.row)">办理</el-button>
-                <el-button size="mini" round @click.native="showOptInfo(scope.row)">操作记录</el-button>
+                <div class="opt_col">
+                  <span @click="showModel(scope.row)">查看模型</span>&nbsp;&nbsp;
+                  <span @click="modelHandle(scope.row)">回复</span>&nbsp;&nbsp;
+                  <span @click="showOptInfo(scope.row)">操作记录</span>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -94,54 +96,29 @@
                       style="width: 350px; "/>
           </el-form-item>
           <el-form-item class="model-opt-dialog-button">
-            <el-button type="primary" @click="dialogSubmit">确定</el-button>
           </el-form-item>
         </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="modelOpt.modelDialog = false">取消</el-button>
+          <el-button type="primary" @click="dialogSubmit">确定</el-button>
+        </div>
     </el-dialog>
-
     <el-dialog :close-on-click-modal="false" title="操作记录" class="model-opt-list-dialog" :visible.sync="modelOptList.modelOptDialog" @close='closeOptListDialog'>
-      <el-table
-        :row-style="{height:'38px'}"
-        :cell-style="{padding:'0px'}"
-        :header-row-style="{height:'38px'}"
-        :header-cell-style="{padding:'0px'}"
-        highlight-current-row
-        :data="modelOptList.dataList"
-        border
-        style="width: 100%; height: 100%;">
-        <el-table-column
-          prop="optTypeLabel"
-          label="操作类型"
-          width="100px">
-        </el-table-column>
-        <el-table-column
-          prop="optUser"
-          label="操作用户"
-          :show-overflow-tooltip="true"
-          width="150px">
-        </el-table-column>
-        <el-table-column
-          prop="optBeforeStateLabel"
-          label="操作前状态"
-          width="100px">
-        </el-table-column>
-        <el-table-column
-          prop="optAfterStateLabel"
-          label="操作后状态"
-          width="100px">
-        </el-table-column>
-        <el-table-column
-          prop="explain"
-          label="意见"
-          :show-overflow-tooltip="true"
-          min-width="150px">
-        </el-table-column>
-        <el-table-column
-          prop="optTime"
-          label="操作时间"
-          width="160px">
-        </el-table-column>
-      </el-table>
+      <el-timeline :reverse='true' style="padding:0 20px">
+        <el-timeline-item
+          v-for="(activity, index) in modelOptList.dataList"
+          :key="index"
+          placement='top'
+          :icon="activity.optTypeLabel === '驳回' ? 'el-icon-error' : 'el-icon-success'"
+          :class="activity.optTypeLabel === '驳回' ? 'error' : 'success'"
+          type="primary"
+          :timestamp="`${activity.optTypeLabel}\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0${activity.optTime}`">
+            <el-card>
+              <div class='explain'><span>{{activity.optTypeLabel === '提交' ? '备注：' : '意见：'}}</span><div>{{activity.explain}}</div></div>
+              <span>处理人：{{activity.optUser}}</span>
+            </el-card>
+        </el-timeline-item>
+      </el-timeline>
     </el-dialog>
   </div>
 </template>
@@ -267,6 +244,12 @@ export default {
         method: 'post',
         params: { modelId: row.modelId }
       }).then(res => {
+        if (res.data.length > 0) {
+          res.data.sort((a, b) => { return a.optTime > b.optTime })
+        }
+        console.log('====================================')
+        console.log(res.data, 'res.data--test')
+        console.log('====================================')
         this.modelOptList.dataList = res.data
         this.modelOptList.modelOptDialog = true
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
@@ -276,7 +259,7 @@ export default {
     },
     // 办理
     modelHandle (row) {
-      this.setModelDialog('办理', '/handle', row.modelId, row.modelName)
+      this.setModelDialog('回复', '/handle', row.modelId, row.modelName)
     },
     // 设置模型操作参数
     setModelDialog (type, url, modelId, modelName) {
@@ -402,7 +385,17 @@ export default {
   width: 100%;
   height: 10%;
 }
-
+.model-approve .el-dialog .el-card__body .explain {
+  display: flex;
+  margin-bottom: 10px;
+}
+.model-approve .el-dialog .el-card__body .explain span {
+  width: 48px;
+  display: inline-block;
+}
+.model-approve .el-dialog .el-card__body .explain div {
+  width: calc(100% - 48px);
+}
 .model-opt-dialog .el-dialog__body .el-form {
   display: flex;
   flex-direction: column;
@@ -412,13 +405,44 @@ export default {
 .model-opt-dialog-button {
   margin-left: unset;
 }
-
 .model-opt-list-dialog /deep/ .el-dialog {
-  width: 60%;
-  min-width: 820px;
+  width: 40%;
+  min-width: 500px;
 }
 .model-opt-list-dialog /deep/ .el-table__body-wrapper {
   height: 350px !important;
   overflow-y: scroll;
+}
+.model-approve .model-approve-table-info .opt_col {
+  color: #437ACF;
+  cursor: pointer;
+}
+</style>
+<style>
+.model-approve .el-dialog__wrapper .el-dialog__header .el-dialog__title {
+  font-size: 14px;
+  font-weight: bold;
+}
+.model-approve .model-opt-list-dialog .el-card .el-card__body {
+  padding: 10px 20px;
+  font-size: 12px;
+}
+.model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__tail {
+  border-left: 2px solid #409EFF;
+}
+.model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item.error .el-timeline-item__tail {
+  border-left: 2px solid red;
+}
+.model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal {
+  background-color: #fff;
+}
+.model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-success {
+  color: #409EFF;
+}
+.manager .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-error {
+  color: red;
+}
+.manager .model-opt-list-dialog .el-dialog__body {
+ padding-bottom: 0;
 }
 </style>

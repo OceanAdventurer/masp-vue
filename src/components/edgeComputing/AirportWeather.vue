@@ -152,9 +152,11 @@
               width="160px">
             </el-table-column>
             <el-table-column label="操作" width="101px">
-              <template slot-scope="scope">
-                <el-button size="mini" round @click.native="showInfo(scope.row)">天气详情</el-button>
-              </template>
+            <template slot-scope="scope">
+              <div class="opt_col">
+                <span @click="showInfo(scope.row)">天气详情</span>
+              </div>
+            </template>
             </el-table-column>
           </el-table>
         </div>
@@ -430,6 +432,10 @@ export default {
 .el-dialog__wrapper /deep/ .airport-weather .airport-weather-table {
   width: 100%;
   height: 100%;
+}
+.airport-weather .airport-weather-table-info .opt_col {
+  color: #437ACF;
+  cursor: pointer;
 }
 </style>
 <style>

@@ -40,7 +40,7 @@
               prop="modelName"
               label="模型名称"
               :show-overflow-tooltip="true"
-              width="120px">
+              min-width="120px">
             </el-table-column>
             <el-table-column
               prop="categoryType"
@@ -57,13 +57,14 @@
             </el-table-column>
             <el-table-column label="操作" >
               <template slot-scope="scope">
-                <el-button class="opt-button" size="mini" round @click.native="showPublishInfo(scope.row)">查看审批单</el-button>
-                <el-button class="opt-button" size="mini" round @click.native="showModel(scope.row)">查看模型</el-button>
-                <!-- <el-button size="mini" round v-show="scope.row.modelState === '30'" @click.native="modelHandle(scope.row)">处理</el-button> -->
-                <el-button class="opt-button" v-if="showButton(1, scope.row)" size="mini" round @click.native="modelApprove(scope.row)">审批</el-button>
-                <el-button class="opt-button" v-if="showButton(5, scope.row)" size="mini" round @click.native="reject( scope.row)">驳回</el-button>
-                <el-button class="opt-button" v-if="showButton(6, scope.row)" size="mini" round @click.native="transfer(scope.row)">转办</el-button>
-                <el-button class="opt-button" size="mini" round @click.native="showOptInfo(scope.row)">操作记录</el-button>
+                <div class="opt_col">
+                  <span @click="showPublishInfo(scope.row)">查看审批单</span>&nbsp;&nbsp;
+                  <span @click="showModel(scope.row)">查看模型</span>&nbsp;&nbsp;
+                  <span v-if="showButton(1, scope.row)" @click="modelApprove(scope.row)">审批</span>&nbsp;&nbsp;
+                  <span v-if="showButton(5, scope.row)" @click="reject(scope.row)">驳回</span>&nbsp;&nbsp;
+                  <span v-if="showButton(6, scope.row)" @click="transfer(scope.row)">转办</span>&nbsp;&nbsp;
+                  <span @click="showOptInfo(scope.row)">操作记录</span>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -108,20 +109,39 @@
             <el-input type="textarea"
                       :rows="3"
                       :show-word-limit="true"
-                      :maxlength="50"
+                      :maxlength="100"
                       v-model.trim="modelOpt.explain"
                       clearable
                       placeholder="意见"
                       style="width: 350px; "/>
           </el-form-item>
           <el-form-item class="model-opt-dialog-button">
-            <el-button type="primary" @click="dialogSubmit">确定</el-button>
           </el-form-item>
-        </el-form>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="modelOpt.modelDialog = false">取消</el-button>
+        <el-button type="primary" @click="dialogSubmit">确定</el-button>
+      </div>
     </el-dialog>
 
     <el-dialog :close-on-click-modal="false" title="操作记录" class="model-opt-list-dialog" :visible.sync="modelOptList.modelOptDialog" @close='closeOptListDialog'>
-      <el-table
+      <el-timeline style="padding:0 20px">
+        <!-- :icon="workFlow.length < 2 ? '' : activity.optTypeLabel === '驳回' ? 'el-icon-error' : 'el-icon-success'" -->
+        <el-timeline-item
+          v-for="(activity, index) in modelOptList.dataList"
+          :key="index"
+          placement='top'
+          :icon="activity.optTypeLabel === '驳回' ? 'el-icon-error' : 'el-icon-success'"
+          :class="activity.optTypeLabel === '驳回' ? 'error' : 'success'"
+          type="primary"
+          :timestamp="`${activity.optTypeLabel}\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0${activity.optTime}`">
+            <el-card>
+              <div class='explain'><span>{{activity.optTypeLabel === '提交' ? '备注：' : '意见：'}}</span><div>{{activity.explain}}</div></div>
+              <span>处理人：{{activity.optUser}}</span>
+            </el-card>
+        </el-timeline-item>
+      </el-timeline>
+      <!-- <el-table
         :row-style="{height:'38px'}"
         :cell-style="{padding:'0px'}"
         :header-row-style="{height:'38px'}"
@@ -162,7 +182,7 @@
           label="操作时间"
           width="160px">
         </el-table-column>
-      </el-table>
+      </el-table> -->
     </el-dialog>
 
     <el-dialog :close-on-click-modal="false" title="审批单" :visible.sync="publishInfoForm.showPublishDia">
@@ -567,7 +587,17 @@ export default {
   width: 100%;
   height: 10%;
 }
-
+.model-approve .el-dialog .el-card__body .explain {
+  display: flex;
+  margin-bottom: 10px;
+}
+.model-approve .el-dialog .el-card__body .explain span {
+  width: 48px;
+  display: inline-block;
+}
+.model-approve .el-dialog .el-card__body .explain div {
+  width: calc(100% - 48px);
+}
 .model-opt-dialog .el-dialog__body .el-form {
   display: flex;
   flex-direction: column;
@@ -577,25 +607,47 @@ export default {
 .model-opt-dialog-button {
   margin-left: unset;
 }
-
 .model-opt-list-dialog /deep/ .el-dialog {
-  width: 60%;
-  min-width: 820px;
+  width: 40%;
+  min-width: 500px;
 }
-.model-opt-list-dialog /deep/ .el-table__body-wrapper {
+.model-opt-list-dialog /deep/ .el-dialog {
   height: 350px !important;
   overflow-y: scroll;
+}
+.model-approve .model-approve-table-info .opt_col {
+  color: #437ACF;
+  cursor: pointer;
 }
 </style>
 <style>
 .model-approve .el-dialog__wrapper .audit_detail .el-form-item {
   margin-bottom: 0;
 }
-.model-approve .el-dialog__wrapper .el-dialog__body {
-  padding: 0 20px 20px 20px;
-}
 .model-approve .el-dialog__wrapper .el-dialog__header .el-dialog__title {
   font-size: 14px;
   font-weight: bold;
+}
+.model-approve .model-opt-list-dialog .el-card .el-card__body {
+  padding: 10px 20px;
+  font-size: 12px;
+}
+.model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__tail {
+  border-left: 2px solid #409EFF;
+}
+.model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item.error .el-timeline-item__tail {
+  border-left: 2px solid red;
+}
+.model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal {
+  background-color: #fff;
+}
+.model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-success {
+  color: #409EFF;
+}
+.manager .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-error {
+  color: red;
+}
+.manager .model-opt-list-dialog .el-dialog__body {
+ padding-bottom: 0;
 }
 </style>

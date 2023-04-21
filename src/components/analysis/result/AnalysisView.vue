@@ -414,6 +414,55 @@
         </div>
       </el-dialog>
     </div>
+    <div class="analysis_view_dialog">
+      <el-dialog :close-on-click-modal="false"
+                 title="数据清洗"
+                 :visible.sync="dataCleanDiaShow"
+                 @close="closeFdvDialog('data_clean')"
+                 @open="dataCleanDiaShow=true">
+                 <!-- width="500px" -->
+        <div class="data_clean_content">
+          <el-form label-width="120px" :rules="cleanDataRules" ref='cleanDataRef' form='cleanDataForm'>
+            <h5>按缺失值补全方法</h5>
+            <el-form-item label='补全方法' prop='imputationValue'>
+              <el-select v-model='cleanDataForm.imputationValue'>
+                <el-option label="默认" value=""></el-option>
+                <el-option label="线性填充" value="lfill"></el-option>
+                <el-option label="后向填充" value="bfill"></el-option>
+                <el-option label="前向填充" value="ffill"></el-option>
+              </el-select>
+            </el-form-item>
+            <h5>按异常值检测与处理方法</h5>
+              <el-form-item label='异常值检测方法' prop='outlierDetection'>
+                <el-select v-model='cleanDataForm.outlierDetection'>
+                  <el-option label="默认" value=""></el-option>
+                  <el-option label="统计方法检测" value="3sigma"></el-option>
+                  <el-option label="聚类方法检测" value="Lof"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label='异常值检测范围' prop='outlierDetectionRange'>
+                <el-select v-model='cleanDataForm.outlierDetectionRange'>
+                  <el-option label="默认" value=""></el-option>
+                  <el-option label="全局范围检测" value="global"></el-option>
+                  <el-option label="各个飞行阶段内部检测" value="phase’"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label='异常值处理方法' prop='outliersHandling'>
+                <el-select v-model='cleanDataForm.outliersHandling'>
+                  <el-option label="默认" value=""></el-option>
+                  <el-option label="线性填充" value="lfill"></el-option>
+                  <el-option label="后向填充" value="bfill"></el-option>
+                  <el-option label="前向填充" value="ffill"></el-option>
+                </el-select>
+              </el-form-item>
+              <div class="content_footer" style='text-align:center'>
+                <el-button @close="closeFdvDialog('data_clean')">取消</el-button>
+                <el-button @click="cleanData" type='primary'>确认</el-button>
+              </div>
+          </el-form>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 <script>
@@ -557,7 +606,20 @@ export default {
       fdvTreeKeyword_brfore: '',
       indexInterval: 5,
       fdvChartDataArrCopy: [],
-      mergeType: ''
+      mergeType: '',
+      dataCleanDiaShow: false, // 数据清洗对话框是否展示
+      cleanDataForm: {
+        imputationValue: '', // 缺失补全法
+        outlierDetection: '', // 异常值检测方法
+        outlierDetectionRange: '', // 异常值检测范围
+        outliersHandling: ''// 异常值处理方法
+      },
+      cleanDataRules: {
+        imputationValue: [{ required: true, message: '请选择补全方法', trigger: 'blur' }],
+        outlierDetection: [{ required: true, message: '请选择异常值检测方法', trigger: 'blur' }],
+        outlierDetectionRange: [{ required: true, message: '请选择异常值检测范围', trigger: 'blur' }],
+        outliersHandling: [{ required: true, message: '请选择异常值处理方法', trigger: 'blur' }]
+      }
     }
   },
   components: {
@@ -688,7 +750,9 @@ export default {
     this.$bus.$on('allParamsExport', () => { // 接收显示表格右侧dom事件
       that.postExcelFile()
     })
-
+    this.$bus.$on('analysis_view_clean_openDia', () => {
+      that.dataCleanDiaShow = true
+    })
     this.$bus.$on('reloadViewChart', () => { // 重新加载图表
       if (that.isLoadFlightChart) {
         setTimeout(() => {
@@ -788,6 +852,23 @@ export default {
           saveTreeNodeHandle: ((data, node) => that.saveNodeFun(data, node)),
           cancelTreeNodeHandle: ((data, node) => that.cancelNodeFun(data, node))
         }
+      })
+    },
+    cleanData () {
+      this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！')
+      this.$axios.post({
+        url: '',
+        data: {}
+      }).then(res => {
+        this.$store.commit('HIDE_LOADING', '加载完毕')
+        console.log(res)
+        this.$message({
+          type: 'success',
+          message: '操作成功!'
+        })
+      }).catch(err => {
+        this.$store.commit('HIDE_LOADING', '加载完毕')
+        console.log(err)
       })
     },
     toggleMerge () {
@@ -2188,12 +2269,16 @@ export default {
         return false
       }
     },
-    closeFdvDialog () {
-      this.fdvTreeKeyword_brfore = ''
-      this.version_no_before = '' //清除version_no_before
-      console.log('关闭1233333333333333333333333333333333333333333333333333')
-      this.fdvTreeKeyword = ''
-      this.fdvEptTreeKeyword = ''
+    closeFdvDialog (type) {
+      if (type) {
+        this.dataCleanDiaShow = false
+      } else {
+        this.fdvTreeKeyword_brfore = ''
+        this.version_no_before = '' //清除version_no_before
+        console.log('关闭1233333333333333333333333333333333333333333333333333')
+        this.fdvTreeKeyword = ''
+        this.fdvEptTreeKeyword = ''
+      }
 
       this.reloadGetFlightId(this.fdvCurrentPage)
     },
@@ -3562,6 +3647,9 @@ export default {
 <style >
 .el-loading-spinner i {
   font-size: 44px;
+}
+.analysis_view .analysis_view_dialog .el-form-item .el-form-item__content .el-select {
+  width: 50% !important;
 }
 </style>
 <style scoped>

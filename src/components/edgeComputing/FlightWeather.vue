@@ -172,7 +172,9 @@
             </el-table-column>
             <el-table-column label="操作" width="101px">
               <template slot-scope="scope">
-                <el-button v-if="scope.row.depUuid || scope.row.arrUuid" size="mini" round @click.native="showInfo(scope.row)">天气详情</el-button>
+                <div class="opt_col">
+                  <span v-if="scope.row.depUuid || scope.row.arrUuid" @click="showInfo(scope.row)">天气详情</span>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -619,5 +621,8 @@ export default {
   height: 28px;
   line-height: 28px;
 }
-
+.flight-weather .flight-weather-table-info .opt_col {
+  color: #437ACF;
+  cursor: pointer;
+}
 </style>

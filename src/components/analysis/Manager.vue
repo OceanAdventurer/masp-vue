@@ -129,25 +129,33 @@
                 :rows="3"
                 v-model.trim="publishInfoForm.explain"
                 clearable
+                :maxlength="100"
+                :show-word-limit="true"
                 placeholder="请输入发布原因，有效期等信息"/>
             </el-form-item>
             <el-row style='padding-top: 15px' v-if="workFlow.length > 0">
-              <el-card
-                style='margin-bottom: 5px'
+            <el-timeline style="padding:0 20px">
+                <!-- :icon="workFlow.length < 2 ? '' : activity.optTypeLabel === '驳回' ? 'el-icon-error' : 'el-icon-success'" -->
+              <el-timeline-item
                 v-for="(activity, index) in workFlow"
                 :key="index"
-              >
-                <h4>操作类型：{{activity.optTypeLabel}}</h4>
-                <p>{{activity.optTypeLabel === '提交' ? '备注：' : '意见：' }}{{activity.explain}}</p>
-                <p>处理人：{{activity.optUser}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 处理时间：{{activity.optTime}}</p>
-              </el-card>
+                placement='top'
+                :icon="activity.optTypeLabel === '驳回' ? 'el-icon-error' : 'el-icon-success'"
+                :class="activity.optTypeLabel === '驳回' ? 'error' : 'success'"
+                type="primary"
+                :timestamp="`${activity.optTypeLabel}\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0${activity.optTime}`">
+                  <el-card>
+                    <div class='explain'><span>{{activity.optTypeLabel === '提交' ? '备注：' : '意见：'}}</span><div>{{activity.explain}}</div></div>
+                    <span>处理人：{{activity.optUser}}</span>
+                  </el-card>
+              </el-timeline-item>
+            </el-timeline>
             </el-row>
             <el-form-item label="提交人" prop="submitBy" v-show="publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
               <span>{{publishInfoForm.submitBy}}</span>
             </el-form-item>
             <el-form-item label="提交时间" prop="submitTime" v-show="publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
               <span>{{publishInfoForm.submitTime}}</span>
-              <!-- <el-date-picker v-model="publishInfoForm.subTime" format='yyyy-MM-dd' type="date" disabled></el-date-picker> -->
             </el-form-item>
           </el-form>
         </div>
@@ -2022,6 +2030,17 @@ export default {
 .manager .publish_dia .el-form-item .el-form-item__content span {
   font-size: 12px;
 }
+.publish_dia .el-dialog .el-card__body .explain {
+  display: flex;
+  margin-bottom: 10px;
+}
+.publish_dia .el-dialog .el-card__body .explain span {
+  width: 48px;
+  display: inline-block;
+}
+.publish_dia .el-dialog .el-card__body .explain div {
+  width: calc(100% - 48px);
+}
 .analysis-tab-left {
   position: relative;
   box-sizing: border-box;
@@ -2107,7 +2126,7 @@ export default {
 .file-name {
   width: 75px;
 }
-.dialog-footer .el-button--mini{
+.dialog-footer .el-button--mini {
   padding: 10px 26px;
 }
 .publish_dia .el-form-item__label-wrap {
@@ -2116,13 +2135,29 @@ export default {
 </style>
 <style>
 .publish_dia .publish_dialog_content .el-card .el-card__body {
-  padding: 0 20px;
-}
-.publish_dia .el-dialog__wrapper .el-dialog__body {
-  padding: 0 20px 20px 20px;
+  padding: 10px 20px;
+  font-size: 12px;
 }
 .publish_dia .el-dialog__wrapper .el-dialog__header .el-dialog__title {
   font-size: 14px;
   font-weight: bold;
+}
+.manager .publish_dia .el-dialog__body {
+  padding-bottom: 0;
+}
+.manager .publish_dia .el-dialog__body .el-timeline-item .el-timeline-item__tail {
+  border-left: 2px solid #409EFF;
+}
+.manager .publish_dia .el-dialog__body .el-timeline-item.error .el-timeline-item__tail {
+  border-left: 2px solid red;
+}
+.manager .publish_dia .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal {
+  background-color: #fff;
+}
+.manager .publish_dia .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-success {
+  color: #409EFF;
+}
+.manager .publish_dia .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-error {
+  color: red;
 }
 </style>
