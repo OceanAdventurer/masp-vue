@@ -30,4 +30,10 @@ html, body {
   margin: 0;
   padding: 0;
 }
+.el-dialog__wrapper .el-dialog__header {
+  border-bottom: 1px solid #f1f1f1;
+}
+.el-dialog__wrapper .el-dialog__footer {
+  border-top: 1px solid #f1f1f1;
+}
 </style>
