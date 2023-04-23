@@ -171,7 +171,7 @@
     overflow-x: hidden;
     overflow-y: auto;
     height: calc(80vh - 199px);
-    padding-left: 15px;
+    /* padding-left: 15px; */
   }
   .calc_result {
     /* text-align: center; */
@@ -310,7 +310,7 @@
     max-height: 100px;
     _height: 120px;
     margin-right: auto;
-    margin-left: 30px;
+    margin-left: 65px;
     padding-top:8px;
     outline: 0;
     /* border: 1px solid #a0b3d6; */
@@ -329,9 +329,7 @@
     width: 40px;
     height: 22px;
     cursor: pointer;
-    float: right;
     margin-top: 10px;
-    margin-right: 35px;
   }
   .content_main_right > .el-tabs > .el-tabs__content > .el-tab-pane > div {
     position: relative;
@@ -424,17 +422,20 @@
     width: 100%;
   }
   .content_top {
-    height: 80px;width: 100%;
+    height: 80px;
+    width: 100%;
   }
   .content_main {
-    height: calc(80vh - 121px);width: 100%;
+    height: calc(80vh - 121px);
+    width: 100%;
     border-top: solid 1px #ebeef5;
     border-bottom: solid 1px #ebeef5
   }
   .content_bottom{
     width: 100%;
     float: left;
-    height: 70px;width: 100%;
+    height: 70px;
+    width: 100%;
   }
   .content_bottom .el-button--mini{
     width: 90px !important;
@@ -474,10 +475,10 @@
   }
 </style>
 <template>
-  <div class="all_content"   :element-loading-text="saveLoaddingText"  v-loading="saveContentLoding">
+  <div class="all_content saved_after"   :element-loading-text="saveLoaddingText"  v-loading="saveContentLoding">
     <!--选择多个不通算法的版本库选择界面-->
     <checkLibraryParam v-if="showSelectLibraryParamDataData" @nextPageEmit="getClickLibraryParamNextPage" @lastPageEmit="getClickLibraryParamLastPage" :libraryIds="libraryIds"   :linkParam="this.linkParam" :isCurrentUser="isCurrentUser"></checkLibraryParam>
-    <div v-if="!showSelectLibraryParamDataData">
+    <div v-if="!showSelectLibraryParamDataData" style="height:100%">
       <!--新建/编辑算法步骤页面-->
       <div class="content_top">
         <div v-show="isCurrentUser && !isLinkParam">
@@ -582,17 +583,17 @@
                 <div v-for="(item, index) in relyonArr" :key="item.id">
                   <div style="border-bottom:1px solid rgba(221, 221, 221, 0.867);padding-top:15px;">
                     <!--版本库-->
-                    <div style="height:42px;line-height:42px;background-color:#F5F2F1;">
-                      <div style="width:95px;height:42px;text-align:right;float:left;">版本库：</div>
-                      <div style="float:left;">{{index}}</div>
+                    <div style="height:42px;line-height:42px;background-color:#F5F2F1;display:flex">
+                      <div style="width:72px;height:42px;text-align:right;">版本库：</div>
+                      <div>{{index}}</div>
                       <!--按钮-->
-                       <el-button  title="查看结果"   type="info"  size="mini" round style="padding: 3px 5px;"   @click="showResultPage(item, index)">查看</el-button>
+                       <el-button  title="查看结果" type="info"  size="mini" round style="padding: 3px 5px;width:36px;height:20px;margin:10px 5px 0 5px"   @click="showResultPage(item, index)">查看</el-button>
                       <div class="construction_img" @click="panelChangeTwo(item, index)">
                         <!-- <el-button style="margin-left:10px" title="显示结构" icon="el-icon-star-off" type="info" circle plain @click="panelChangeTwo(item, index)"></el-button> -->
                       </div>
                     </div>
                     <!--计算结果-->
-                    <div style="padding-left:25px;height:42px;line-height:42px;text-align:right;float:left;">计算结果：</div>
+                    <div style="padding-left:10px;height:42px;line-height:42px;text-align:right;float:left;">计算结果：</div>
                     <div v-if="item['EXCEPTION_REASON']" class="exception_txt textarea">{{item.EXCEPTION_REASON}}</div>
                     <div v-else-if="item['test_data'] && item.test_data.length > 0 " class="flight_no" style="float:left;height:42px;line-height:42px;">{{item.test_data[0].value}}</div>
                     <div v-else class="textarea">{{item}}</div>

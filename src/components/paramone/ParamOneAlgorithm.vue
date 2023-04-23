@@ -157,13 +157,14 @@
 }
 
 .save {
-float: right;
+  float: right;
   margin-right: 25px;
   display: flex;
   flex-direction: row;
   /*position: absolute;*/
   /* left: 88%; */
-  margin-top: 20px;
+  height: 45px;
+  margin-top: 10px;
 }
 .textarea{
   /* width: 310px; */
@@ -225,7 +226,7 @@ float: right;
          <el-radio :label="key">以{{value}}版本库为基础进行算法编辑</el-radio>
        </el-radio-group>
      </div>
-      <div class="save" style="float: right;margin-right: 10%;margin-top: 20px">
+      <div class="save" style="float: right;margin-right: 10%;margin-top: 10px">
         <el-button type="primary" @click="prevStep" size="mini" class="cm_button">上一步</el-button>
         <el-button type="primary" @click="nextStep" size="mini" class="cm_button">下一步</el-button>
       </div>

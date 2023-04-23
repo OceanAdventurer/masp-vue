@@ -984,6 +984,7 @@ p.system_title {
 .el-main-default {
   height: 100%;
   padding: 0;
+  width: calc(100% - 181px);
 }
 
 .el-main-content {

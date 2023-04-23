@@ -221,8 +221,8 @@
   .header-two-content {
     position: relative;
     width: 100%;
-    height: 90%;
-    /* height: calc(100% - 54px)!important; */
+    /* height: 90%; */
+    height: calc(100% - 54px);
   }
 
   .header-two-content-max {

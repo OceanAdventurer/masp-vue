@@ -1032,8 +1032,8 @@
 }
 
 .header-two-content{
-  height: 93% !important;
-  /* height: calc(100% - 54px); */
+  /* height: 93% !important; */
+  height: calc (100% - 54px);
 }
 .permissions-table{
   margin-left: 12px;

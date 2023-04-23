@@ -140,7 +140,7 @@
   .binding {
     padding-left: 30%;
     padding-top: 14%;
-    width: 100%;
+    width: 70%;
   }
 </style>
 <style>
@@ -197,7 +197,8 @@
 </style>
 <template>
   <div style="width: 100%;height: 100%">
-    <div style=" border-bottom: solid 1px #DDDDDD;height:  calc(80vh - 45px);">
+    <!-- <div style=" border-bottom: solid 1px #DDDDDD;height:calc(80vh - 45px);position:relative"> -->
+    <div style=" border-bottom: solid 1px #DDDDDD;height:100%;">
       <div class="binding">
         <el-radio-group v-model="selectLibraryType">
           <div v-for="item in LibraryParam" :key="item.value"  style="line-height: 30px;">
@@ -206,7 +207,7 @@
         </el-radio-group>
       </div>
     </div>
-    <div style="float: right; margin-top: 20px;margin-right:25px; height: 70px;">
+    <div style="float: right; margin-top: 10px;margin-right:25px; height: 45px;">
       <el-button type="primary" style="float: left;margin-left: 10px;padding:10px 26px;" @click="nextStep" size="mini">下一步</el-button>
     </div>
   </div>

@@ -489,7 +489,7 @@ export default {
       fdvTreeNodeDesc: '',
       fdvEptTreeNodeDesc: '',
       pageSize: 1, // 每页显示条目数
-      pagerCount: 11, // 页码按钮的数量
+      pagerCount: 5, // 页码按钮的数量
       totalCount: 0, // 总条目数
       fdvCurrentPage: 1,
       viewTreeData: [], // 某个类型树数据
@@ -637,21 +637,21 @@ export default {
     // fdvTreeKeyword (val) { // 树节点关键字
     //   this.$refs.fdvDialogTree.filter(val)
     // },
-    fdvCurrentPage (newVal, oldVal) {
-      this.indexInterval = 9999
-      console.log(newVal)
-      if (newVal === oldVal) {
-        return false
-      }
+    // fdvCurrentPage (newVal, oldVal) {
+    //   this.indexInterval = 9999
+    //   console.log(newVal)
+    //   if (newVal === oldVal) {
+    //     return false
+    //   }
 
-      if (newVal > 999) {
-        this.pagerCount = 7
-      } else if (newVal > 99) {
-        this.pagerCount = 9
-      } else {
-        this.pagerCount = 11
-      }
-    },
+    //   if (newVal > 999) {
+    //     this.pagerCount = 7
+    //   } else if (newVal > 99) {
+    //     this.pagerCount = 9
+    //   } else {
+    //     this.pagerCount = 11
+    //   }
+    // },
     // treeKeyword (newVal, oldVal) {
     //   if (!this.$util.isDefine(newVal) && newVal !== oldVal) {
     //     this.refreshTreeData()
@@ -3651,6 +3651,32 @@ export default {
 .analysis_view .analysis_view_dialog .el-form-item .el-form-item__content .el-select {
   width: 50% !important;
 }
+.analysisView .view-chart-content .el-pagination button {
+  margin: 0 2px;
+}
+.analysisView .view-chart-content .el-pagination .el-pagination__total {
+  margin-right: 2px;
+}
+.analysisView .view-chart-content .el-pagination .el-pagination__jump {
+  margin-left: 0;
+}
+.analysisView .view-chart-content .el-pagination .el-pager .more {
+  margin: 0 2px;
+}
+.analysisView .view-chart-content .el-pagination .el-pager .number,
+.analysisView .view-chart-content .el-pagination .btn-prev,
+.analysisView .view-chart-content .el-pagination .btn-next {
+  margin: 0 2px;
+  min-width: 20px;
+}
+.analysisView .view-pagination .el-pagination {
+  height: 35px;
+  display: flex;
+  overflow-y: auto;
+}
+.analysisView .view-pagination .el-pagination .el-pagination__editor {
+  width: 32px;
+}
 </style>
 <style scoped>
 .left-menu {
@@ -3809,11 +3835,11 @@ export default {
   width: 140px !important;
 }
 .view-pagination {
-  display: flex;
+  /* display: flex;
   flex-direction: row;
   justify-content: flex-end;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: center; */
   height: 80px;
   border-top: 1px solid #e5e5e5;
   width: 100%;

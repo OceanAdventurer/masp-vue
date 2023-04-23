@@ -423,7 +423,8 @@
   width: 100%;
 }
 .content_top {
-  height: 80px;width: 100%;
+  height: 80px;
+  width: 100%;
 }
 .content_main {
   height: calc(80vh - 121px);
@@ -434,7 +435,8 @@
 .content_bottom{
   width: 100%;
   float: left;
-  height: 70px;width: 100%;
+  height: 70px;
+  width: 100%;
 }
 .content_main_left{
   float: left;
