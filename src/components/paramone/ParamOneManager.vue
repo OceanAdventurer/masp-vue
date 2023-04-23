@@ -322,7 +322,7 @@
 /* .cm_main_content .el-table--border::after, .el-table--group::after{
   width: 0px !important;
 } */
-.cm_main_content .el-tabs__content {
+.engineer_para .cm_main_content .el-tabs__content {
   height: calc(100% - 50px);
   padding-top: 10px;
 }
@@ -333,7 +333,7 @@
 
 <template>
   <!-- 工程参数主界面 -->
-  <div class="tab_file_new">
+  <div class="tab_file_new engineer_para">
     <!-- 左侧元素 -->
     <div class="tab_file_new_left cm_tab_file_new_left" >
       <!-- 树 -->
@@ -1284,7 +1284,7 @@ export default {
       let disabledMenuObj = {}
       let hideMenuObj = {}
       hideMenuObj.paramOne_add_suanfa = true
-      hideMenuObj.paramOne_edit_suanfa = true
+      hideMenuObj.paramOne_edit_suanfa = false
       hideMenuObj.paramOne_clear_suanfa = true
       hideMenuObj.paramOne_file_remove = true
       if (this.$util.paramOneEditAuthority) { // 有权限不禁用否则禁用
@@ -1294,12 +1294,12 @@ export default {
         disabledMenuObj.paramOne_file_remove = false
       } else {
         disabledMenuObj.paramOne_add_suanfa = true
-        disabledMenuObj.paramOne_edit_suanfa = true
+        disabledMenuObj.paramOne_edit_suanfa = false
         disabledMenuObj.paramOne_clear_suanfa = true
         disabledMenuObj.paramOne_file_remove = true
       }
       // 编辑清除默认都是禁用
-      disabledMenuObj.paramOne_edit_suanfa = true // 禁用
+      disabledMenuObj.paramOne_edit_suanfa = false // 禁用
       disabledMenuObj.paramOne_clear_suanfa = true // 禁用
       this.hideMenuObj = hideMenuObj
       this.disabledMenuObj = disabledMenuObj
@@ -1308,7 +1308,7 @@ export default {
     // 点击子节点时如果有映射显清空 和编辑
     openChildrenEditMenue (hideMenuObj, disabledMenuObj) {
       hideMenuObj.paramOne_add_suanfa = true
-      hideMenuObj.paramOne_edit_suanfa = true
+      hideMenuObj.paramOne_edit_suanfa = false
       hideMenuObj.paramOne_clear_suanfa = true
       hideMenuObj.paramOne_file_remove = true
       if (this.$util.paramOneEditAuthority) { // 有权限不禁用否则禁用
@@ -1320,10 +1320,10 @@ export default {
         disabledMenuObj.paramOne_clear_suanfa = false
       } else {
         disabledMenuObj.paramOne_add_suanfa = true
-        disabledMenuObj.paramOne_edit_suanfa = true
+        disabledMenuObj.paramOne_edit_suanfa = false
         disabledMenuObj.paramOne_clear_suanfa = true
         disabledMenuObj.paramOne_file_remove = true
-        disabledMenuObj.paramOne_edit_suanfa = true
+        disabledMenuObj.paramOne_edit_suanfa = false
         disabledMenuObj.paramOne_clear_suanfa = true
       }
       this.hideMenuObj = hideMenuObj

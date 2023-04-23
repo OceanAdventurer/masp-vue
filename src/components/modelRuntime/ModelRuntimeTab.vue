@@ -35,7 +35,7 @@
           </el-table-column>
         </el-table>
     </div>
-    <div class="model-approve-table-pagination df df-jc-fe df-ai-c">
+    <div class="model_run_time_table_pagination df df-jc-fe df-ai-c">
       <el-pagination
         background
         @size-change="handleSizeChange"
@@ -154,8 +154,12 @@ export default {
   margin-right: 10px;
 }
 .model_run_time .manager-table {
-  min-height: 300px;
-  height: calc(100% - 150px);
+  /* min-height: 300px; */
+  height: calc(100% - 135px);
+  /* max-height: calc(100% - 135px); */
+}
+.model_run_time .model_run_time_table_pagination {
+  margin-top: 10px;
 }
 </style>
 <style>

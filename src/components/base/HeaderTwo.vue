@@ -222,6 +222,7 @@
     position: relative;
     width: 100%;
     height: 90%;
+    /* height: calc(100% - 54px)!important; */
   }
 
   .header-two-content-max {
@@ -239,7 +240,7 @@
   }
 
   .header-two-item span {
-    margin: 0 0 18px 0;
+    margin: 0;
     max-width: 130px;
     white-space: nowrap;
     overflow: hidden;
@@ -310,24 +311,24 @@
   @media screen and (min-height: 800px) {
     .header-two-title {
       height: 54px;
-      max-height: 54px;
+      /* max-height: 54px; */
     }
     .header-two-item img {
       width: 22px;
       height: 22px;
-      margin: 22px 21px 4px;
+      margin: 5px 21px 4px;
     }
   }
   /* 窗口高度小于800px */
   @media screen and (max-height: 800px) {
     .header-two-title {
       height: 54px;
-      max-height: 54px;
+      /* max-height: 54px; */
     }
     .header-two-item img {
       width: 22px;
       height: 22px;
-      margin: 22px 21px 4px;
+      margin: 5px 21px 4px;
     }
   }
 </style>

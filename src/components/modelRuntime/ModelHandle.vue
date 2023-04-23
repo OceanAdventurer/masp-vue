@@ -58,8 +58,8 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <div class="opt_col">
-                  <span @click="showModel(scope.row)">查看模型</span>&nbsp;&nbsp;
-                  <span @click="modelHandle(scope.row)">回复</span>&nbsp;&nbsp;
+                  <span @click="showModel(scope.row)">查看模型&nbsp;&nbsp;</span>
+                  <span @click="modelHandle(scope.row)">回复&nbsp;&nbsp;</span>
                   <span @click="showOptInfo(scope.row)">操作记录</span>
                 </div>
               </template>

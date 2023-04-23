@@ -74,9 +74,9 @@
             <el-table-column label="操作" width="300px">
               <template slot-scope="scope">
                 <div class="opt_col">
-                  <span @click="showModel(scope.row)">查看模型</span>&nbsp;&nbsp;
-                  <span v-if="showButton(3, scope.row)" @click="online(scope.row)">上线</span>&nbsp;&nbsp;
-                  <span v-if="showButton(4, scope.row)" @click="offline(scope.row)">下线</span>&nbsp;&nbsp;
+                  <span @click="showModel(scope.row)">查看模型&nbsp;&nbsp;</span>
+                  <span v-if="showButton(3, scope.row)" @click="online(scope.row)">上线&nbsp;&nbsp;</span>
+                  <span v-if="showButton(4, scope.row)" @click="offline(scope.row)">下线&nbsp;&nbsp;</span>
                   <span @click="showOptInfo(scope.row)">操作记录</span>
                 </div>
               </template>

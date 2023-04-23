@@ -67,9 +67,9 @@
   .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
     width: 100%;
   }
-  .tab_riglt{
+  .analysis_para .tab_riglt {
     width: 80%;
-    padding: 10px 0px;
+    padding: 0px;
     float: left;
   }
   .tab-profile{
@@ -126,7 +126,7 @@
 </style>
 <template>
   <!-- 分析参数库主界面 -->
-  <div class="tab_file_new" v-loading="loading">
+  <div class="tab_file_new analysis_para" v-loading="loading">
     <!-- 左侧元素 -->
     <div class="tab_file_new_left cm_tab_file_new_left">
       <!-- 过滤节点 -->

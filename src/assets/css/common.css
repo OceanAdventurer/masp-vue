@@ -405,6 +405,21 @@
   font-size: 12px;
 }
 
+.el-dialog__wrapper .el-dialog__header {
+  border-bottom: 1px solid #f1f1f1;
+}
+.el-dialog__wrapper .el-dialog__header .el-dialog__title,
+.el-dialog__wrapper .el-dialog__header .dialog-title  {
+  font-size: 14px;
+  font-weight: 700;
+}
+.el-dialog__wrapper .el-dialog__footer {
+  border-top: 1px solid #f1f1f1;
+}
+.el-table__body .opt_col {
+  color: #437ACF;
+  cursor: pointer;
+}
 /*张龙注释*/
 /* .el-input__inner {
   min-height: 40px;
@@ -1018,6 +1033,7 @@
 
 .header-two-content{
   height: 93% !important;
+  /* height: calc(100% - 54px); */
 }
 .permissions-table{
   margin-left: 12px;

@@ -88,7 +88,7 @@ export default {
 }
 .help-dialog >>> .el-dialog {
   width: 80%;
-  height: 80vh;
+  height: 75vh;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -122,7 +122,7 @@ export default {
   position: relative;
   overflow-y: auto;
   width: 100%;
-  height: 80%;
+  height: calc(100% - 100px);
   margin-top: 20px;
 }
 .help-content .help-img-content {

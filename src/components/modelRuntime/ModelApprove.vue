@@ -58,11 +58,11 @@
             <el-table-column label="操作" >
               <template slot-scope="scope">
                 <div class="opt_col">
-                  <span @click="showPublishInfo(scope.row)">查看审批单</span>&nbsp;&nbsp;
-                  <span @click="showModel(scope.row)">查看模型</span>&nbsp;&nbsp;
-                  <span v-if="showButton(1, scope.row)" @click="modelApprove(scope.row)">审批</span>&nbsp;&nbsp;
-                  <span v-if="showButton(5, scope.row)" @click="reject(scope.row)">驳回</span>&nbsp;&nbsp;
-                  <span v-if="showButton(6, scope.row)" @click="transfer(scope.row)">转办</span>&nbsp;&nbsp;
+                  <span @click="showPublishInfo(scope.row)">查看审批单&nbsp;&nbsp;</span>
+                  <span @click="showModel(scope.row)">查看模型&nbsp;&nbsp;</span>
+                  <span v-if="showButton(1, scope.row)" @click="modelApprove(scope.row)">审批&nbsp;&nbsp;</span>
+                  <span v-if="showButton(5, scope.row)" @click="reject(scope.row)">驳回&nbsp;&nbsp;</span>
+                  <span v-if="showButton(6, scope.row)" @click="transfer(scope.row)">转办&nbsp;&nbsp;</span>
                   <span @click="showOptInfo(scope.row)">操作记录</span>
                 </div>
               </template>

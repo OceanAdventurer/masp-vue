@@ -175,6 +175,7 @@
   }
   .calc_result {
     /* text-align: center; */
+    /* height: calc(100% - 183px); */
     height: calc(80vh - 183px);
   }
   .rule_delete {
@@ -419,6 +420,7 @@
   .all_content {
     margin-top: -1px;
     height: calc(80vh - 45px);
+    /* height: 100%; */
     width: 100%;
   }
   .content_top {
@@ -590,7 +592,7 @@
                       </div>
                     </div>
                     <!--计算结果-->
-                    <div style="margin-left:25px;height:42px;line-height:42px;text-align:right;float:left;">计算结果：</div>
+                    <div style="padding-left:25px;height:42px;line-height:42px;text-align:right;float:left;">计算结果：</div>
                     <div v-if="item['EXCEPTION_REASON']" class="exception_txt textarea">{{item.EXCEPTION_REASON}}</div>
                     <div v-else-if="item['test_data'] && item.test_data.length > 0 " class="flight_no" style="float:left;height:42px;line-height:42px;">{{item.test_data[0].value}}</div>
                     <div v-else class="textarea">{{item}}</div>
@@ -610,7 +612,7 @@
         </div>
       </div>
       <div class="content_bottom">
-        <div style="float: right; margin-top: 20px;margin-right: 25px;">
+        <div style="float: right; margin-top: 10px;margin-right: 25px;">
           <el-button type="primary" style="float: left;margin-left: 10px;"  @click="prevStep"  v-show="show_last_button" size="mini">上一步</el-button>
           <el-button type="primary" style="float: left;margin-left: 10px;" @click="nextStep"  v-show="show_nextBtn" size="mini">下一步</el-button>
           <el-button type="primary" style="float: left;margin-left: 10px;" size="mini" @click="onTest" v-show="show_nextBtn === false && (this.isLinkParam === null || this.isLinkParam === undefined || this.isLinkParam === false) && isCurrentUser">测 试</el-button>
