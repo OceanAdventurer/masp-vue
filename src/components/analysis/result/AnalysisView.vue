@@ -456,10 +456,10 @@
             </el-select>
           </el-form-item>
           <h5>矩阵参数</h5>
-          <el-form-item label='Q' prop='matrixParaQ'>
+          <el-form-item label='矩阵参数Q' prop='matrixParaQ'>
             <el-input type="number" v-model='cleanDataForm.matrixParaQ'></el-input>
           </el-form-item>
-          <el-form-item label='R' prop='matrixParaR'>
+          <el-form-item label='矩阵参数R' prop='matrixParaR'>
             <el-input type="number" v-model='cleanDataForm.matrixParaR'></el-input>
           </el-form-item>
         </el-form>
@@ -3697,34 +3697,42 @@ export default {
 </script>
 
 <style >
-.el-loading-spinner i {
-  font-size: 44px;
-}
-.analysisView .view-chart-content .el-pagination button {
-  margin: 0 2px;
-}
-.analysisView .view-chart-content .el-pagination .el-pagination__total {
-  margin-right: 2px;
-}
-.analysisView .view-chart-content .el-pagination .el-pagination__jump {
-  margin-left: 0;
-}
-.analysisView .view-chart-content .el-pagination .el-pager .more {
-  margin: 0 2px;
-}
-.analysisView .view-chart-content .el-pagination .el-pager .number,
-.analysisView .view-chart-content .el-pagination .btn-prev,
-.analysisView .view-chart-content .el-pagination .btn-next {
-  margin: 0 2px;
-  min-width: 20px;
-}
-.analysisView .view-pagination .el-pagination {
-  height: 35px;
-  display: flex;
-  overflow-y: auto;
-}
-.analysisView .view-pagination .el-pagination .el-pagination__editor {
-  width: 32px;
+  .el-loading-spinner i {
+    font-size: 44px;
+  }
+/* 窗口高度大于800px */
+@media screen and (min-width: 850px) {
+  .analysisView .view-pagination {
+    display: flex;
+    justify-content: center;
+  }
+  .analysisView .view-chart-content .el-pagination button {
+    margin: 0 2px;
+  }
+  .analysisView .view-chart-content .el-pagination .el-pagination__total {
+    margin-right: 2px;
+  }
+  .analysisView .view-chart-content .el-pagination .el-pagination__jump {
+    margin-left: 0;
+  }
+  .analysisView .view-chart-content .el-pagination .el-pager .more {
+    margin: 0 2px;
+  }
+  .analysisView .view-chart-content .el-pagination .el-pager .number,
+  .analysisView .view-chart-content .el-pagination .btn-prev,
+  .analysisView .view-chart-content .el-pagination .btn-next {
+    margin: 0 2px;
+    min-width: 20px;
+  }
+  .analysisView .view-pagination .el-pagination {
+    height: 35px;
+    margin-top: 15px;
+    display: flex;
+    overflow-x: auto;
+  }
+  .analysisView .view-pagination .el-pagination .el-pagination__editor {
+    width: 32px;
+  }
 }
 </style>
 <style scoped>
