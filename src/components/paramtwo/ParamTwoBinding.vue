@@ -22,14 +22,14 @@
 <template>
     <!--编辑-->
     <div class="bindingTable">
-        <el-table :data="bindingLibrary" height="98%" highlight-current-row  width="100%" border
+        <el-table :data="bindingLibrary" height="98%" highlight-current-row  width="100%" border fit
         :row-style="{height:'38px'}"
         :cell-style="{padding:'0px'}"
         :header-row-style="{height:'38px'}"
         :header-cell-style="{padding:'0px'}"
-             ref="multipleTable"
-                  v-show="!isLinkParam && isCurrentUser"
-                  @selection-change="selectionMapping">
+        ref="multipleTable"
+        v-show="!isLinkParam && isCurrentUser"
+        @selection-change="selectionMapping">
         <el-table-column  type="selection"  width="55"></el-table-column>
          <el-table-column  prop="versionLibrary" width="250px"   label="版本库">
           <template slot-scope="scope">

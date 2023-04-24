@@ -11,8 +11,6 @@
         <el-form-item label="确认密码" prop="checkPass">
           <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item class='content_footer'>
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
@@ -185,9 +183,5 @@ export default {
 <style>
 .user_password .el-dialog__body {
   padding: 30px 70px 30px 40px;
-}
-.user_password .el-dialog__body .content_footer .el-form-item__content {
-  margin-left: 0!important;
-  text-align: center;
 }
 </style>

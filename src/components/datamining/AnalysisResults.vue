@@ -29,10 +29,10 @@
   overflow: auto !important;
 }
  .el-table__footer-wrapper, .el-table__header-wrapper {
-   overflow: auto !important;
+   /* overflow: auto !important; */
  }
 .el-tabs__nav-scroll {
-  overflow:auto !important;
+  /* overflow:auto !important; */
 }
 .cm-data-detail .el-table {
   height: 74vh !important;
