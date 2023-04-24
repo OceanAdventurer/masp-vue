@@ -404,6 +404,9 @@
 .el-dialog__body {
   font-size: 12px;
 }
+.el-dialog__body .el-form {
+  overflow: auto;
+}
 
 .el-dialog__wrapper .el-dialog__header {
   border-bottom: 1px solid #f1f1f1;
@@ -1250,7 +1253,7 @@ a:hover{text-decoration:none}
 }
 /* 左右 左边宽度76% */
 .cm_content_main_left{
-  width: calc(76% - 1px)!important;
+  width: calc(76% - 10px)!important;
 }
 .cm_content_main_left_tree{
   width: 26.3% !important;

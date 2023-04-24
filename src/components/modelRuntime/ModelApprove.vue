@@ -39,23 +39,20 @@
             <el-table-column
               prop="modelName"
               label="模型名称"
-              :show-overflow-tooltip="true"
-              min-width="120px">
+              :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column
               prop="categoryType"
               label="模型类别"
               :formatter="modelFormatter"
-              :show-overflow-tooltip="true"
-              width="120px">
+              :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column
               prop="modelUser"
               label="所属用户"
-              :show-overflow-tooltip="true"
-              width="150px">
+              :show-overflow-tooltip="true">
             </el-table-column>
-            <el-table-column label="操作" >
+            <el-table-column label="操作" width="320">
               <template slot-scope="scope">
                 <div class="opt_col">
                   <span @click="showPublishInfo(scope.row)">查看审批单&nbsp;&nbsp;</span>
@@ -602,7 +599,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: scroll;
+  overflow: auto;
 }
 .model-opt-dialog-button {
   margin-left: unset;
@@ -613,7 +610,7 @@ export default {
 }
 .model-opt-list-dialog /deep/ .el-dialog {
   height: 350px !important;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 </style>
 <style>

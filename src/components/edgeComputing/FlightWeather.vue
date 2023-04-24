@@ -117,29 +117,24 @@
             style="width: 100%">
             <el-table-column
               prop="flightNo"
-              label="航班号"
-              width="100px">
+              label="航班号">
             </el-table-column>
             <el-table-column
               prop="acType"
-              label="机型"
-              width="120px">
+              label="机型">
             </el-table-column>
             <el-table-column
               prop="acTail"
               label="机号"
-              sortable="custom"
-              width="100px">
+              sortable="custom">
             </el-table-column>
             <el-table-column
               prop="airlineCode"
-              label="航空公司"
-              width="80px">
+              label="航空公司">
             </el-table-column>
             <el-table-column
               prop="depAp"
-              label="起飞机场"
-              width="80px">
+              label="起飞机场">
             </el-table-column>
             <el-table-column
               prop="depType"
@@ -150,8 +145,7 @@
             </el-table-column>
             <el-table-column
               prop="arrAp"
-              label="着陆机场"
-              width="80px">
+              label="着陆机场">
             </el-table-column>
             <el-table-column
               prop="arrType"
@@ -170,7 +164,7 @@
               label="着陆时间"
               width="160px">
             </el-table-column>
-            <el-table-column label="操作" width="101px">
+            <el-table-column label="操作">
               <template slot-scope="scope">
                 <div class="opt_col">
                   <span v-if="scope.row.depUuid || scope.row.arrUuid" @click="showInfo(scope.row)">天气详情</span>

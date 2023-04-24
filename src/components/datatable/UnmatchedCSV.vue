@@ -47,7 +47,7 @@ td .el-input__inner {
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="CSV是否入库:" style="margin-bottom: 0px">
+          <el-form-item label="是否入库:" style="margin-bottom: 0px">
             <el-select v-model="form.HASETL" clearable  filterable placeholder="" style="width:60px">
               <el-option
                 label="是"
@@ -134,19 +134,19 @@ td .el-input__inner {
           :data="tableData" highlight-current-row
           :header-row-style="headerRowStyle" :header-cell-style="{height:'38px'}" :row-style="{height:'38px'}" height="100%" width="100%;">
           <el-table-column prop="WGL_FILE_NAME" label="源文件名" width="250"></el-table-column>
-          <el-table-column label="译码是否成功" width="300">
+          <!-- <el-table-column label="译码是否成功" width="300">
             <div slot-scope="scope">
               <span v-if="scope.row.HASCSV === '否'"><el-tag type="danger" size="mini">否</el-tag></span>
               <span v-else> {{ scope.row.HASCSV }}</span>
             </div>
-          </el-table-column>
-          <el-table-column label="CSV是否入库">
+          </el-table-column> -->
+          <el-table-column label="是否入库" width="80">
             <div slot-scope="scope">
               <span v-if="scope.row.HASETL === '否'"><el-tag type="danger" size="mini">否</el-tag></span>
               <span v-else> <el-tag type="success" size="mini"> {{ scope.row.HASETL }} </el-tag> </span>
             </div>
           </el-table-column>
-          <el-table-column prop="TAKEOFF_DATE_TIME" label="起飞时间" width="180"></el-table-column>
+          <el-table-column prop="TAKEOFF_DATE_TIME" label="起飞时间" width="160"></el-table-column>
           <el-table-column prop="FLIGHT_NO" label="航班号"></el-table-column>
           <el-table-column prop="AC_TAIL" label="机尾号"></el-table-column>
           <el-table-column prop="AC_TYPE" label="机型"></el-table-column>

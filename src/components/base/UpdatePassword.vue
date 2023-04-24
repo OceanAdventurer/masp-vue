@@ -1,6 +1,6 @@
 <template>
   <div class="user_password">
-    <el-dialog title="修改密码" :visible.sync="dialogVisible" width="500px">
+    <el-dialog title="修改密码" :close-on-click-modal="false" :visible.sync="dialogVisible" width="500px">
       <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
         <el-form-item label="旧密码" prop="oldPassword">
           <el-input type="password" v-model="ruleForm.oldPassword" autocomplete="off"></el-input>
@@ -12,10 +12,12 @@
           <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item class='content_footer'>
-          <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
         </el-form-item>
       </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -88,7 +90,18 @@ export default {
   },
   mounted () {
     this.$bus.$on('password_management', () => {
+      this.$nextTick(() => {
+        this.$refs.form && this.$refs.form.clearValidate()
+      })
+      this.ruleForm = {
+        oldPassword: '',
+        newPassword: '',
+        checkPass: ''
+      }
       this.dialogVisible = true
+      this.$nextTick(() => {
+        this.$refs['ruleForm'] && this.$refs['ruleForm'].clearValidate()
+      })
     })
   },
   methods: {

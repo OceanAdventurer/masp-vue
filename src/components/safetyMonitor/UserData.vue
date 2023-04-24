@@ -44,18 +44,15 @@
             </el-table-column>
             <el-table-column
               prop="logIp"
-              label="登录IP"
-              width="200px">
+              label="登录IP">
             </el-table-column>
             <el-table-column
               prop="logCount"
-              label="操作次数"
-              width="200px">
+              label="操作次数">
             </el-table-column>
             <el-table-column
               prop="logTime"
-              label="操作时间"
-              width="200px">
+              label="操作时间">
             </el-table-column>
             <el-table-column label="操作" width="80px">
               <template slot-scope="scope">

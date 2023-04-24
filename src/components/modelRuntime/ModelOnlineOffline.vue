@@ -49,29 +49,25 @@
             <el-table-column
               prop="modelName"
               label="模型名称"
-              :show-overflow-tooltip="true"
-              min-width="200px">
+              :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column
               prop="categoryType"
               label="模型类别"
               :formatter="modelFormatter"
-              :show-overflow-tooltip="true"
-              width="200px">
+              :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column
               prop="modelUser"
               label="所属用户"
-              :show-overflow-tooltip="true"
-              width="200px">
+              :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column
               prop="modelState"
               label="模型状态"
-              :formatter="modelFormatter"
-              width="100px">
+              :formatter="modelFormatter">
             </el-table-column>
-            <el-table-column label="操作" width="300px">
+            <el-table-column label="操作">
               <template slot-scope="scope">
                 <div class="opt_col">
                   <span @click="showModel(scope.row)">查看模型&nbsp;&nbsp;</span>
@@ -113,9 +109,11 @@
                       style="width: 350px; "/>
           </el-form-item>
           <el-form-item class="model-opt-dialog-button">
-            <el-button type="primary" @click="dialogSubmit">确定</el-button>
           </el-form-item>
         </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogSubmit">确定</el-button>
+      </div>
     </el-dialog>
 
     <el-dialog :close-on-click-modal="false" title="操作记录" class="model-opt-list-dialog" :visible.sync="modelOptList.modelOptDialog" @close='closeOptListDialog'>
@@ -421,7 +419,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: scroll;
+  overflow: auto;
 }
 .model-approve .el-dialog .el-card__body .explain {
   display: flex;
@@ -444,7 +442,7 @@ export default {
 }
 .model-opt-list-dialog /deep/ .el-table__body-wrapper {
   height: 300px !important;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .model-approve .model-opt-list-dialog .el-card .el-card__body {
   padding: 10px 20px;

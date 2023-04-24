@@ -423,7 +423,7 @@
   width: 100%;
 }
 .content_top {
-  height: 80px;
+  height: 78px;
   width: 100%;
 }
 .content_main {

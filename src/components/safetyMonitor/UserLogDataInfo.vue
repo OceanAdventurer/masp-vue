@@ -42,30 +42,25 @@
             <el-table-column
               prop="logUser"
               label="用户"
-              :show-overflow-tooltip="true"
-              width="200px">
+              :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column
               prop="roleName"
               label="组织单位"
-              :show-overflow-tooltip="true"
-              width="200px">
+              :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column
               prop="logIp"
-              label="登录IP"
-              width="200px">
+              label="登录IP">
             </el-table-column>
             <el-table-column
               prop="logName"
               label="操作行为"
-              :show-overflow-tooltip="true"
-              min-width="200px">
+              :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column
               prop="logTime"
-              label="操作时间"
-              width="180px">
+              label="操作时间">
             </el-table-column>
             <el-table-column label="操作" width="110px">
               <template slot-scope="scope">
@@ -90,30 +85,25 @@
             <el-table-column
               prop="logName"
               label="操作行为"
-              :show-overflow-tooltip="true"
-              min-width="200px">
+              :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column
               prop="logIp"
-              label="登录IP"
-              width="200px">
+              label="登录IP">
             </el-table-column>
             <el-table-column
               prop="logUser"
               label="用户"
-              :show-overflow-tooltip="true"
-              width="200px">
+              :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column
               prop="roleName"
               label="组织单位"
-              :show-overflow-tooltip="true"
-              width="200px">
+              :show-overflow-tooltip="true">
             </el-table-column>
             <el-table-column
               prop="logTime"
-              label="操作时间"
-              width="200px">
+              label="操作时间">
             </el-table-column>
           </el-table>
         </div>

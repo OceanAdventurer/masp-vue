@@ -1,5 +1,5 @@
 <template>
-  <el-dialog class="submit_detail" title="提交详情" :visible.sync="dialogVisible" width="1000px;">
+  <el-dialog class="submit_detail" :close-on-click-modal="false" title="提交详情" :visible.sync="dialogVisible" width="1000px;">
     <div class="detail_content">
       <el-form ref="filtersRef" :model= "filtersForm" :rules="filtesRules" label-width="80px">
         <el-row>
