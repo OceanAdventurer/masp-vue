@@ -105,16 +105,13 @@
         </div>
         <div class="flight-weather-table-info">
           <el-table
-            :row-style="{height:'38px'}"
-            :cell-style="{padding:'0px'}"
-            :header-row-style="{height:'38px'}"
-            :header-cell-style="{padding:'0px'}"
             highlight-current-row
             :data="tableData"
             @sort-change="sortChange"
             height="100%"
+            width="100%"
             border
-            style="width: 100%">
+            fit>
             <el-table-column
               prop="flightNo"
               label="航班号">

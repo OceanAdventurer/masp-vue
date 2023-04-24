@@ -27,15 +27,12 @@
         </div>
         <div class="model-approve-table-info">
           <el-table
-            :row-style="{height:'38px'}"
-            :cell-style="{padding:'0px'}"
-            :header-row-style="{height:'38px'}"
-            :header-cell-style="{padding:'0px'}"
             highlight-current-row
             :data="tableData"
             height="100%"
             border
-            style="width: 100%">
+            fit
+            width="100%">
             <el-table-column
               prop="modelName"
               label="模型名称"
@@ -111,8 +108,6 @@
                       clearable
                       placeholder="意见"
                       style="width: 350px; "/>
-          </el-form-item>
-          <el-form-item class="model-opt-dialog-button">
           </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -211,26 +206,6 @@
         </el-form>
       </div>
     </el-dialog>
-    <!-- <el-dialog :close-on-click-modal="false" :title="modelOpt.title" class="model-opt-dialog" :visible.sync="modelOpt.modelHandleDialog" @close='closeDialog'>
-      <el-form :model="modelOpt" label-width="80px" :rules="rules"  ref="modelOpt">
-          <el-form-item label="模型名称:">
-            <el-input v-model="modelOpt.modelName" style="width: 350px;" disabled/>
-          </el-form-item>
-          <el-form-item label="意见:" prop="explain">
-            <el-input type="textarea"
-                      :rows="3"
-                      :show-word-limit="true"
-                      :maxlength="50"
-                      v-model.trim="modelOpt.explain"
-                      clearable
-                      placeholder="意见"
-                      style="width: 350px; "/>
-          </el-form-item>
-          <el-form-item class="model-opt-dialog-button">
-            <el-button type="primary" @click="dialogSubmit">确定</el-button>
-          </el-form-item>
-        </el-form>
-    </el-dialog> -->
 
   </div>
 </template>
@@ -600,9 +575,6 @@ export default {
   flex-direction: column;
   align-items: center;
   overflow: auto;
-}
-.model-opt-dialog-button {
-  margin-left: unset;
 }
 .model-opt-list-dialog /deep/ .el-dialog {
   width: 40%;

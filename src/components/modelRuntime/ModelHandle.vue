@@ -27,15 +27,12 @@
         </div>
         <div class="model-approve-table-info">
           <el-table
-            :row-style="{height:'38px'}"
-            :cell-style="{padding:'0px'}"
-            :header-row-style="{height:'38px'}"
-            :header-cell-style="{padding:'0px'}"
             highlight-current-row
             :data="tableData"
             height="100%"
             border
-            style="width: 100%">
+            fit
+            width="100%">
             <el-table-column
               prop="modelName"
               label="模型名称"
@@ -91,8 +88,6 @@
                       clearable
                       placeholder="意见"
                       style="width: 350px; "/>
-          </el-form-item>
-          <el-form-item class="model-opt-dialog-button">
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -398,9 +393,6 @@ export default {
   flex-direction: column;
   align-items: center;
   overflow: auto;
-}
-.model-opt-dialog-button {
-  margin-left: unset;
 }
 .model-opt-list-dialog /deep/ .el-dialog {
   width: 40%;

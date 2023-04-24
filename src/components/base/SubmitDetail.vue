@@ -191,10 +191,17 @@ export default {
   }
   .submit_detail .el-dialog .el-dialog__body {
     /* max-height: 80%; */
-    height: 300px;
+    height: 400px;
   }
   .submit_detail .el-dialog .detail_content {
     height: 100%;
+  }
+  .submit_detail .el-dialog .detail_content .el-row {
+    height: 56px;
+    padding-top: 10px;
+  }
+  .submit_detail .el-dialog .detail_content .el-table {
+    height: calc(100% - 85px)!important;
   }
   .submit_detail .el-dialog__body {
     padding: 0 20px
