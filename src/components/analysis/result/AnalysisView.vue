@@ -419,47 +419,53 @@
                  title="数据清洗"
                  :visible.sync="dataCleanDiaShow"
                  @close="closeFdvDialog('data_clean')"
-                 @open="dataCleanDiaShow=true">
+                 @open="openDataDialog">
                  <!-- width="500px" -->
-        <div class="data_clean_content">
-          <el-form label-width="120px" :rules="cleanDataRules" ref='cleanDataRef' form='cleanDataForm'>
-            <h5>按缺失值补全方法</h5>
-            <el-form-item label='补全方法' prop='imputationValue'>
-              <el-select v-model='cleanDataForm.imputationValue'>
-                <el-option label="默认" value=""></el-option>
-                <el-option label="线性填充" value="lfill"></el-option>
-                <el-option label="后向填充" value="bfill"></el-option>
-                <el-option label="前向填充" value="ffill"></el-option>
-              </el-select>
-            </el-form-item>
-            <h5>按异常值检测与处理方法</h5>
-              <el-form-item label='异常值检测方法' prop='outlierDetection'>
-                <el-select v-model='cleanDataForm.outlierDetection'>
-                  <el-option label="默认" value=""></el-option>
-                  <el-option label="统计方法检测" value="3sigma"></el-option>
-                  <el-option label="聚类方法检测" value="Lof"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label='异常值检测范围' prop='outlierDetectionRange'>
-                <el-select v-model='cleanDataForm.outlierDetectionRange'>
-                  <el-option label="默认" value=""></el-option>
-                  <el-option label="全局范围检测" value="global"></el-option>
-                  <el-option label="各个飞行阶段内部检测" value="phase’"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label='异常值处理方法' prop='outliersHandling'>
-                <el-select v-model='cleanDataForm.outliersHandling'>
-                  <el-option label="默认" value=""></el-option>
-                  <el-option label="线性填充" value="lfill"></el-option>
-                  <el-option label="后向填充" value="bfill"></el-option>
-                  <el-option label="前向填充" value="ffill"></el-option>
-                </el-select>
-              </el-form-item>
-              <div class="content_footer" style='text-align:center'>
-                <el-button @close="closeFdvDialog('data_clean')">取消</el-button>
-                <el-button @click="cleanData" type='primary'>确认</el-button>
-              </div>
-          </el-form>
+        <el-form label-width="120px" :rules="cleanDataRules" ref='cleanDataRef' :model='cleanDataForm'>
+          <h5>自定义任务名称</h5>
+          <el-form-item label="任务名称" prop="taskName">
+            <el-input v-model="cleanDataForm.taskName" placeholder="请输入任务名称"></el-input>
+          </el-form-item>
+          <h5>按缺失值补全方法</h5>
+          <el-form-item label='补全方法' prop='imputationValue'>
+            <el-select v-model='cleanDataForm.imputationValue'>
+              <el-option label="线性填充" value="lfill"></el-option>
+              <el-option label="后向填充" value="bfill"></el-option>
+              <el-option label="前向填充" value="ffill"></el-option>
+            </el-select>
+          </el-form-item>
+          <h5>按异常值检测与处理方法</h5>
+          <el-form-item label='异常值检测方法' prop='outlierDetection'>
+            <el-select v-model='cleanDataForm.outlierDetection'>
+              <el-option label="统计方法检测" value="3sigma"></el-option>
+              <el-option label="聚类方法检测" value="Lof"></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- <el-form-item label='异常值检测范围' prop='outlierDetectionRange'>
+            <el-select v-model='cleanDataForm.outlierDetectionRange'>
+              <el-option label="默认" value=""></el-option>
+              <el-option label="全局范围检测" value="global"></el-option>
+              <el-option label="各个飞行阶段内部检测" value="phase’"></el-option>
+            </el-select>
+          </el-form-item> -->
+          <el-form-item label='异常值处理方法' prop='outliersHandling'>
+            <el-select v-model='cleanDataForm.outliersHandling'>
+              <el-option label="线性填充" value="lfill"></el-option>
+              <el-option label="后向填充" value="bfill"></el-option>
+              <el-option label="前向填充" value="ffill"></el-option>
+            </el-select>
+          </el-form-item>
+          <h5>矩阵参数</h5>
+          <el-form-item label='Q' prop='matrixParaQ'>
+            <el-input type="number" v-model='cleanDataForm.matrixParaQ'></el-input>
+          </el-form-item>
+          <el-form-item label='R' prop='matrixParaR'>
+            <el-input type="number" v-model='cleanDataForm.matrixParaR'></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align: right">
+            <el-button @click="closeFdvDialog('data_clean')">取消</el-button>
+            <el-button @click="cleanData('cleanDataRef')" type='primary'>开始清洗</el-button>
         </div>
       </el-dialog>
     </div>
@@ -480,6 +486,19 @@ export default {
     }
   },
   data () {
+    // var validateParam = (rule, value, callback) => {
+    //   console.log(value, 'value---test')
+    //   let regex = /^-?\d+(\.\d+)?$/
+    //   if (value === '') {
+    //     callback(new Error('请输入矩阵参数值'))
+    //   } else if (!regex.test(value)) {
+    //   console.log(value, 'value---test')
+    //     callback(new Error('矩阵参数只能是数字'))
+    //   } else {
+    //   console.log(value, 'value---test')
+    //     callback()
+    //   }
+    // }
     return {
       leftMenuItem: 'events', // 默认显示的图标
       exportBtnDisabled: false,
@@ -609,15 +628,23 @@ export default {
       mergeType: '',
       dataCleanDiaShow: false, // 数据清洗对话框是否展示
       cleanDataForm: {
-        imputationValue: '', // 缺失补全法
-        outlierDetection: '', // 异常值检测方法
-        outlierDetectionRange: '', // 异常值检测范围
-        outliersHandling: ''// 异常值处理方法
+        taskName: '', // 自定义任务名称可不填
+        imputationValue: 'lfill', // 缺失补全法
+        outlierDetection: '3sigma', // 异常值检测方法
+        // outlierDetectionRange: '', // 异常值检测范围
+        matrixParaQ: 0.00005, // 矩阵参数q,有默认值
+        matrixParaR: 0.0001, // 矩阵参数r,有默认值
+        outliersHandling: 'lfill'// 异常值处理方法
       },
       cleanDataRules: {
         imputationValue: [{ required: true, message: '请选择补全方法', trigger: 'blur' }],
         outlierDetection: [{ required: true, message: '请选择异常值检测方法', trigger: 'blur' }],
-        outlierDetectionRange: [{ required: true, message: '请选择异常值检测范围', trigger: 'blur' }],
+        // matrixParaQ: [{ required: true, validator: validateParam, trigger: 'blur' }],
+        matrixParaQ: [{ required: true, message: '请输入矩阵参数值', trigger: 'blur' }],
+        // matrixParaR: [{ required: true, validator: validateParam, trigger: 'blur' }],
+        matrixParaR: [{ required: true, message: '请输入矩阵参数值', trigger: 'blur' }],
+        // outlierDetectionRange: [{ required: true, message: '请选择异常值检测范围', trigger: 'blur' }],
+        // outliersHandling: [{ required: true, validator: validateParam, trigger: 'blur' }]
         outliersHandling: [{ required: true, message: '请选择异常值处理方法', trigger: 'blur' }]
       }
     }
@@ -854,21 +881,46 @@ export default {
         }
       })
     },
-    cleanData () {
-      this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！')
-      this.$axios.post({
-        url: '',
-        data: {}
-      }).then(res => {
-        this.$store.commit('HIDE_LOADING', '加载完毕')
-        console.log(res)
-        this.$message({
-          type: 'success',
-          message: '操作成功!'
-        })
-      }).catch(err => {
-        this.$store.commit('HIDE_LOADING', '加载完毕')
-        console.log(err)
+    openDataDialog () {
+      this.dataCleanDiaShow = true
+      this.cleanDataForm = {
+        taskName: '',
+        imputationValue: 'lfill',
+        outlierDetection: '3sigma',
+        matrixParaQ: 0.00005,
+        matrixParaR: 0.0001,
+        outliersHandling: 'lfill'
+      }
+    },
+    cleanData (form) {
+      this.$refs[form].validate(valid => {
+        if (valid) {
+          this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！')
+          this.$axios({
+            url: '/apm/clean',
+            method: 'get',
+            params: {
+              name: this.cleanDataForm.taskName,
+              paramBqff: this.cleanDataForm.imputationValue,
+              paramQ: this.cleanDataForm.matrixParaQ,
+              paramR: this.cleanDataForm.matrixParaR,
+              paramYczclff: this.cleanDataForm.outliersHandling,
+              paramYczjcff: this.cleanDataForm.outlierDetection
+            }
+          }).then(res => {
+            this.$store.commit('HIDE_LOADING', '加载完毕')
+            console.log(res)
+            this.$message({
+              type: 'success',
+              message: '操作成功!'
+            })
+          }).catch(err => {
+            this.$store.commit('HIDE_LOADING', '加载完毕')
+            console.log(err)
+          })
+        } else {
+          console.log('err submit')
+        }
       })
     },
     toggleMerge () {
@@ -2270,6 +2322,7 @@ export default {
       }
     },
     closeFdvDialog (type) {
+      console.log(type, 'type---test')
       if (type) {
         this.dataCleanDiaShow = false
       } else {
@@ -2278,9 +2331,8 @@ export default {
         console.log('关闭1233333333333333333333333333333333333333333333333333')
         this.fdvTreeKeyword = ''
         this.fdvEptTreeKeyword = ''
+        this.reloadGetFlightId(this.fdvCurrentPage)
       }
-
-      this.reloadGetFlightId(this.fdvCurrentPage)
     },
     openFdvDialog () { // FDV打开后回调方法
       if (this.fdvChart) {
@@ -3648,9 +3700,6 @@ export default {
 .el-loading-spinner i {
   font-size: 44px;
 }
-.analysis_view .analysis_view_dialog .el-form-item .el-form-item__content .el-select {
-  width: 50% !important;
-}
 .analysisView .view-chart-content .el-pagination button {
   margin: 0 2px;
 }
@@ -3886,6 +3935,28 @@ export default {
   flex-direction: row;
   height: 90%;
   flex: 1;
+}
+
+.analysis_view_dialog >>> .el-dialog__body {
+  padding: 15px 20px;
+}
+.analysis_view_dialog >>> .el-dialog__body h5 {
+  margin: 0;
+  padding-left: 10px;
+  height: 32px;
+  line-height: 32px;
+  background: #eee;
+}
+.analysis_view_dialog >>> .el-dialog__body .el-form {
+  max-height: 300px;
+  overflow: auto;
+}
+.analysis_view_dialog >>> .el-form-item .el-form-item__content .el-select .el-input {
+  width: 100% !important;
+}
+.analysis_view_dialog >>> .el-form-item .el-form-item__content .el-select,
+.analysis_view_dialog >>> .el-form-item .el-form-item__content .el-input {
+  width: 50% !important;
 }
 /*
 .grid-dialog >>> .el-input__inner {

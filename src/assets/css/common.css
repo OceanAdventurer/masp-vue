@@ -1250,7 +1250,7 @@ a:hover{text-decoration:none}
 }
 /* 左右 左边宽度76% */
 .cm_content_main_left{
-  width: 76% !important;
+  width: calc(76% - 1px)!important;
 }
 .cm_content_main_left_tree{
   width: 26.3% !important;

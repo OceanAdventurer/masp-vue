@@ -434,7 +434,7 @@
   .content_bottom{
     width: 100%;
     float: left;
-    height: 70px;
+    height: 45px;
     width: 100%;
   }
   .content_bottom .el-button--mini{

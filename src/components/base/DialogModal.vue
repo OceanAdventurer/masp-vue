@@ -90,8 +90,8 @@
         </template>
       </div>
       <template>
-        <el-tabs value="running" @tab-click="handleClick" style="min-height: 200px;">
-          <el-tab-pane label="正在进行" name="running" style="padding-top: 5px">
+        <el-tabs value="analysisRunning" @tab-click="handleClick" style="min-height: 200px;">
+          <el-tab-pane label="正在分析" name="analysisRunning" style="padding-top: 5px">
             <template>
              <el-table
                   v-loading="loading"
@@ -145,7 +145,106 @@
               </div>
             </span>
           </el-tab-pane>
-          <el-tab-pane label="历史记录" name="records">
+          <el-tab-pane label="历史分析" name="analysisRecords">
+            <el-table
+              v-loading="loading"
+              :data="RecordsJobs"
+              style="width: 100%;margin-top: -39px;font-size: 9px;">
+              <el-table-column style="width: 100%;">
+                <div slot-scope="scope">
+                  <span style="float: left;">{{scope.row.title}} </span>
+                  <span  style="position:absolute;left:50%;top:25%;transform: translate(-50%,-50%);"> {{scope.row.finishCount}}/{{scope.row.totalCount}} </span>
+                  <span style="color:#588ee6;float: right;margin-right: 2%;">{{scope.row.jobStatusDetail}}</span>
+                  <div style="width: 99%;float: left;">
+                    <el-progress
+                      :text-inside="true"
+                      :stroke-width="15"
+                      :percentage="scope.row.source"
+                      :color="scope.row.progessColor">
+                    </el-progress>
+                  </div>
+                  <div style="width:1%;float: right; margin-top: -4px; ">
+                     <span v-if="scope.row.buttonStatus==='FINISHED'||scope.row.buttonStatus==='KILLED'">
+                      <el-button type="text" title="删除任务" style=" padding: 0px 0px;margin-left: 3px;" @click="deleteJob(scope.$index,RecordsJobs,scope.row.id)">
+                      <img src="../../assets/images/icon71.png"/>
+                    </el-button>
+                    </span>
+                  </div>
+                  <span style="float: left;">{{scope.row.name}}</span>
+                  <span style="float: right;margin-right:1%;">完成时间：{{scope.row.date}}&nbsp;&nbsp;耗时：{{scope.row.time}}</span>
+                </div>
+              </el-table-column>
+            </el-table>
+            <span v-if="recordCountPage>0">
+              <div class="block" style="float: right;margin-top: 30px;">
+                  <el-pagination
+                    background
+                    @size-change="handleSizeChangeHistory"
+                    @current-change="getRecordPage"
+                    :current-page="recordPageNo"
+                    :page-sizes="[3, 5, 10, 15, 20]"
+                    :page-size="pageSize"
+                    layout="sizes, prev, pager, next, total"
+                    :total="recordCountPage">
+                  </el-pagination>
+              </div>
+            </span>
+          </el-tab-pane>
+          <el-tab-pane label="正在清洗" name="cleanRunning" style="padding-top: 5px">
+            <template>
+             <el-table
+                  v-loading="loading"
+                  :data="RunningJobs"
+                  style="width: 100%;margin-top: -39px;font-size: 9px;">
+               <el-table-column style="width: 100%;">
+               <div slot-scope="scope">
+                   <span style="float: left;">{{scope.row.title}} </span>
+                   <span style="position:absolute;left:50%;top:25%;transform: translate(-50%,-50%);"> {{scope.row.finishCount}}/{{scope.row.totalCount}} </span>
+                   <span style="color:#588ee6;float: right;margin-right: 3.5%;">{{scope.row.jobStatusDetail}}</span>
+                    <div style="width: 97%;float: left;">
+                      <el-progress
+                        :text-inside="true"
+                        :stroke-width="15"
+                        :percentage="scope.row.source"
+                        :color="scope.row.progessColor">
+                      </el-progress>
+                    </div>
+                    <div style="width: 4.6%;float: right;margin-top: -4px;margin-right: -1.75%">
+                      <span v-if="scope.row.buttonStatus==='PAUSE'">
+                        <el-button type="text" title="开启任务" style=" padding: 0px 0px;" @click="startJob(scope.row.id)">
+                          <img src="../../assets/images/icon77.png"/>
+                        </el-button>
+                      </span>
+                      <span v-else-if="scope.row.buttonStatus==='RUNNING' || scope.row.buttonStatus==='ACCEPT'">
+                        <el-button type="text" title="暂停任务" style=" padding: 0px 0px;" @click="waitJob(scope.row.id)">
+                          <img src="../../assets/images/icon79.png"/>
+                        </el-button>
+                      </span>
+                       <el-button type="text" title="终止任务" style=" padding: 0px 0px;" @click="stopJob(scope.row.id)">
+                        <img src="../../assets/images/icon78.png"/>
+                      </el-button>
+                     </div>
+                    <span style="float: left;">{{scope.row.name}}</span> <span style="float: right;margin-right:1%;">{{scope.row.date}}</span>
+                  </div>
+                </el-table-column>
+              </el-table>
+            </template>
+            <span v-if="runCountPage>0">
+              <div class="block" style="float: right;margin-top: 30px;">
+                      <el-pagination
+                        background
+                        @size-change="handleSizeChange"
+                        @current-change="getRunningPage"
+                        :current-page="runPageNo"
+                        :page-sizes="[3, 5, 10, 15, 20]"
+                        :page-size="pageSize"
+                        layout="sizes, prev, pager, next, total"
+                        :total="runCountPage">
+      </el-pagination>
+              </div>
+            </span>
+          </el-tab-pane>
+          <el-tab-pane label="历史清洗" name="cleanRecords">
             <el-table
               v-loading="loading"
               :data="RecordsJobs"
@@ -205,7 +304,7 @@ export default {
     return {
       dialogVisible: false,
       keyWords: '',
-      tabName: 'running', // 点击搜索按钮获取 tab页签的name 判断搜索那个接口，默认选择running /records
+      tabName: 'analysisRunning', // 点击搜索按钮获取 tab页签的name 判断搜索那个接口，默认选择running /records
       loading: false,
       runLoading: false,
       pageSize: 5,
@@ -222,9 +321,9 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      if (this.tabName === 'running') {
+      if (this.tabName === 'analysisRunning') {
         this.getRunningPage(1)
-      } else if (this.tabName === 'records') {
+      } else if (this.tabName === 'analysisRecords') {
         this.getRecordPage(1)
       }
       // 每隔一秒执行一次
@@ -246,15 +345,15 @@ export default {
     // ajax 定时刷新状态
     refreshJobStatus () {
       // this.runLoading 刷新页面时，如果 该进程正在执行则不刷新，未执行则执行刷新
-      if (this.dialogVisible && this.tabName === 'running' && this.runLoading) {
+      if (this.dialogVisible && this.tabName === 'analysisRunning' && this.runLoading) {
         // 如果弹框开启 则执行刷新功能
         this.getRunningJobj(this.runPageNo)
       }
     },
     searchBtn () {
-      if (this.tabName === 'running') {
+      if (this.tabName === 'analysisRunning') {
         this.getRunningPage(1)
-      } else if ((this.tabName === 'records')) {
+      } else if ((this.tabName === 'analysisRecords')) {
         this.getFinishedJobs(1)
       }
     },
@@ -262,9 +361,9 @@ export default {
     handleClick (tab, event) {
       this.tabName = tab.name
       this.pageSize = 5
-      if (this.tabName === 'running') {
+      if (this.tabName === 'analysisRunning') {
         this.getRunningPage(1)
-      } else if ((this.tabName === 'records')) {
+      } else if ((this.tabName === 'analysisRecords')) {
         this.getFinishedJobs(1)
       }
     },
