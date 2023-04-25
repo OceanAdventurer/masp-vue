@@ -1,13 +1,14 @@
 <style scoped>
-#pane-running {
-  padding-top: 0px !important;
-}
 .el-tabs__header {
   padding: 0;
   position: relative;
   margin: 0 0 10px;
 }
-
+.task_center .clean_records i::before {
+  color: #3d5077;
+  margin: 0 2px;
+  cursor: pointer;
+}
 .running-jobs {
   color: #8c939d;
   font-size: 12px;
@@ -36,7 +37,6 @@
   vertical-align: middle;
   position: relative;
 }
-
 .dialog_content_list .el-table td,
 .dialog_content_list .el-table th {
   padding: 0px;
@@ -66,7 +66,24 @@
   }
 }
 </style>
-
+<style>
+/* .task_center .el-dialog__body {
+  padding: 8px 20px;
+}
+.task_center .el-dialog__body {
+  max-height: 360px;
+}
+.task_center .el-table__body-wrapper {
+  overflow: auto;
+  height: calc(100% - 120px);
+}
+.task_center .el-tabs__content {
+  height: calc(100% - 40px);
+} */
+/* 窗口高度小于800px */
+/* @media screen and (max-height: 1000px) {
+} */
+</style>
 <template>
   <div>
     <!--任务详情-->
@@ -75,8 +92,8 @@
         <img src="../../assets/images/icon76.png" style="height:16px;width: 16px;">
       </el-button>
     </div> -->
-    <el-dialog title="任务详情" :visible.sync="dialogVisible" width="800px;">
-      <div style="position:absolute;top:80px;right: 18px;z-index: 1">
+    <el-dialog title="任务详情" :visible.sync="dialogVisible" width="800px;" class='task_center'>
+      <div style="position:absolute;top:65px;right: 18px;z-index: 1">
         <template>
           <el-input
             size="small"
@@ -107,7 +124,7 @@
                         :text-inside="true"
                         :stroke-width="15"
                         :percentage="scope.row.source"
-                        :color="scope.row.progessColor">
+                        :color="scope.row.progressColor">
                       </el-progress>
                     </div>
                     <div style="width: 4.6%;float: right;margin-top: -4px;margin-right: -1.75%">
@@ -160,7 +177,7 @@
                       :text-inside="true"
                       :stroke-width="15"
                       :percentage="scope.row.source"
-                      :color="scope.row.progessColor">
+                      :color="scope.row.progressColor">
                     </el-progress>
                   </div>
                   <div style="width:1%;float: right; margin-top: -4px; ">
@@ -194,37 +211,21 @@
             <template>
              <el-table
                   v-loading="loading"
-                  :data="RunningJobs"
+                  :data="RunningCleanJobs"
                   style="width: 100%;margin-top: -39px;font-size: 9px;">
                <el-table-column style="width: 100%;">
                <div slot-scope="scope">
                    <span style="float: left;">{{scope.row.title}} </span>
-                   <span style="position:absolute;left:50%;top:25%;transform: translate(-50%,-50%);"> {{scope.row.finishCount}}/{{scope.row.totalCount}} </span>
                    <span style="color:#588ee6;float: right;margin-right: 3.5%;">{{scope.row.jobStatusDetail}}</span>
                     <div style="width: 97%;float: left;">
                       <el-progress
                         :text-inside="true"
                         :stroke-width="15"
-                        :percentage="scope.row.source"
-                        :color="scope.row.progessColor">
+                        :percentage="scope.row.percent"
+                        :color="scope.row.progressColor">
                       </el-progress>
                     </div>
-                    <div style="width: 4.6%;float: right;margin-top: -4px;margin-right: -1.75%">
-                      <span v-if="scope.row.buttonStatus==='PAUSE'">
-                        <el-button type="text" title="开启任务" style=" padding: 0px 0px;" @click="startJob(scope.row.id)">
-                          <img src="../../assets/images/icon77.png"/>
-                        </el-button>
-                      </span>
-                      <span v-else-if="scope.row.buttonStatus==='RUNNING' || scope.row.buttonStatus==='ACCEPT'">
-                        <el-button type="text" title="暂停任务" style=" padding: 0px 0px;" @click="waitJob(scope.row.id)">
-                          <img src="../../assets/images/icon79.png"/>
-                        </el-button>
-                      </span>
-                       <el-button type="text" title="终止任务" style=" padding: 0px 0px;" @click="stopJob(scope.row.id)">
-                        <img src="../../assets/images/icon78.png"/>
-                      </el-button>
-                     </div>
-                    <span style="float: left;">{{scope.row.name}}</span> <span style="float: right;margin-right:1%;">{{scope.row.date}}</span>
+                    <span style="float: right;margin-right:1%;">{{scope.row.date}}</span>
                   </div>
                 </el-table-column>
               </el-table>
@@ -233,7 +234,7 @@
               <div class="block" style="float: right;margin-top: 30px;">
                       <el-pagination
                         background
-                        @size-change="handleSizeChange"
+                        @size-change="handleSizeChangeClean"
                         @current-change="getRunningPage"
                         :current-page="runPageNo"
                         :page-sizes="[3, 5, 10, 15, 20]"
@@ -247,29 +248,28 @@
           <el-tab-pane label="历史清洗" name="cleanRecords">
             <el-table
               v-loading="loading"
-              :data="RecordsJobs"
+              :data="RecordsCleanJobs"
               style="width: 100%;margin-top: -39px;font-size: 9px;">
               <el-table-column style="width: 100%;">
-                <div slot-scope="scope">
+                <div slot-scope="scope" class='clean_records'>
                   <span style="float: left;">{{scope.row.title}} </span>
-                  <span  style="position:absolute;left:50%;top:25%;transform: translate(-50%,-50%);"> {{scope.row.finishCount}}/{{scope.row.totalCount}} </span>
-                  <span style="color:#588ee6;float: right;margin-right: 2%;">{{scope.row.jobStatusDetail}}</span>
-                  <div style="width: 99%;float: left;">
+                  <span style="color:#588ee6;float: right;margin-right: 28px;">{{scope.row.jobStatusDetail}}</span>
+                  <div style="width: calc(100% - 22px);float: left;">
                     <el-progress
                       :text-inside="true"
                       :stroke-width="15"
-                      :percentage="scope.row.source"
-                      :color="scope.row.progessColor">
+                      :percentage="scope.row.percent"
+                      :color="scope.row.progressColor">
                     </el-progress>
                   </div>
-                  <div style="width:1%;float: right; margin-top: -4px; ">
-                     <span v-if="scope.row.buttonStatus==='FINISHED'||scope.row.buttonStatus==='KILLED'">
-                      <el-button type="text" title="删除任务" style=" padding: 0px 0px;margin-left: 3px;" @click="deleteJob(scope.$index,RecordsJobs,scope.row.id)">
+                  <div style="width:22px;float:right;margin-top:-4px;">
+                     <span style='display:flex'>
+                      <i class='el-icon-download' @click='downloadCleanedCSV(scope.row.id)'></i>
+                      <el-button type="text" title="删除任务" style=" padding: 0px 0px;margin-left: 2px;" @click="deleteJob(scope.$index,RecordsJobs,scope.row.id, 'cleanRecords')">
                       <img src="../../assets/images/icon71.png"/>
                     </el-button>
                     </span>
                   </div>
-                  <span style="float: left;">{{scope.row.name}}</span>
                   <span style="float: right;margin-right:1%;">完成时间：{{scope.row.date}}&nbsp;&nbsp;耗时：{{scope.row.time}}</span>
                 </div>
               </el-table-column>
@@ -278,7 +278,7 @@
               <div class="block" style="float: right;margin-top: 30px;">
                   <el-pagination
                     background
-                    @size-change="handleSizeChangeHistory"
+                    @size-change="handleSizeChangeCleanHistory"
                     @current-change="getRecordPage"
                     :current-page="recordPageNo"
                     :page-sizes="[3, 5, 10, 15, 20]"
@@ -307,14 +307,17 @@ export default {
       tabName: 'analysisRunning', // 点击搜索按钮获取 tab页签的name 判断搜索那个接口，默认选择running /records
       loading: false,
       runLoading: false,
+      runCleanLoading: false,
       pageSize: 5,
       runPageNo: 1,
       nowPageNo: 1,
       runCountPage: 0,
       RunningJobs: [],
+      RunningCleanJobs: [],
       recordPageNo: 1,
       recordCountPage: 0,
       RecordsJobs: [],
+      RecordsCleanJobs: [],
       jobsIds: '', // 存储任务id  1,2,3
       isAdmin: false
     }
@@ -325,6 +328,10 @@ export default {
         this.getRunningPage(1)
       } else if (this.tabName === 'analysisRecords') {
         this.getRecordPage(1)
+      } else if (this.tabName === 'cleanRunning') {
+        this.getRunningCleanPage(1)
+      } else {
+        this.getFinishedJobs(1, 'cleanRecords')
       }
       // 每隔一秒执行一次
       setInterval(this.refreshJobStatus, 1000)
@@ -348,13 +355,19 @@ export default {
       if (this.dialogVisible && this.tabName === 'analysisRunning' && this.runLoading) {
         // 如果弹框开启 则执行刷新功能
         this.getRunningJobj(this.runPageNo)
+      } else if (this.dialogVisible && this.tabName === 'cleanRunning' && this.runCleanLoading) {
+        this.getRunningJobj(this.runPageNo, 'cleanRunning')
       }
     },
     searchBtn () {
       if (this.tabName === 'analysisRunning') {
         this.getRunningPage(1)
-      } else if ((this.tabName === 'analysisRecords')) {
+      } else if (this.tabName === 'analysisRecords') {
         this.getFinishedJobs(1)
+      } else if (this.tabName === 'cleanRunning') {
+        this.getRunningCleanPage(1)
+      } else {
+        this.getFinishedJobs(1, 'cleanRecords')
       }
     },
     // 点击页签，给tab赋值
@@ -365,17 +378,44 @@ export default {
         this.getRunningPage(1)
       } else if ((this.tabName === 'analysisRecords')) {
         this.getFinishedJobs(1)
+      } else if (this.tabName === 'cleanRunning') {
+        this.getRunningCleanPage(1)
+      } else {
+        this.getFinishedJobs(1, 'cleanRecords')
       }
     },
-    // 改变正在进行的 页码大小
+    downloadCleanedCSV (id) { // 下载清洗好的csv文件
+      let params = id
+      let url = '/DSAP/job/downloadCleandCSV'
+      let form = document.createElement('form')
+      form.style.display = 'none'
+      form.action = url
+      form.method = 'get'
+      form.target = '_blank'
+      document.body.appendChild(form)
+      form.innerHTML = '<input name="id" id="downloadCleanedCSV" value="' + params + '" />'
+      form.submit()
+      form.remove()
+    },
+    // 改变分析进行的 页码大小
     handleSizeChange (val) {
       this.pageSize = val
       this.getRunningPage(1)
     },
-    // 改变历史的页面大小
+    // 改变清洗进行的 页码大小
+    handleSizeChangeClean (val) {
+      this.pageSize = val
+      this.getRunningCleanPage(1)
+    },
+    // 改变分析历史的页面大小
     handleSizeChangeHistory (val) {
       this.pageSize = val
       this.getRecordPage(1)
+    },
+    // 改变清洗历史的页面大小
+    handleSizeChangeCleanHistory (val) {
+      this.pageSize = val
+      this.getRecordPage(1, 'cleanRecords')
     },
     getRunningPage (val) {
       this.runLoading = false // 表示暂时不执行定时任务等返回true在执行定时任务
@@ -383,13 +423,20 @@ export default {
       this.runPageNo = val
       setTimeout(this.getData(val), 2000)
     },
-    getRunningJobj (pageNo) {
-      this.getData(pageNo)
+    getRunningCleanPage (val) {
+      this.runCleanLoading = false // 表示暂时不执行定时任务等返回true在执行定时任务
+      this.loading = true
+      this.runPageNo = val
+      setTimeout(this.getData(val, 'runningCleanJob'), 2000)
     },
-    getData (page) {
+    getRunningJobj (pageNo, type) {
+      this.getData(pageNo, type)
+    },
+    getData (page, type) {
+      let url = type ? '/job/getRunningCleanJobs' : '/job/getRunningJobs'
       this.jobsIds = ''
       this.$axios
-        .get('/job/getRunningJobs', { // getRunningJobs
+        .get(url, {
           params: {
             searchContent: this.keyWords,
             pageNo: page,
@@ -400,6 +447,7 @@ export default {
           this.loading = false
           let data = response.data.content
           this.RunningJobs = []
+          this.RunningCleanJobs = []
           this.runCountPage = response.data.recordCount
           // this.runPageNo = response.data.pageNo
           for (var i = 0; i < data.length; i++) {
@@ -415,40 +463,54 @@ export default {
             } else {
               this.jobsIds += ',' + data[i].ID
             }
-            if (data[i].JOB_STATUS === 'RUNNING' || data[i].JOB_STATUS === 'ACCEPT') {
+            if (data[i].JOB_STATUS === 'RUNNING' || data[i].JOB_STATUS === 'ACCEPT' || data[i].STATUS === '运行中') {
               color = '#588ee6'
             } else {
-              color = '#999999'
+              color = '#ececec'
             }
-            this.RunningJobs.push({
-              id: data[i].ID,
-              title: data[i].JOB_NAME,
-              name: data[i].JOB_CREATE_USER,
-              jobStatusDetail: data[i].JOB_STATUS_DETAIL,
-              date: data[i].JOB_START_TIME,
-              totalCount: data[i].JOB_TOTAL_COUNT,
-              finishCount: data[i].JOB_CURRENT_FINISHED_COUNT,
-              buttonStatus: data[i].JOB_STATUS, // data[i].JOB_STATUS
-              progessColor: color,
-              source: source * 1
-            })
+            if (type) {
+              this.RunningCleanJobs.push({
+                id: data[i].ID,
+                title: data[i].NAME,
+                name: data[i].NAME,
+                jobStatusDetail: data[i].STATUS_DETAIL,
+                date: data[i].START_TIME,
+                percent: data[i].PERCENT,
+                buttonStatus: data[i].STATUS,
+                progressColor: color
+              })
+            } else {
+              this.RunningJobs.push({
+                id: data[i].ID,
+                title: data[i].JOB_NAME,
+                name: data[i].JOB_CREATE_USER,
+                jobStatusDetail: data[i].JOB_STATUS_DETAIL,
+                date: data[i].JOB_START_TIME,
+                totalCount: data[i].JOB_TOTAL_COUNT,
+                finishCount: data[i].JOB_CURRENT_FINISHED_COUNT,
+                buttonStatus: data[i].JOB_STATUS,
+                progressColor: color,
+                source: source * 1
+              })
+            }
           }
           this.runLoading = true // 执行完成之后才可以执行定时任务
+          this.runCleanLoading = true
         }).catch(response => {
         this.loading = false
         // this.$message.error('数据加载失败!')
       })
     },
-    getRecordPage (val) {
-      this.getFinishedJobs(val)
+    getRecordPage (val, type) {
+      this.getFinishedJobs(val, type)
     },
-    getFinishedJobs (pageNo) {
+    getFinishedJobs (pageNo, type) {
       if (this.loading === false) {
         this.recordPageNo = pageNo
         this.loading = true
+        let url = type ? '/job/getFinishedCleanJobs' : '/job/getFinishedJobs'
         var timestamp = new Date().getTime()
-        this.$axios
-        .get('/job/getFinishedJobs', {
+        this.$axios.get(url, {
           params: {
             searchContent: this.keyWords,
             pageNo: pageNo,
@@ -461,6 +523,7 @@ export default {
           let data = response.data.content
           this.recordCountPage = response.data.recordCount
           this.RecordsJobs = []
+          this.RecordsCleanJobs = []
           for (var i = 0; i < data.length; i++) {
             let source = 0
             if (data[i].JOB_TOTAL_COUNT > 0) {
@@ -471,14 +534,14 @@ export default {
 
             let color = '' // '#588ee6'
 
-            if (data[i].JOB_STATUS === 'FINISHED' || data[i].JOB_STATUS === 'KILLED') {
+            if (data[i].JOB_STATUS === 'FINISHED' || data[i].JOB_STATUS === 'KILLED' || data[i].PERCENT === 100) {
               color = '#588ee6'
             } else {
-              color = '#999999'
+              color = '#ececec'
             }
             let time = ''
-            let finishDate = data[i].JOB_FINISH_TIME
-            let startDate = data[i].JOB_START_TIME
+            let finishDate = data[i].END_TIME || data[i].JOB_FINISH_TIME
+            let startDate = data[i].START_TIME || data[i].JOB_START_TIME
 
             var d1 = new Date(finishDate)
             var d2 = new Date(startDate)
@@ -489,20 +552,33 @@ export default {
             } else {
               time = t + '秒'
             }
-
-            this.RecordsJobs.push({
-              id: data[i].ID,
-              title: data[i].JOB_NAME,
-              name: data[i].JOB_CREATE_USER,
-              jobStatusDetail: data[i].JOB_STATUS_DETAIL,
-              date: data[i].JOB_FINISH_TIME,
-              totalCount: data[i].JOB_TOTAL_COUNT,
-              finishCount: data[i].JOB_CURRENT_FINISHED_COUNT,
-              buttonStatus: data[i].JOB_STATUS,
-              progessColor: color,
-              source: source * 1,
-              time: time
-            })
+            if (type) {
+              this.RecordsCleanJobs.push({
+                id: data[i].ID,
+                title: data[i].NAME,
+                name: data[i].NAME,
+                jobStatusDetail: data[i].STATUS_DETAIL,
+                date: data[i].END_TIME,
+                totalCount: data[i].JOB_TOTAL_COUNT,
+                percent: data[i].PERCENT,
+                progressColor: color,
+                time: time
+              })
+            } else {
+              this.RecordsJobs.push({
+                id: data[i].ID,
+                title: data[i].JOB_NAME,
+                name: data[i].JOB_CREATE_USER,
+                jobStatusDetail: data[i].JOB_STATUS_DETAIL,
+                date: data[i].JOB_FINISH_TIME,
+                totalCount: data[i].JOB_TOTAL_COUNT,
+                finishCount: data[i].JOB_CURRENT_FINISHED_COUNT,
+                buttonStatus: data[i].JOB_STATUS,
+                progressColor: color,
+                source: source * 1,
+                time: time
+              })
+            }
           }
         }).catch(response => {
           // this.$message.error('数据加载失败!')
@@ -568,11 +644,12 @@ export default {
         })
         .catch(_ => {})
     },
-    deleteJob (index, rows, val) {
+    deleteJob (index, rows, val, type) {
+      let url = type ? '/job/deleteCleanJob' : '/job/deleteJob'
       this.$confirm('确定删除任务？')
         .then(_ => {
           this.$axios
-            .get('/job/deleteJob', {
+            .get(url, {
               params: {
                 jobId: val
               }
@@ -586,7 +663,7 @@ export default {
                   message: '删除成功',
                   type: 'success'
                 })
-                this.getFinishedJobs(this.recordPageNo) // 重新加载该页面的数据
+                this.getFinishedJobs(this.recordPageNo, type) // 重新加载该页面的数据
               }
             })
         })

@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="analysis-tab-content cm_tab_file_new_main df df-fd-c">
-      <div class="manager-table df df-fd-r" id="managerTableRef" v-if="managerTableData.length > 0">
+      <div class="manager-table df df-fd-r" id="managerTableRef">
         <el-table
           ref="managerTableCon"
           :data="managerTableData"

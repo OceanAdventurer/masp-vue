@@ -565,10 +565,9 @@ export default {
       }
     },
     handleCommand (data) {
-      data.name = 'DSAP'
       let val = data.val
-      // let name = data.name
-      localStorage.setItem('currentSystem', 'DSAP')
+      let name = data.name
+      localStorage.setItem('currentSystem', name)
       if (val.slice(0, 4) === 'http') {
         window.location.href = val
       } else {

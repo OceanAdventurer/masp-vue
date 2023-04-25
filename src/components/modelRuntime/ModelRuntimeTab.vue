@@ -1,9 +1,20 @@
 <template>
   <div class="model_run_time w100 h100">
     <div class="model_type_title">
-      <el-radio-group v-model="modelType" v-for='item in typeList' :key='item.code' @input='queryTable'>
+      模型类别：<el-select v-model="modelType">
+        <el-option
+           v-for='item in typeList'
+           :key='item.code'
+           @change='queryTable'
+           :label='item.name'
+           :value="item.code"
+        >
+          {{item.name}}
+        </el-option>
+      </el-select>
+      <!-- <el-radio-group v-model="modelType" v-for='item in typeList' :key='item.code' @input='queryTable'>
         <el-radio-button :label="item.code">{{item.name}}</el-radio-button>
-      </el-radio-group>
+      </el-radio-group> -->
     </div>
     <!-- v-if='onlineModelList.length > 0' -->
     <div class="manager-table df df-fd-r w100" id="managerTableRef" >
@@ -106,6 +117,7 @@ export default {
       })
     },
     queryTable (val) {
+      console.log(val, 'val---test')
       this.$store.commit('SHOW_LOADING', '加载中...')
       this.$axios({
         url: '/modelMotion/showModelPageList',

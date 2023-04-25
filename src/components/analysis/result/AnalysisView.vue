@@ -905,7 +905,8 @@ export default {
               paramQ: this.cleanDataForm.matrixParaQ,
               paramR: this.cleanDataForm.matrixParaR,
               paramYczclff: this.cleanDataForm.outliersHandling,
-              paramYczjcff: this.cleanDataForm.outlierDetection
+              paramYczjcff: this.cleanDataForm.outlierDetection,
+              fileNo: this.currentFlightInfoData.file_no
             }
           }).then(res => {
             this.$store.commit('HIDE_LOADING', '加载完毕')
