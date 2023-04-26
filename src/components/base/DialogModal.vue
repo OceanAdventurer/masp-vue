@@ -71,7 +71,7 @@
   padding: 8px 20px;
 }
 .task_center .el-dialog__body {
-  height: 400px;
+  height: 380px;
 }
 .task_center .el-tabs.el-tabs--top {
   height: 100%;
@@ -83,6 +83,9 @@
   height: calc(100% - 45px);
   overflow: auto;
   /* height: calc(100% - 120px); */
+}
+.task_center .el-table::before {
+  display: none;
 }
 /* 窗口高度小于800px */
 /* @media screen and (max-height: 1000px) {
@@ -96,7 +99,7 @@
         <img src="../../assets/images/icon76.png" style="height:16px;width: 16px;">
       </el-button>
     </div> -->
-    <el-dialog title="任务详情"  :close-on-click-modal="false" :visible.sync="dialogVisible" width="800px;" class='task_center'>
+    <el-dialog title="任务详情"  :close-on-click-modal="false" :visible.sync="dialogVisible" width="52%" class='task_center'>
       <div style="position:absolute;top:65px;right: 18px;z-index: 1">
         <template>
           <el-input
@@ -133,12 +136,12 @@
                     </el-progress>
                   </div>
                   <div style="width: 4.6%;float:right;margin-top:-4px;margin-right:-1.75%;display:flex">
-                    <span v-if="scope.row.buttonStatus==='PAUSE'" style="margin-right:4px">
+                    <span v-if="scope.row.buttonStatus==='PAUSE'" style="margin-right:0 2px">
                       <el-button type="text" title="开启任务" style=" padding: 0px 0px;" @click="startJob(scope.row.id)">
                         <img src="../../assets/images/icon77.png"/>
                       </el-button>
                     </span>
-                    <span v-else-if="scope.row.buttonStatus==='RUNNING' || scope.row.buttonStatus==='ACCEPT'" style="margin-right:4px">
+                    <span v-else-if="scope.row.buttonStatus==='RUNNING' || scope.row.buttonStatus==='ACCEPT'" style="margin-right:0 2px">
                       <el-button type="text" title="暂停任务" style=" padding: 0px 0px;" @click="waitJob(scope.row.id)">
                         <img src="../../assets/images/icon79.png"/>
                       </el-button>
@@ -269,7 +272,7 @@
                   </div>
                   <div style="width:22px;float:right;margin-top:-4px;">
                      <span style='display:flex'>
-                      <i class='el-icon-download' @click='downloadCleanedCSV(scope.row.id)' v-show="scope.row.STATUS === '完成'"></i>
+                      <i class='el-icon-download' @click='downloadCleanedCSV(scope.row.id)' v-show="scope.row.jobStatusDetail === '完成'"></i>
                       <el-button type="text" title="删除任务" style=" padding: 0px 0px;margin-left: 2px;" @click="deleteJob(scope.$index,RecordsJobs,scope.row.id, 'cleanRecords')">
                       <img src="../../assets/images/icon71.png"/>
                     </el-button>
