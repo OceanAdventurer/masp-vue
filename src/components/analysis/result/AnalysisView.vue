@@ -910,11 +910,13 @@ export default {
             }
           }).then(res => {
             this.$store.commit('HIDE_LOADING', '加载完毕')
-            console.log(res)
-            this.$message({
-              type: 'success',
-              message: '操作成功!'
-            })
+            if (res.data.status === '0') {
+              this.dataCleanDiaShow = false
+              this.$message({
+                type: 'success',
+                message: '操作成功!'
+              })
+            }
           }).catch(err => {
             this.$store.commit('HIDE_LOADING', '加载完毕')
             console.log(err)

@@ -70,16 +70,20 @@
 .task_center .el-dialog__body {
   padding: 8px 20px;
 }
-/* .task_center .el-dialog__body {
-  max-height: 360px;
+.task_center .el-dialog__body {
+  height: 400px;
 }
-.task_center .el-table__body-wrapper {
-  overflow: auto;
-  height: calc(100% - 120px);
+.task_center .el-tabs.el-tabs--top {
+  height: 100%;
 }
 .task_center .el-tabs__content {
   height: calc(100% - 40px);
-} */
+}
+.task_center .el-table__body-wrapper {
+  height: calc(100% - 45px);
+  overflow: auto;
+  /* height: calc(100% - 120px); */
+}
 /* 窗口高度小于800px */
 /* @media screen and (max-height: 1000px) {
 } */
@@ -92,7 +96,7 @@
         <img src="../../assets/images/icon76.png" style="height:16px;width: 16px;">
       </el-button>
     </div> -->
-    <el-dialog title="任务详情" :visible.sync="dialogVisible" width="800px;" class='task_center'>
+    <el-dialog title="任务详情"  :close-on-click-modal="false" :visible.sync="dialogVisible" width="800px;" class='task_center'>
       <div style="position:absolute;top:65px;right: 18px;z-index: 1">
         <template>
           <el-input
@@ -112,54 +116,54 @@
           <el-tab-pane label="正在分析" name="analysisRunning" style="padding-top: 5px">
             <template>
              <el-table
-                  v-loading="loading"
-                  :data="RunningJobs"
-                  style="width: 100%;margin-top: -39px;font-size: 9px;">
+                v-loading="loading"
+                :data="RunningJobs"
+                style="width: 100%;margin-top: -39px;font-size: 9px;">
                <el-table-column style="width: 100%;">
                <div slot-scope="scope">
-                   <span style="float: left;">{{scope.row.title}} </span>
-                   <span style="position:absolute;left:50%;top:25%;transform: translate(-50%,-50%);"> {{scope.row.finishCount}}/{{scope.row.totalCount}} </span>
-                   <span style="color:#588ee6;float: right;margin-right: 3.5%;">{{scope.row.jobStatusDetail}}</span>
-                    <div style="width: 97%;float: left;">
-                      <el-progress
-                        :text-inside="true"
-                        :stroke-width="15"
-                        :percentage="scope.row.source"
-                        :color="scope.row.progressColor">
-                      </el-progress>
-                    </div>
-                    <div style="width: 4.6%;float: right;margin-top: -4px;margin-right: -1.75%">
-                      <span v-if="scope.row.buttonStatus==='PAUSE'">
-                        <el-button type="text" title="开启任务" style=" padding: 0px 0px;" @click="startJob(scope.row.id)">
-                          <img src="../../assets/images/icon77.png"/>
-                        </el-button>
-                      </span>
-                      <span v-else-if="scope.row.buttonStatus==='RUNNING' || scope.row.buttonStatus==='ACCEPT'">
-                        <el-button type="text" title="暂停任务" style=" padding: 0px 0px;" @click="waitJob(scope.row.id)">
-                          <img src="../../assets/images/icon79.png"/>
-                        </el-button>
-                      </span>
-                       <el-button type="text" title="终止任务" style=" padding: 0px 0px;" @click="stopJob(scope.row.id)">
-                        <img src="../../assets/images/icon78.png"/>
+                  <span style="float: left;">{{scope.row.title}} </span>
+                  <span style="position:absolute;left:50%;top:25%;transform: translate(-50%,-50%);"> {{scope.row.finishCount}}/{{scope.row.totalCount}} </span>
+                  <span style="color:#588ee6;float: right;margin-right: 3.5%;">{{scope.row.jobStatusDetail}}</span>
+                  <div style="width: 97%;float: left;">
+                    <el-progress
+                      :text-inside="true"
+                      :stroke-width="15"
+                      :percentage="scope.row.source"
+                      :color="scope.row.progressColor">
+                    </el-progress>
+                  </div>
+                  <div style="width: 4.6%;float:right;margin-top:-4px;margin-right:-1.75%;display:flex">
+                    <span v-if="scope.row.buttonStatus==='PAUSE'" style="margin-right:4px">
+                      <el-button type="text" title="开启任务" style=" padding: 0px 0px;" @click="startJob(scope.row.id)">
+                        <img src="../../assets/images/icon77.png"/>
                       </el-button>
-                     </div>
-                    <span style="float: left;">{{scope.row.name}}</span> <span style="float: right;margin-right:1%;">{{scope.row.date}}</span>
+                    </span>
+                    <span v-else-if="scope.row.buttonStatus==='RUNNING' || scope.row.buttonStatus==='ACCEPT'" style="margin-right:4px">
+                      <el-button type="text" title="暂停任务" style=" padding: 0px 0px;" @click="waitJob(scope.row.id)">
+                        <img src="../../assets/images/icon79.png"/>
+                      </el-button>
+                    </span>
+                      <el-button type="text" title="终止任务" style=" padding: 0px 0px;" @click="stopJob(scope.row.id)">
+                      <img src="../../assets/images/icon78.png"/>
+                    </el-button>
+                    </div>
+                  <span style="float: left;">{{scope.row.name}}</span> <span style="float: right;margin-right:1%;">{{scope.row.date}}</span>
                   </div>
                 </el-table-column>
               </el-table>
             </template>
             <span v-if="runCountPage>0">
-              <div class="block" style="float: right;margin-top: 30px;">
-                      <el-pagination
-                        background
-                        @size-change="handleSizeChange"
-                        @current-change="getRunningPage"
-                        :current-page="runPageNo"
-                        :page-sizes="[3, 5, 10, 15, 20]"
-                        :page-size="pageSize"
-                        layout="sizes, prev, pager, next, total"
-                        :total="runCountPage">
-      </el-pagination>
+              <div class="block" style="float: right;margin-top: 6px;">
+                <el-pagination
+                  background
+                  @size-change="handleSizeChange"
+                  @current-change="getRunningPage"
+                  :current-page="runPageNo"
+                  :page-sizes="[3, 5, 10, 15, 20]"
+                  :page-size="pageSize"
+                  layout="sizes, prev, pager, next, total"
+                  :total="runCountPage">
+                </el-pagination>
               </div>
             </span>
           </el-tab-pane>
@@ -194,26 +198,26 @@
               </el-table-column>
             </el-table>
             <span v-if="recordCountPage>0">
-              <div class="block" style="float: right;margin-top: 30px;">
-                  <el-pagination
-                    background
-                    @size-change="handleSizeChangeHistory"
-                    @current-change="getRecordPage"
-                    :current-page="recordPageNo"
-                    :page-sizes="[3, 5, 10, 15, 20]"
-                    :page-size="pageSize"
-                    layout="sizes, prev, pager, next, total"
-                    :total="recordCountPage">
-                  </el-pagination>
+              <div class="block" style="float: right;margin-top: 6px;">
+                <el-pagination
+                  background
+                  @size-change="handleSizeChangeHistory"
+                  @current-change="getRecordPage"
+                  :current-page="recordPageNo"
+                  :page-sizes="[3, 5, 10, 15, 20]"
+                  :page-size="pageSize"
+                  layout="sizes, prev, pager, next, total"
+                  :total="recordCountPage">
+                </el-pagination>
               </div>
             </span>
           </el-tab-pane>
           <el-tab-pane label="正在清洗" name="cleanRunning" style="padding-top: 5px">
             <template>
              <el-table
-                  v-loading="loading"
-                  :data="RunningCleanJobs"
-                  style="width: 100%;margin-top: -39px;font-size: 9px;">
+                v-loading="loading"
+                :data="RunningCleanJobs"
+                style="width: 100%;margin-top: -39px;font-size: 9px;">
                <el-table-column style="width: 100%;">
                <div slot-scope="scope">
                    <span style="float: left;">{{scope.row.title}} </span>
@@ -232,16 +236,16 @@
               </el-table>
             </template>
             <span v-if="runCountPage>0">
-              <div class="block" style="float: right;margin-top: 30px;">
-                      <el-pagination
-                        background
-                        @size-change="handleSizeChangeClean"
-                        @current-change="getRunningPage"
-                        :current-page="runPageNo"
-                        :page-sizes="[3, 5, 10, 15, 20]"
-                        :page-size="pageSize"
-                        layout="sizes, prev, pager, next, total"
-                        :total="runCountPage">
+              <div class="block" style="float: right;margin-top: 6px;">
+                <el-pagination
+                  background
+                  @size-change="handleSizeChangeClean"
+                  @current-change="getRunningPage"
+                  :current-page="runPageNo"
+                  :page-sizes="[3, 5, 10, 15, 20]"
+                  :page-size="pageSize"
+                  layout="sizes, prev, pager, next, total"
+                  :total="runCountPage">
       </el-pagination>
               </div>
             </span>
@@ -276,17 +280,17 @@
               </el-table-column>
             </el-table>
             <span v-if="recordCountPage>0">
-              <div class="block" style="float: right;margin-top: 30px;">
-                  <el-pagination
-                    background
-                    @size-change="handleSizeChangeCleanHistory"
-                    @current-change="getRecordPage"
-                    :current-page="recordPageNo"
-                    :page-sizes="[3, 5, 10, 15, 20]"
-                    :page-size="pageSize"
-                    layout="sizes, prev, pager, next, total"
-                    :total="recordCountPage">
-                  </el-pagination>
+              <div class="block" style="float: right;margin-top: 6px;">
+                <el-pagination
+                  background
+                  @size-change="handleSizeChangeCleanHistory"
+                  @current-change="getRecordCleanPage"
+                  :current-page="recordPageNo"
+                  :page-sizes="[3, 5, 10, 15, 20]"
+                  :page-size="pageSize"
+                  layout="sizes, prev, pager, next, total"
+                  :total="recordCountPage">
+                </el-pagination>
               </div>
             </span>
           </el-tab-pane>
@@ -335,7 +339,7 @@ export default {
         this.getFinishedJobs(1, 'cleanRecords')
       }
       // 每隔一秒执行一次
-      setInterval(this.refreshJobStatus, 1000)
+      setInterval(this.refreshJobStatus, 3000)
     })
 
     const that = this
@@ -415,6 +419,7 @@ export default {
     },
     // 改变清洗历史的页面大小
     handleSizeChangeCleanHistory (val) {
+      console.log(val, 'val---test')
       this.pageSize = val
       this.getRecordPage(1, 'cleanRecords')
     },
@@ -450,7 +455,8 @@ export default {
           this.RunningJobs = []
           this.RunningCleanJobs = []
           this.runCountPage = response.data.recordCount
-          // this.runPageNo = response.data.pageNo
+          this.runPageNo = response.data.pageNo
+          // console.log(this.runPageNo, 'runPageNo---test')
           for (var i = 0; i < data.length; i++) {
             let source = 0
             if (data[i].JOB_TOTAL_COUNT > 0) {
@@ -504,6 +510,9 @@ export default {
     },
     getRecordPage (val, type) {
       this.getFinishedJobs(val, type)
+    },
+    getRecordCleanPage (val) {
+      this.getFinishedJobs(val, 'cleanRecords')
     },
     getFinishedJobs (pageNo, type) {
       if (this.loading === false) {
