@@ -1,11 +1,10 @@
 <template>
   <div class="model_run_time w100 h100">
     <div class="model_type_title">
-      模型类别：<el-select v-model="modelType">
+      模型类别：<el-select v-model="modelType"  @change='queryTable'>
         <el-option
            v-for='item in typeList'
            :key='item.code'
-           @change='queryTable'
            :label='item.name'
            :value="item.code"
         >
@@ -117,7 +116,6 @@ export default {
       })
     },
     queryTable (val) {
-      console.log(val, 'val---test')
       this.$store.commit('SHOW_LOADING', '加载中...')
       this.$axios({
         url: '/modelMotion/showModelPageList',

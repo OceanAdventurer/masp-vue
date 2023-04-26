@@ -67,10 +67,10 @@
 }
 </style>
 <style>
-/* .task_center .el-dialog__body {
+.task_center .el-dialog__body {
   padding: 8px 20px;
 }
-.task_center .el-dialog__body {
+/* .task_center .el-dialog__body {
   max-height: 360px;
 }
 .task_center .el-table__body-wrapper {
@@ -107,7 +107,8 @@
         </template>
       </div>
       <template>
-        <el-tabs value="analysisRunning" @tab-click="handleClick" style="min-height: 200px;">
+        <el-tabs value="analysisRunning" @tab-click="handleClick">
+        <!-- <el-tabs value="analysisRunning" @tab-click="handleClick" style="min-height: 200px;"> -->
           <el-tab-pane label="正在分析" name="analysisRunning" style="padding-top: 5px">
             <template>
              <el-table
