@@ -1,76 +1,74 @@
 <template>
   <div class="model-approve">
-    <div class="model-approve-container df df-fd-r">
-      <div class="model-approve-table">
-        <div class="model-approve-table-input df df-jc-c df-ai-c">
-          <el-form :inline="true" label-width="70px">
-            <el-form-item label="模型名称:">
-              <el-input v-model.trim="form.modelName" clearable placeholder="模型名称" style="width: 120px; "/>
-            </el-form-item>
-            <el-form-item label="模型类别:">
-              <el-select v-model="form.categoryType" clearable placeholder="模型类别" style="width: 120px;">
-                <el-option
-                  v-for="item in typeList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="所属用户:">
-              <el-input v-model.trim="form.modelUser" clearable placeholder="所属用户" style="width: 120px; "/>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="initList">查询</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-        <div class="model-approve-table-info">
-          <el-table
-            highlight-current-row
-            :data="tableData"
-            height="100%"
-            border
-            fit
-            width="100%">
-            <el-table-column
-              prop="modelName"
-              label="模型名称"
-              :show-overflow-tooltip="true">
-            </el-table-column>
-            <el-table-column
-              prop="categoryType"
-              label="模型类别"
-              :formatter="modelFormatter"
-              :show-overflow-tooltip="true">
-            </el-table-column>
-            <el-table-column
-              prop="modelUser"
-              label="所属用户"
-              :show-overflow-tooltip="true">
-            </el-table-column>
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <div class="opt_col">
-                  <span @click="showModel(scope.row)">查看模型&nbsp;&nbsp;</span>
-                  <span @click="modelHandle(scope.row)">回复&nbsp;&nbsp;</span>
-                  <span @click="showOptInfo(scope.row)">操作记录</span>
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <div class="model-approve-table-pagination df df-jc-fe df-ai-c">
-          <el-pagination
-            background
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-size="pageSize"
-            layout="prev, pager, next, total"
-            :total="total">
-          </el-pagination>
-        </div>
+    <div class="model-approve-table">
+      <div class="model-approve-table-input df df-jc-c df-ai-c">
+        <el-form :inline="true" label-width="70px">
+          <el-form-item label="模型名称:">
+            <el-input v-model.trim="form.modelName" clearable placeholder="模型名称" style="width: 120px; "/>
+          </el-form-item>
+          <el-form-item label="模型类别:">
+            <el-select v-model="form.categoryType" clearable placeholder="模型类别" style="width: 120px;">
+              <el-option
+                v-for="item in typeList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="所属用户:">
+            <el-input v-model.trim="form.modelUser" clearable placeholder="所属用户" style="width: 120px; "/>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="initList">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="model-approve-table-info">
+        <el-table
+          highlight-current-row
+          :data="tableData"
+          height="100%"
+          border
+          fit
+          width="100%">
+          <el-table-column
+            prop="modelName"
+            label="模型名称"
+            :show-overflow-tooltip="true">
+          </el-table-column>
+          <el-table-column
+            prop="categoryType"
+            label="模型类别"
+            :formatter="modelFormatter"
+            :show-overflow-tooltip="true">
+          </el-table-column>
+          <el-table-column
+            prop="modelUser"
+            label="所属用户"
+            :show-overflow-tooltip="true">
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <div class="opt_col">
+                <span @click="showModel(scope.row)">查看模型&nbsp;&nbsp;</span>
+                <span @click="modelHandle(scope.row)">回复&nbsp;&nbsp;</span>
+                <span @click="showOptInfo(scope.row)">操作记录</span>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="model-approve-table-pagination df df-jc-fe df-ai-c">
+        <el-pagination
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          layout="prev, pager, next, total"
+          :total="total">
+        </el-pagination>
       </div>
     </div>
 
@@ -337,23 +335,19 @@ export default {
   height: 100%;
 }
 
-.model-approve-container {
+.model-approve-table {
   position: relative;
   width: 100%;
   height: 100%;
-}
-
-.model-approve-table {
-  position: relative;
-  width: calc(100vw - 204px);
-  height: 100%;
-  margin-left: 12px;
+  box-sizing: border-box;
+  padding: 0 10px;
 }
 
 .model-approve-table-input {
   position: relative;
   width: 100%;
-  height: 10%;
+  height: 54px;
+  line-height: 54px;
   display: flex;
   justify-content: flex-start;
 }
@@ -361,7 +355,9 @@ export default {
 .model-approve-table-input .el-form--inline .el-form-item {
   margin-bottom: unset;
 }
-
+.model-approve .model-approve-table-input .el-form-item__content {
+  vertical-align: middle;
+}
 .model-approve-table-input .el-button {
   padding: 9px 20px !important;
 }

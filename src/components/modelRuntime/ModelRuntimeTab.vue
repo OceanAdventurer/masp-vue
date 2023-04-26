@@ -157,16 +157,22 @@ export default {
 .h100 {
   height: 100%;
 }
+.model_run_time {
+  padding: 0 10px;
+  box-sizing: border-box;
+}
 .model_run_time .model_type_title {
-  padding: 20px 10px ;
+  padding-left: 5px;
+  height: 54px;
+  line-height: 54px;
 }
 .model_run_time .model_type_title .el-radio-group {
   margin-right: 10px;
 }
 .model_run_time .manager-table {
-  /* min-height: 300px; */
+  width: 100%!important;
   height: calc(100% - 135px);
-  /* max-height: calc(100% - 135px); */
+  margin: 0;
 }
 .model_run_time .model_run_time_table_pagination {
   margin-top: 10px;
