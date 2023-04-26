@@ -1260,7 +1260,6 @@ export default {
       }
     },
     submitNewFileDataPublicMethods (params, funType) { // 提交新建分析中的数据
-      console.log(123)
       this.$store.commit('SHOW_LOADING', '正在查询数据，请稍等！') // 打开加载提示框
       let tempUrl = '/submit/submitAnalysis'
       if (funType === 'addSublineComponent') {

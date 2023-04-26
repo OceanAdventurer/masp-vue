@@ -122,7 +122,7 @@
         </el-row>
       </div>
       <div class="view-chart df df-f1 w100" v-show="currentView === 'viewChart'">
-        <div id="viewChart" ref="viewChartInfo" class="w100 h100"></div>
+        <div id="viewChart" ref="viewChartInfo" class="w100 h100" v-show="flightChart"></div>
 
         <span v-show="!flightChart" class="viewChart-empty-text">暂无图表数据</span>
       </div>
@@ -1337,6 +1337,7 @@ export default {
         tempDisabledMenuObj['analysis_view_clean'] = true // 禁用按钮
         that.$store.commit('IS_DISABLED_MENU', tempDisabledMenuObj) // 暂时存储需要修改二级菜单的值
         that.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, tempDisabledMenuObj) // 修改头部显示效果
+        this.flightChart = ''
         // that.$message.error('请求响应失败，请稍后重试！')
         console.log('getCompnentAllHandle##@@##:  ' + err.message)
       })
