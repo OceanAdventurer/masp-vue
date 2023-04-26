@@ -113,7 +113,7 @@
       <template>
         <el-tabs value="analysisRunning" @tab-click="handleClick">
         <!-- <el-tabs value="analysisRunning" @tab-click="handleClick" style="min-height: 200px;"> -->
-          <el-tab-pane label="正在分析" name="analysisRunning" style="padding-top: 5px">
+          <el-tab-pane label="正在分析" name="analysisRunning">
             <template>
              <el-table
                 v-loading="loading"
@@ -212,7 +212,7 @@
               </div>
             </span>
           </el-tab-pane>
-          <el-tab-pane label="正在清洗" name="cleanRunning" style="padding-top: 5px">
+          <el-tab-pane label="正在清洗" name="cleanRunning">
             <template>
              <el-table
                 v-loading="loading"
@@ -269,7 +269,7 @@
                   </div>
                   <div style="width:22px;float:right;margin-top:-4px;">
                      <span style='display:flex'>
-                      <i class='el-icon-download' @click='downloadCleanedCSV(scope.row.id)'></i>
+                      <i class='el-icon-download' @click='downloadCleanedCSV(scope.row.id)' v-show="scope.row.STATUS === '完成'"></i>
                       <el-button type="text" title="删除任务" style=" padding: 0px 0px;margin-left: 2px;" @click="deleteJob(scope.$index,RecordsJobs,scope.row.id, 'cleanRecords')">
                       <img src="../../assets/images/icon71.png"/>
                     </el-button>
@@ -339,7 +339,7 @@ export default {
         this.getFinishedJobs(1, 'cleanRecords')
       }
       // 每隔一秒执行一次
-      setInterval(this.refreshJobStatus, 3000)
+      setInterval(this.refreshJobStatus, 1000)
     })
 
     const that = this
