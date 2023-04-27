@@ -15,6 +15,9 @@
 
 .oneDimesional-content-list {
   margin-left: 20px;
+  height: calc(100% - 90px);
+  overflow: hidden;
+  margin-bottom: 8px;
 }
 </style>
 <style>
@@ -24,7 +27,7 @@
 </style>
 <template>
   <div class="container">
-    <div style="width: 100%;">
+    <div style="width: 100%;height:48px">
       <el-input v-model="keywords" placeholder="请输入关键字搜索" size="small"
                 @keyup.enter.native="searchOneDimesional()" style="float: right;margin: 8px 10px;width: 200px;font-size: 12px;">
         <i class="el-icon-search el-input__icon"
@@ -40,7 +43,7 @@
         :header-row-style="{height:'38px'}"
         :header-cell-style="{padding:'0px'}"
         border
-        :data="OneDimesnisonalData" height="70vh" width="100%">
+        :data="OneDimesnisonalData" height="100%" width="100%">
         <el-table-column label="算法">
           <div slot-scope="data">
             <span type="text" :title="data.row.tableMapped">{{data.row.tableMapped}}</span>
@@ -58,7 +61,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="content_page_pag" style="display:flex;flex-direction:row;align-items: center;float: right;margin-right: 15px;height: 10%;">
+    <div class="content_page_pag" style="display:flex;flex-direction:row;align-items: center;float: right;margin-right: 15px;height: 32px">
       <el-pagination
         background
         @size-change="handleSizeChange"

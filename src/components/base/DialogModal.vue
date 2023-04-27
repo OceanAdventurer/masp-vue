@@ -68,11 +68,11 @@
 </style>
 <style>
 .el-dialog__wrapper.task_center .el-dialog {
-  height: 70%;
+  height: 75%;
 }
 .task_center .el-dialog__body {
   padding: 8px 20px;
-  height: calc(100% - 120px);
+  height: calc(100% - 80px);
 }
 .task_center .el-tabs.el-tabs--top {
   height: 100%;
@@ -94,6 +94,9 @@
 }
 .task_center .el-dialog__body .ongoing .el-progress-bar__outer {
   background: #ececec;
+}
+.task_center .el-dialog__body .el-progress-bar__inner {
+  background-color: rgb(88, 142, 230);
 }
 /* 窗口高度小于800px */
 /* @media screen and (max-height: 1000px) {
@@ -329,9 +332,9 @@
           </el-tab-pane>
         </el-tabs>
       </template>
-      <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false" size="mini">关  闭</el-button>
-       </span>
+      <!-- <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false" size="mini">关  闭</el-button>
+       </span> -->
     </el-dialog>
 
   </div>

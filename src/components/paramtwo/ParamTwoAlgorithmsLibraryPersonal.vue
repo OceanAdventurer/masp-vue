@@ -7,11 +7,14 @@
     background-size: cover;
     cursor: pointer;
   }
+  .analysis_alg .oneDimesional-content-list{
+    padding: 0 10px;
+    height: calc(100% - 100px);
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
 </style>
 <style>
-  .oneDimesional-content-list{
-    padding: 0 10px;
-  }
   .oneDimesional-content-list .el-table td,
   .oneDimesional-content-list .el-table th {
     /*表格行高*/
@@ -53,8 +56,8 @@
   }
 </style>
 <template>
-  <div class="container">
-    <div style="width: 100%;">
+  <div class="container analysis_alg h100">
+    <div style="width: 100%;height:48px">
       <el-input v-model="keywords" placeholder="请输入关键字搜索" size="small"
                 @keyup.enter.native="searchTwoDimesional()" style="float: right;margin: 8px 10px;width: 200px;font-size: 12px;">
         <i class="el-icon-search el-input__icon"
@@ -82,7 +85,7 @@
         :data="OneDimesnisonalData"
         border
         :span-method="objectSpanMethod"
-        style="width: 100%" height="70vh">
+        style="width: 100%" height="100%">
         <el-table-column
           label="算法" width="350" prop="suanfa">
           <div slot-scope="data">
@@ -117,7 +120,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="content_page_pag" style="display:flex;flex-direction:row;align-items: center;float: right;margin-right: 15px;margin-top: 17px;">
+    <div class="content_page_pag" style="display:flex;flex-direction:row;align-items: center;float: right;margin-right: 15px;height:32px">
       <el-pagination
         background
         @size-change="handleSizeChange"

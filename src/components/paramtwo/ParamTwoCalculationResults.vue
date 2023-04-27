@@ -24,7 +24,7 @@
     margin: 15px 15px 15px 15px;
     padding: 15px 15px 15px 15px;
     background-color: white;
-    height: 290px;
+    height: 280px;
   }
 .script-param{
   margin: 15px 15px 15px 15px;
@@ -251,11 +251,12 @@
       },
       // 从服务器加载映射数据
       remoteMethod (query) {
+        let para = query.length > 0 ? query.join(',') : ''
         if (query) {
           this.loading = true
           setTimeout(() => {
             this.mappedArr = []
-            this.$axios.get('/apm/getModelColumn', {params: {modelId: this.data.libraryData, columnName: query}}).then(response => {
+            this.$axios.get('/apm/getModelColumn', {params: {modelId: this.data.libraryData, columnName: para}}).then(response => {
               var data = response.data
               if (data['status']) {
                 if (response.data.status === 'E1001') {

@@ -7,11 +7,14 @@
     background-size: cover;
     cursor: pointer;
   }
-</style>
-<style>
   .oneDimesional-content-list{
     padding: 0 10px;
+    height: calc(100% - 100px);
+    margin-bottom: 10px;
+    overflow: hidden;
   }
+</style>
+<style>
   .oneDimesional-content-list .el-table td,
   .oneDimesional-content-list .el-table th {
     /*表格行高*/
@@ -58,9 +61,9 @@
   }
 </style>
 <template>
-  <div class="container">
-    <div style="width: 100%;">
-      <el-input v-model="keywords" placeholder="请输入关键字搜索" size="small"
+  <div class="container h100">
+    <div style="width: 100%;height:48px">
+      <el-input v-model="keywords" placeholder="请输入关键字搜索1" size="small"
                 @keyup.enter.native="searchTwoDimesional()" style="float: right;margin: 8px 10px;width: 200px;font-size: 12px;">
         <i class="el-icon-search el-input__icon"
            slot="suffix"
@@ -78,7 +81,7 @@
         :data="functionDataList"
         border
         :row-class-name="tableRowClassName"
-        style="width: 100%" height="74vh">
+        style="width: 100%" height="100%">
         <el-table-column
           label="函数名" width="100" prop="suanfa">
           <div slot-scope="data">
@@ -113,7 +116,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div v-if="totalCount > 10" class="content_page_pag" style="display:flex;flex-direction:row;align-items: center;float: right;margin-right: 15px;margin-top: 10px;">
+    <div v-if="totalCount > 10" class="content_page_pag" style="display:flex;flex-direction:row;align-items: center;float: right;margin-right: 15px;height:32px">
       <el-pagination
         background
         @size-change="handleSizeChange"

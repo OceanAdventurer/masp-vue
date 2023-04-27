@@ -716,6 +716,7 @@
                     <span class="df-f1">{{notHotWordsSearchName}}：</span>
                     <div class="df-f3 hot-words">
                       <el-select
+                        filterable
                         v-model="notHotWordsSearchValue"
                         placeholder="请选择"
                         multiple
@@ -5541,6 +5542,9 @@ export default {
   font-size: 8px;
   line-height: 16px !important;
   color: #606266b8;
+}
+.file-new-container .cm_tab_file_new_main .mt20 .df-f3 .el-radio:first-child {
+  margin-right: 12px;
 }
 .description_text {
   position: absolute;
