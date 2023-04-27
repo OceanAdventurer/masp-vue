@@ -65,6 +65,19 @@
     top: 0px;
   }
 }
+
+/* 滚动条上的滚动滑块 */
+.task_center ::-webkit-scrollbar-thumb {
+    background-color: rgba(173, 171, 171, 0.5);
+    border-radius: 20px;
+}
+/* 滚动条轨道 */
+.task_center ::-webkit-scrollbar-track {
+    background-color: rgba(173, 171, 171, 0);
+}
+.task_center ::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+}
 </style>
 <style>
 .el-dialog__wrapper.task_center .el-dialog {
@@ -82,11 +95,14 @@
 }
 .task_center .el-table__body-wrapper {
   height: calc(100% - 45px);
-  overflow: auto;
+  overflow-y: auto;
   /* height: calc(100% - 120px); */
 }
 .task_center .el-table::before {
   display: none;
+}
+.task_center .el-dialog__body .ongoing .el-progress-bar__outer {
+  background: #ececec;
 }
 /* 窗口高度小于800px */
 /* @media screen and (max-height: 1000px) {
@@ -128,7 +144,7 @@
                   <span style="float: left;">{{scope.row.title}} </span>
                   <span style="position:absolute;left:50%;top:25%;transform: translate(-50%,-50%);"> {{scope.row.finishCount}}/{{scope.row.totalCount}} </span>
                   <span style="color:#588ee6;float: right;margin-right: 3.5%;">{{scope.row.jobStatusDetail}}</span>
-                  <div style="width: 97%;float: left;">
+                  <div style="width: 97%;float: left;" :class="scope.row.buttonStatus === 'FINISHED' || scope.row.buttonStatus === '完成' ? 'finished' : 'err ongoing'">
                     <el-progress
                       :text-inside="true"
                       :stroke-width="15"
@@ -181,7 +197,7 @@
                   <span style="float: left;">{{scope.row.title}} </span>
                   <span  style="position:absolute;left:50%;top:25%;transform: translate(-50%,-50%);"> {{scope.row.finishCount}}/{{scope.row.totalCount}} </span>
                   <span style="color:#588ee6;float: right;margin-right: 2%;">{{scope.row.jobStatusDetail}}</span>
-                  <div style="width: 99%;float: left;">
+                  <div style="width: 99%;float: left;" :class="scope.row.buttonStatus === 'FINISHED' || scope.row.buttonStatus === '完成' ? 'finished' : 'err ongoing'">
                     <el-progress
                       :text-inside="true"
                       :stroke-width="15"
@@ -226,7 +242,7 @@
                <div slot-scope="scope">
                    <span style="float: left;">{{scope.row.title}} </span>
                    <span style="color:#588ee6;float: right;margin-right: 3.5%;">{{scope.row.jobStatusDetail}}</span>
-                    <div style="width: 97%;float: left;">
+                    <div style="width: 97%;float: left;" :class="scope.row.buttonStatus === 'FINISHED' || scope.row.buttonStatus === '完成' ? 'finished' : 'err ongoing'">
                       <el-progress
                         :text-inside="true"
                         :stroke-width="15"
@@ -263,7 +279,7 @@
                 <div slot-scope="scope" class='clean_records'>
                   <span style="float: left;">{{scope.row.title}} </span>
                   <span style="color:#588ee6;float: right;margin-right: 28px;">{{scope.row.jobStatusDetail}}</span>
-                  <div style="width: calc(100% - 22px);float: left;">
+                  <div style="width: calc(100% - 22px);float: left;" :class="scope.row.buttonStatus === 'FINISHED' || scope.row.buttonStatus === '完成' ? 'finished' : 'err ongoing'">
                     <el-progress
                       :text-inside="true"
                       :stroke-width="15"
@@ -574,6 +590,7 @@ export default {
                 date: data[i].END_TIME,
                 totalCount: data[i].JOB_TOTAL_COUNT,
                 percent: data[i].PERCENT,
+                buttonStatus: data[i].STATUS,
                 progressColor: color,
                 time: time
               })
