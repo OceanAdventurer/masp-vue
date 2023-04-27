@@ -250,11 +250,6 @@ export default {
       }
     }
   },
-  // beforeUpdate () {
-  //   this.$nextTick(() => {
-  //   this.$refs.managerTableCon && this.$refs.managerTableCon.doLayout()
-  //   })
-  // },
   mounted () {
     this.$nextTick(() => { // 整个视图渲染完毕后加载数据
       this.getTreeData() // dom渲染完毕后加载数据
@@ -368,7 +363,9 @@ export default {
       //   if (document.getElementById('analysisManager') && document.getElementById('analysisManager').style.display !== 'none') {
       //     let elMainWidth = document.getElementById('elMain').clientWidth
       //     this.managerTableWidth = elMainWidth - elMainWidth * 0.2
-      //     this.$refs.managerTableCon && this.$refs.managerTableCon.doLayout()
+
+      //     this.$refs.managerTableCon.doLayout()
+      //     console.log('elMainWidth----@@@@@:' + elMainWidth, 'managerTableWidth@@@@@:' + this.managerTableWidth)
       //   }
       // }, 50)
     },

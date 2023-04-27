@@ -31,6 +31,9 @@ export const menuData = {
       { enName: 'flight', zhName: '航班天气', parent: 'weather', isShow: true },
       { enName: 'airport', zhName: '机场天气', parent: 'weather', isShow: true }
     ],
+    airRoute: [
+      { enName: 'track', zhName: '空管-航路', parent: 'airRoute', isShow: true }
+    ],
     paramEvent: [ // 左侧分析菜单数据
       { enName: 'eventLibrary', zhName: '事件库', parent: 'paramEvent', isShow: true }
     ],

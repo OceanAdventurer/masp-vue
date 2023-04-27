@@ -413,6 +413,8 @@ export default {
         this.$bus.$emit('sendToManager', obj)
       } else if (this.navMenu === 'weather') { // 天气，默认打开航班天气页面
         this.$bus.$emit('weatherAddTab', {enName: 'flight_weather', zhName: '航班天气', isClosable: false, parent: name})
+      } else if (this.navMenu === 'airRoute') { // 空管-航路
+        this.$bus.$emit('airRouteMenu')
       } else if (this.navMenu === 'safetyMonitor') { // 安全监控
         this.$bus.$emit('safetyMonitorMenu', 'safetyMonitor_stats')
         this.$bus.$emit('safetyMonitor_stats') // 默认打开

@@ -31,6 +31,7 @@
       <AnalysisTab v-show="navMenuValue === 'analysis'" id="analysisContent"></AnalysisTab>
       <DataMiniTab v-show="navMenuValue === 'dataMining'" id="dataMiningContent"></DataMiniTab>
       <WeatherTab v-show="navMenuValue === 'weather'" id="weatherContent"></WeatherTab>
+      <AirRouteTab v-show="navMenuValue === 'airRoute'" id="airRouteContent"></AirRouteTab>
       <ParamOneTab v-show="navMenuValue === 'paramOne'" id="paramOneContent"></ParamOneTab>
       <ParamTwoTab v-show="navMenuValue === 'paramTwo'" id="paramTwoContent"></ParamTwoTab>
       <EventTab v-show="navMenuValue === 'paramEvent'" id="eventContent"></EventTab>
@@ -51,6 +52,7 @@
   const AnalysisTab = () => import('components/analysis/AnalysisTab')
   const DataMiniTab = () => import('components/datamining/DataMiniTab')
   const WeatherTab = () => import('components/edgeComputing/WeatherTab')
+  const AirRouteTab = () => import('components/edgeComputing/AirRouteTab')
   const DataTableTab = () => import('components/datatable/DataTableTab')
   const ParamOneTab = () => import('components/paramone/ParamOneTab')
   const ParamTwoTab = () => import('components/paramtwo/ParamTwoTab')
@@ -85,6 +87,7 @@
       AnalysisTab,
       DataMiniTab,
       WeatherTab,
+      AirRouteTab,
       SettingTab,
       EventTab,
       // ChangeLogTab,
