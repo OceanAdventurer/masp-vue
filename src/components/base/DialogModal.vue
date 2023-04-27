@@ -67,11 +67,12 @@
 }
 </style>
 <style>
-.task_center .el-dialog__body {
-  padding: 8px 20px;
+.el-dialog__wrapper.task_center .el-dialog {
+  height: 70%;
 }
 .task_center .el-dialog__body {
-  height: 380px;
+  padding: 8px 20px;
+  height: calc(100% - 120px);
 }
 .task_center .el-tabs.el-tabs--top {
   height: 100%;
@@ -422,7 +423,6 @@ export default {
     },
     // 改变清洗历史的页面大小
     handleSizeChangeCleanHistory (val) {
-      console.log(val, 'val---test')
       this.pageSize = val
       this.getRecordPage(1, 'cleanRecords')
     },
