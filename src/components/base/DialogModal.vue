@@ -65,19 +65,6 @@
     top: 0px;
   }
 }
-
-/* 滚动条上的滚动滑块 */
-.task_center ::-webkit-scrollbar-thumb {
-    background-color: rgba(173, 171, 171, 0.5);
-    border-radius: 20px;
-}
-/* 滚动条轨道 */
-.task_center ::-webkit-scrollbar-track {
-    background-color: rgba(173, 171, 171, 0);
-}
-.task_center ::-webkit-scrollbar-track-piece {
-    background-color: transparent;
-}
 </style>
 <style>
 .el-dialog__wrapper.task_center .el-dialog {
@@ -98,6 +85,10 @@
   overflow-y: auto;
   /* height: calc(100% - 120px); */
 }
+
+.task_center .el-table__body-wrapper .cell {
+  padding-right: 20px;
+}
 .task_center .el-table::before {
   display: none;
 }
@@ -107,6 +98,28 @@
 /* 窗口高度小于800px */
 /* @media screen and (max-height: 1000px) {
 } */
+
+/* 整个滚动条 */
+.task_center .el-table__body-wrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: transparent;
+}
+/* 滚动条上的滚动滑块 */
+.task_center .el-table__body-wrapper::-webkit-scrollbar-thumb {
+  background-color: rgba(127, 127, 127);
+  border-radius: 20px;
+}
+.task_center .el-table__body-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(127, 127, 127);
+}
+/* 滚动条轨道 */
+.task_center .el-table__body-wrapper::-webkit-scrollbar-track {
+  background-color: transparent!important;
+}
+.task_center .el-table__body-wrapper::-webkit-scrollbar-track-piece {
+  background-color: transparent!important;
+}
 </style>
 <template>
   <div>
