@@ -1821,17 +1821,17 @@ export default {
             this.$bus.$emit('analysisAddTab', {enName: 'fpc_result', zhName: '多航班参数对比结果', isClosable: true, parent: 'fpc_result_chart'})
           } else {
             this.$bus.$emit('closeDhbcsdbTabFun')
-            // if (tempAnalysisResultAllDataObj.flightInfoData.ishaspermission === 'Y') {
-            //   disabledMenuObj['analysis_view_fdv'] = false
-            //   disabledMenuObj['analysis_view_export'] = false
-            //   disabledMenuObj['analysis_view_template'] = false
-            //   disabledMenuObj['analysis_view_clean'] = false
-            // } else {
-            //   disabledMenuObj['analysis_view_fdv'] = true
-            //   disabledMenuObj['analysis_view_export'] = true
-            //   disabledMenuObj['analysis_view_template'] = true
-            //   disabledMenuObj['analysis_view_clean'] = true
-            // }
+            if (tempAnalysisResultAllDataObj.flightInfoData.ishaspermission === 'Y') {
+              disabledMenuObj['analysis_view_fdv'] = false
+              disabledMenuObj['analysis_view_export'] = false
+              disabledMenuObj['analysis_view_template'] = false
+              disabledMenuObj['analysis_view_clean'] = false
+            } else {
+              disabledMenuObj['analysis_view_fdv'] = true
+              disabledMenuObj['analysis_view_export'] = true
+              disabledMenuObj['analysis_view_template'] = true
+              disabledMenuObj['analysis_view_clean'] = true
+            }
             this.$bus.$emit('closeAnalysisTabFun') // 关闭分析结果tab,数据切换时重新打开
             this.$bus.$emit('setDefaultChartType', tempMenuArr[0]) // 设置默认的显示的图表类型
             this.$store.commit('IS_DISABLED_MENU', disabledMenuObj) // 暂时存储需要修改二级菜单的值
