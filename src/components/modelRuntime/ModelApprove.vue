@@ -576,8 +576,8 @@ export default {
   min-width: 500px;
 }
 .model-opt-list-dialog /deep/ .el-dialog {
-  height: 350px !important;
-  overflow-y: auto;
+  height: 60%!important;
+  overflow: hidden;
 }
 </style>
 <style>

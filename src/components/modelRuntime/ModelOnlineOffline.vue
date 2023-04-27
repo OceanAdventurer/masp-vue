@@ -383,9 +383,6 @@ export default {
   display: flex;
   justify-content: flex-start;
 }
-.model-approve .model-approve-table-input .el-form-item__content {
-  vertical-align: middle;
-}
 
 .model-approve-table-input .el-form--inline .el-form-item {
   margin-bottom: unset;
@@ -428,9 +425,9 @@ export default {
   width: 50%;
   min-width: 500px;
 }
-.model-opt-list-dialog /deep/ .el-table__body-wrapper {
-  height: 300px !important;
-  overflow-y: auto;
+.model-opt-list-dialog /deep/ .el-dialog {
+  height: 60%!important;
+  overflow: hidden;
 }
 .model-approve .model-opt-list-dialog .el-card .el-card__body {
   padding: 10px 20px;
@@ -450,5 +447,10 @@ export default {
 }
 .model-approve .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-error {
   color: red;
+}
+</style>
+<style>
+.model-approve .model-approve-table-input .el-form-item__content {
+  vertical-align: middle;
 }
 </style>

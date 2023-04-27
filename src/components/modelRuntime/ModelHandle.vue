@@ -394,9 +394,9 @@ export default {
   width: 40%;
   min-width: 500px;
 }
-.model-opt-list-dialog /deep/ .el-table__body-wrapper {
-  height: 350px !important;
-  overflow-y: scroll;
+.model-opt-list-dialog /deep/ .el-dialog {
+  height: 60%!important;
+  overflow: hidden;
 }
 </style>
 <style>

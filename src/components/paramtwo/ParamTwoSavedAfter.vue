@@ -585,9 +585,9 @@
                     <!--版本库-->
                     <div style="height:42px;line-height:42px;background-color:#F5F2F1;display:flex">
                       <div style="width:72px;height:42px;text-align:right;">版本库：</div>
-                      <div>{{index}}</div>
+                      <div style='margin-right:5px'>{{index}}</div>
                       <!--按钮-->
-                       <el-button  title="查看结果" type="info"  size="mini" round style="padding: 3px 5px;width:36px;height:20px;margin:10px 5px 0 5px"   @click="showResultPage(item, index)">查看</el-button>
+                       <el-button  title="查看结果" type="info"  size="mini" round style="padding: 3px 5px;width:36px;height:20px;margin:10px 5px 0 0" v-if="item['test_data'] && item.test_data.length > 0 "  @click="showResultPage(item, index)">查看</el-button>
                       <div class="construction_img" @click="panelChangeTwo(item, index)">
                         <!-- <el-button style="margin-left:10px" title="显示结构" icon="el-icon-star-off" type="info" circle plain @click="panelChangeTwo(item, index)"></el-button> -->
                       </div>
