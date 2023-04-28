@@ -408,7 +408,7 @@ export default {
   padding: 10px 20px;
   font-size: 12px;
 }
-.model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__tail {
+/* .model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__tail {
   border-left: 2px solid #409EFF;
 }
 .model-approve  .model-opt-list-dialog .el-dialog__body .el-timeline-item.error .el-timeline-item__tail {
@@ -422,5 +422,5 @@ export default {
 }
 .model-approve .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-error {
   color: red;
-}
+} */
 </style>

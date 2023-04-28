@@ -1237,12 +1237,6 @@ export default {
         {value: 'quarter', label: '当季度'},
         {value: 'week', label: '当周'}
       ],
-      testRange: [
-        {index: 0, value: 'h', label: '小时', disabled: false, dynamicTime: 0},
-        {index: 1, value: 'day', label: '天', disabled: false, dynamicTime: 0},
-        {index: 2, value: 'month', label: '月', disabled: false, dynamicTime: 0},
-        {index: 3, value: 'year', label: '年', disabled: false, dynamicTime: 0}
-      ],
       // dataPointYArr: [
       //   {value: 2017, label: '2017年'},
       //   {value: 2018, label: '2018年'},
@@ -3699,20 +3693,26 @@ export default {
       let tempSqlStr = ''
       columnName = columnName || this.filterConfigTableDataObj[this.currentFilterConfigRowId]['columnName']
       let formatters = columnName === 'FLIGHT_DATE' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'
+      let formattersStart = columnName === 'FLIGHT_DATE' ? 'YYYY-MM-DD' : 'YYYY-MM-DD 00:00:00'
+      let formattersEnd = columnName === 'FLIGHT_DATE' ? 'YYYY-MM-DD' : 'YYYY-MM-DD 23:59:59'
       if (type === 'day') { // 以天为单位
         if (time < 0) { // 过去时间
           time = Math.abs(time)
-          tempStr = this.$moment().subtract(time, 'days').format(formatters) + '~' + this.$moment().add(0, 'days').format(formatters)
-          tempSqlStr = columnName + ' >= \'' + this.$moment().subtract(time, 'days').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(1, 'days').format(formatters) + '\''
+          tempStr = this.$moment().subtract(time, 'days').format(formattersStart) + '~' + this.$moment().add(0, 'days').format(formattersEnd)
+          tempSqlStr = columnName + ' >= \'' + this.$moment().subtract(time, 'days').format(formattersEnd) + '\' and ' + columnName + ' < \'' + this.$moment().add(1, 'days').format(formattersStart) + '\''
           // tempSqlStr = `${columnName} >= this.$moment().subtract(${time}, 'days').format(${formatters}) and < this.$moment().add(1, 'days').format(${formatters})}`
         } else if (this.dynamicTime > 0) { // 未来
-          tempStr = this.$moment().add(0, 'days').format(formatters) + '~' + this.$moment().add(time, 'days').format(formatters)
-          tempSqlStr = columnName + ' >= \'' + this.$moment().add(0, 'days').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(time + 1, 'days').format(formatters) + '\''
+          tempStr = this.$moment().add(0, 'days').format(formattersStart) + '~' + this.$moment().add(time, 'days').format(formattersEnd)
+          tempSqlStr = columnName + ' >= \'' + this.$moment().add(0, 'days').format(formattersEnd) + '\' and ' + columnName + ' < \'' + this.$moment().add(time + 1, 'days').format(formattersStart) + '\''
           // tempSqlStr = `${columnName} >= this.$moment().add(0, 'days').format(${formatters}) < this.$moment().add(${time + 1}, 'days').format(${formatters})`
         } else { // 当天
-          tempStr = this.$moment().subtract(0, 'days').format(formatters)
-          tempSqlStr = columnName + ' = \'' + this.$moment().subtract(0, 'days').format(formatters)
-          // tempSqlStr = `${columnName} = this.$moment().subtract(0, 'days').format(${formatters})`
+          if (columnName === 'FLIGHT_DATE') {
+            tempStr = this.$moment().subtract(0, 'days').format(formatters)
+            tempSqlStr = columnName + ' = \'' + this.$moment().subtract(0, 'days').format(formatters)
+          } else {
+            tempStr = this.$moment().subtract(0, 'days').format(formattersStart) + '~' + this.$moment().add(0, 'days').format(formattersEnd)
+            tempSqlStr = columnName + ' >= \'' + this.$moment().subtract(0, 'days').format(formattersEnd) + '\' and ' + columnName + ' < \'' + this.$moment().add(1, 'days').format(formattersStart) + '\''
+          }
         }
       } else if (type === 'month') { // 月份
         if (time < 0) { // 前数月

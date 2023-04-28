@@ -97,13 +97,13 @@
       </el-dialog>
     </div>
     <div class="publish_dia">
-      <el-dialog :close-on-click-modal="false" title="发布信息" :visible.sync="publishDiaShow">
+      <el-dialog :close-on-click-modal="false" :title="(publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回') ? '提交审核' : '审批详情'" :visible.sync="publishDiaShow">
         <div class="publish_dialog_content" style="max-height: 350px;overflow: auto">
           <el-form ref="publishDiaRef" :model= "publishInfoForm" :rules="publishInfoRules" label-width="80px" label-position='right'>
             <el-row>
               <el-col :span='12'>
                 <el-form-item label="分析名称" prop="modelName" width='350'>
-                  <el-input v-model="publishInfoForm.modelName" disabled  v-if="publishInfoForm.modelState === '待提交'"></el-input>
+                  <el-input v-model="publishInfoForm.modelName" disabled  v-if="publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'"></el-input>
                   <span v-else>{{publishInfoForm.modelName}}</span>
                 </el-form-item>
               </el-col>
@@ -111,7 +111,7 @@
             <el-row>
               <el-col :span='12'>
                 <el-form-item label="模型分类" prop="categoryType">
-                  <el-select v-model="publishInfoForm.categoryType" v-if="publishInfoForm.modelState === '待提交'">
+                  <el-select v-model="publishInfoForm.categoryType" v-if="publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
                     <el-option
                       v-for="item in typeList"
                       :key="item.code"
@@ -161,8 +161,7 @@
         </div>
         <div slot="footer" class="dialog-footer">
           <el-button size="mini" @click="managerRowPublish('publishDiaRef')">取  消</el-button>
-          <el-button type="primary" size="mini" v-if="publishInfoForm.modelState === '待提交'" @click="handlerPublish('publishDiaRef', 'close')">发布</el-button>
-          <el-button type="primary" size="mini" v-else @click="publishDiaShow=false">确定</el-button>
+          <el-button type="primary" size="mini" v-show="publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'" @click="handlerPublish('publishDiaRef', 'close')">提交</el-button>
         </div>
       </el-dialog>
     </div>
@@ -403,16 +402,15 @@ export default {
       }).then(res => {
         if (res.status === 200) {
           if (res.data.length > 0) {
-            // const {optUser, optTime} = res.data[0]
-            // this.publishInfoForm = res.data[0] || []
             this.optTypeLabel = res.data[0].optTypeLabel
-            this.publishInfoForm.explain = res.data.find(item => item.optTypeLabel === '提交').explain
-            this.publishInfoForm.submitBy = res.data[0].optUser
-            this.publishInfoForm.submitTime = res.data[0].optTime
-            this.publishInfoForm.categoryType = res.data[0].categoryType
-            this.publishInfoForm.categoryName = res.data[0].categoryName
-            this.publishInfoForm.modelName = res.data[0].modelName
-            this.publishInfoForm.modelId = res.data[0].modelId
+            this.publishInfoForm = {
+              submitTime: res.data[0].optTime,
+              categoryType: res.data[0].categoryType,
+              modelName: res.data[0].modelName,
+              submitBy: res.data[0].optUser,
+              explain: res.data.find(item => item.optTypeLabel === '提交').explain,
+              modelId: res.data[0].modelId
+            }
             this.workFlow = res.data
           } else {
             this.workFlow = []
@@ -480,7 +478,6 @@ export default {
         this.publishInfoForm.modelId = row.ID
         this.publishInfoForm.modelState = row.modelState || '待提交'
       }
-
       let userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo')) || {}
       this.publishInfoForm.submitBy = userInfo.userName
       const year = new Date().getFullYear()
@@ -1077,17 +1074,24 @@ export default {
       let tempStr = ''
       let tempSqlStr = ''
       let formatters = columnName === 'FLIGHT_DATE' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'
-      if (type === 'day') { // 以天为单位
+      let formattersStart = columnName === 'FLIGHT_DATE' ? 'YYYY-MM-DD' : 'YYYY-MM-DD 00:00:00'
+      let formattersEnd = columnName === 'FLIGHT_DATE' ? 'YYYY-MM-DD' : 'YYYY-MM-DD 23:59:59'
+      if (type === 'day') {
         if (time < 0) { // 过去时间
           time = Math.abs(time)
-          tempStr = this.$moment().subtract(time, 'days').format(formatters) + '~' + this.$moment().add(0, 'days').format(formatters)
-          tempSqlStr = columnName + ' >= \'' + this.$moment().subtract(time, 'days').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(1, 'days').format(formatters) + '\''
+          tempStr = this.$moment().subtract(time, 'days').format(formattersStart) + '~' + this.$moment().add(0, 'days').format(formattersEnd)
+          tempSqlStr = columnName + ' >= \'' + this.$moment().subtract(time, 'days').format(formattersEnd) + '\' and ' + columnName + ' < \'' + this.$moment().add(1, 'days').format(formattersStart) + '\''
         } else if (this.dynamicTime > 0) { // 未来
-          tempStr = this.$moment().add(0, 'days').format(formatters) + '~' + this.$moment().add(time, 'days').format(formatters)
-          tempSqlStr = columnName + ' >= \'' + this.$moment().add(0, 'days').format(formatters) + '\' and ' + columnName + ' < \'' + this.$moment().add(time + 1, 'days').format(formatters) + '\''
+          tempStr = this.$moment().add(0, 'days').format(formattersStart) + '~' + this.$moment().add(time, 'days').format(formattersEnd)
+          tempSqlStr = columnName + ' >= \'' + this.$moment().add(0, 'days').format(formattersEnd) + '\' and ' + columnName + ' < \'' + this.$moment().add(time + 1, 'days').format(formattersStart) + '\''
         } else { // 当天
-          tempStr = this.$moment().subtract(0, 'days').format(formatters)
-          tempSqlStr = columnName + ' = \'' + this.$moment().subtract(0, 'days').format(formatters)
+          if (columnName === 'FLIGHT_DATE') {
+            tempStr = this.$moment().subtract(0, 'days').format(formatters)
+            tempSqlStr = columnName + ' = \'' + this.$moment().subtract(0, 'days').format(formatters)
+          } else {
+            tempStr = this.$moment().subtract(0, 'days').format(formattersStart) + '~' + this.$moment().add(0, 'days').format(formattersEnd)
+            tempSqlStr = columnName + ' >= \'' + this.$moment().subtract(0, 'days').format(formattersEnd) + '\' and ' + columnName + ' < \'' + this.$moment().add(1, 'days').format(formattersStart) + '\''
+          }
         }
       } else if (type === 'month') { // 月份
         if (time < 0) { // 前数月
@@ -2150,7 +2154,7 @@ export default {
 .manager .publish_dia .el-dialog__body {
   padding-bottom: 0;
 }
-.manager .publish_dia .el-dialog__body .el-timeline-item .el-timeline-item__tail {
+/* .manager .publish_dia .el-dialog__body .el-timeline-item .el-timeline-item__tail {
   border-left: 2px solid #409EFF;
 }
 .manager .publish_dia .el-dialog__body .el-timeline-item.error .el-timeline-item__tail {
@@ -2164,5 +2168,5 @@ export default {
 }
 .manager .publish_dia .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-error {
   color: red;
-}
+} */
 </style>
