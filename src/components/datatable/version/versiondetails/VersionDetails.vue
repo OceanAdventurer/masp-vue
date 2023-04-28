@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class='version_library_detail'>
     <el-dialog title="字段信息" :visible.sync="dialogFormVisible" @close='closeDialog'>
       <el-form :model="form">
         <el-form-item label="字段名称" :label-width="formLabelWidth">
@@ -364,9 +364,10 @@ export default {
           if (response.data.status === 'E1001') {
             this.$bus.$emit('logBackInHandle', response.data)
           } else {
-            vc.$message(response.data.message)
+            vc.$message.success(response.data.message)
             vc.readData(vc.keyword)
           }
+          this.dialogFormVisible = false
           vc.initForm()
         })
       }).catch(() => {
@@ -374,7 +375,6 @@ export default {
             vc.initForm()
           }
       })
-      this.dialogFormVisible = false
     },
     syncModel () {
       this.$confirm('是否执行同步？', '提示', {
@@ -742,7 +742,9 @@ export default {
     align-items: center;
     padding-right: 20px;
 }
-
+.version_library_detail .el-dialog__wrapper >>> .el-dialog__body {
+  padding: 0 20px;
+}
 .clean_rules {
   display: flex;
   flex-direction: row;

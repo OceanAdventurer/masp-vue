@@ -466,12 +466,12 @@
                       </div>-->
                   </div>
               </el-tab-pane>
-              <el-tab-pane label="清洗规则" name="attrSecond" class="content_tab_clear" >
+              <!-- <el-tab-pane label="清洗规则" name="attrSecond" class="content_tab_clear" >
                   <div class="clean_rules">
                       清洗规则：
                       <div class="clean_rules_icon">
                            <div class="clean_rules_add" @click="rowRuleShow = true"></div>
-<!--                          <div class="clean_rules_add" @click="rowRuleShow = false"></div>-->
+                         <div class="clean_rules_add" @click="rowRuleShow = false"></div> 注释
                       </div>
                   </div>
                   <div class="clean_rules_header">
@@ -480,7 +480,7 @@
                     <div style="width:50px;">操作</div>
                   </div>
                   <div class="clean_rules_content">
-                    <!-- 添加规则 -->
+                    添加规则 注释
                     <div class="add_rule" v-show="rowRuleShow && this.$util.paramOneEditAuthority" >
                       <div class="abnormal_rule bg_purple">
                           <el-select v-model="conditionText" size="mini" >
@@ -495,11 +495,11 @@
                         <el-input v-model="solutionValueText" size="mini" placeholder="请输入内容" :disabled="solutionText === 4 || solutionText === 5"></el-input>
                       </div>
                       <div class="clean_rule_button">
-                        <!-- <el-button type="danger" plain icon="el-icon-close" size="mini" @click="rowRuleShow = false"></el-button> -->
+                        <el-button type="danger" plain icon="el-icon-close" size="mini" @click="rowRuleShow = false"></el-button> 注释
                         <div class="rule_delete" @click="rowRuleShow = false"></div>
                       </div>
                     </div>
-                    <!--规则列表-->
+                    规则列表 注释
                     <div class="rule_list" v-for="(rule, index) in ruleArr" :key="rule.ID">
                       <div class="abnormal_rule bg_purple">
                           <el-select v-model="rule.condition" size="mini" >
@@ -515,12 +515,12 @@
                           :disabled="rule.solution === '取前值' || rule.solution === '取后值' || rule.solution === 4 ||rule.solution === 5" placeholder="请输入内容" ></el-input>
                       </div>
                       <div class="clean_rule_button">
-                        <!-- <el-button size="mini" type="danger" icon="el-icon-delete" @click="removeRule(index)"></el-button> -->
+                        <el-button size="mini" type="danger" icon="el-icon-delete" @click="removeRule(index)"></el-button>
                         <div class="rule_delete" @click="rowRuleShow = false"></div>
                       </div>
                     </div>
                   </div>
-              </el-tab-pane>
+              </el-tab-pane> -->
           </el-tabs>
           <el-tabs v-model="rowAttrDefault" v-show="rowAttrShow" style="height:88%">
             <el-tab-pane label="映射" name="rowFirst" class="content_tab_attr">
