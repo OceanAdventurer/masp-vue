@@ -327,6 +327,9 @@ export default {
   width: 100%;
   height: 100%;
 }
+.airport-weather .el-dialog__wrapper .el-dialog {
+  min-height: 550px;
+}
 .airport-weather-container {
   position: relative;
   width: 100%;
@@ -338,10 +341,10 @@ export default {
   height:100%;
   margin-left: 12px;
 }
-.airport-weather-table-input {
+.airport-weather .airport-weather-table-input {
   position: relative;
   width: 100%;
-  height: 20%;
+  height: 90px;
   display: flex;
   justify-content: flex-start;
 }
@@ -366,13 +369,16 @@ export default {
 .airport-weather-table-info {
   position: relative;
   width: 100%;
-  height: 70%;
+  height: calc(100% - 132px);
 }
-
-.airport-weather-table-pagination {
+.airport-weather .el-dialog__body {
+  padding: 0 20px;
+}
+.airport-weather .airport-weather-table-pagination {
   position: relative;
   width: 100%;
-  height: 10%;
+  margin-top: 10px;
+  height: 32px;
 }
 </style>
 <style>

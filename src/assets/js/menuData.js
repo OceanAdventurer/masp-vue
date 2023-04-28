@@ -181,7 +181,7 @@ export const menuData = {
     ],
     analysis_file: [ // 分析-文件
       { disabledImgUrl: require('assets/images/icon2_0.png'), showImgUrl: require('assets/images/icon2_1.png'), zhName: '新建分析', enName: 'analysis_file_new', isShow: false, isDisabled: false, parent: 'analysis_file', isDropdown: false, dropdownItem: [] },
-      { disabledImgUrl: require('assets/images/icon2_0.png'), showImgUrl: require('assets/images/icon2_1.png'), zhName: '新建事件分析', enName: 'analysis_event_file_new', isShow: false, isDisabled: false, parent: 'analysis_file', isDropdown: false, dropdownItem: [] },
+      // { disabledImgUrl: require('assets/images/icon2_0.png'), showImgUrl: require('assets/images/icon2_1.png'), zhName: '新建事件分析', enName: 'analysis_event_file_new', isShow: false, isDisabled: false, parent: 'analysis_file', isDropdown: false, dropdownItem: [] },
       { disabledImgUrl: require('assets/images/icon2_0.png'), showImgUrl: require('assets/images/icon2_1.png'), zhName: '新建多航班参数对比', enName: 'analysis_dhbcsdb', isShow: false, isDisabled: false, parent: 'analysis_file', isDropdown: false, dropdownItem: [] },
       { disabledImgUrl: require('assets/images/file_large_2.png'), showImgUrl: require('assets/images/file_large_1.png'), zhName: '添加分析目录', enName: 'tree_catalog_add', isShow: false, isDisabled: false, parent: 'analysis_file', isDropdown: false, dropdownItem: [] },
       { disabledImgUrl: require('assets/images/create_new_2.png'), showImgUrl: require('assets/images/create_new.png'), zhName: '添加分析节点', enName: 'tree_node_add', isShow: false, isDisabled: false, parent: 'analysis_file', isDropdown: false, dropdownItem: [] },

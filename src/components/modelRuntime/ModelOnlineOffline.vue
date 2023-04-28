@@ -367,6 +367,9 @@ export default {
   height: 100%;
 }
 
+.model-approve .model-approve-table-input >>> .el-form-item__content {
+  vertical-align: middle;
+}
 .model-approve-table {
   position: relative;
   width: 100%;
@@ -447,10 +450,5 @@ export default {
 }
 .model-approve .model-opt-list-dialog .el-dialog__body .el-timeline-item .el-timeline-item__node.el-timeline-item__node--normal .el-timeline-item__icon.el-icon-error {
   color: red;
-}
-</style>
-<style>
-.model-approve .model-approve-table-input .el-form-item__content {
-  vertical-align: middle;
 }
 </style>

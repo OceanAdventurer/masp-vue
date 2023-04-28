@@ -182,6 +182,6 @@ export default {
 </style>
 <style>
 .user_password .el-dialog__body {
-  padding: 30px 70px 30px 40px;
+  padding: 20px 70px 20px 40px;
 }
 </style>

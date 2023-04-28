@@ -44,12 +44,12 @@
           <el-table-column label="操作" width="180" align="left">
             <template slot-scope="scope">
               <div class="row-icon-group">
-                <div class="icon-edit tab-icon-set mr10" title="编辑分析" v-show="scope.row.modelState == '' || scope.row.modelState == '待审批'" @click="managerRowEdit(scope.row)"></div>
+                <div class="icon-edit tab-icon-set mr10" title="编辑分析" v-show="scope.row.optType  == '' || scope.row.optType === '创建' || scope.row.optType == '驳回'" @click="managerRowEdit(scope.row)"></div>
                 <div class="icon-view tab-icon-set mr10" title="查看分析" @click="managerRowView(scope.row)"></div>
                 <div class="icon-copy tab-icon-set mr10" title="复制分析" @click="managerRowCopy(scope.row)"></div>
-                <div class="el-icon-upload tab-icon-set mr10" title="发布分析" v-show="scope.row.modelState == ''" @click="managerRowPublish(scope.row)"></div>
-                <div class="el-icon-view tab-icon-set mr10" title="审批详情" v-show="scope.row.modelState !== '' && scope.row.modelState !== '待提交'" @click="managerRowDetail(scope.row)"></div>
-                <div class="icon-delete tab-icon-set mr10" title="删除分析" v-show="scope.row.modelState == '' || scope.row.modelState == '待提交'" @click="managerRowDelete(scope.$index, managerTableData)"></div>
+                <div class="el-icon-upload tab-icon-set mr10" title="发布分析" v-show="scope.row.optType  == '' || scope.row.optType === '创建' || scope.row.optType == '驳回'" @click="managerRowPublish(scope.row)"></div>
+                <div class="el-icon-view tab-icon-set mr10" title="审批详情" v-show="scope.row.optType  !== '' && scope.row.optType !== '创建' && scope.row.optType !== '驳回'" @click="managerRowDetail(scope.row)"></div>
+                <div class="icon-delete tab-icon-set mr10" title="删除分析" v-show="scope.row.optType  == '' || scope.row.optType === '创建' || scope.row.optType == '驳回' || scope.row.optType === '下线'" @click="managerRowDelete(scope.$index, managerTableData)"></div>
               </div>
             </template>
           </el-table-column>
@@ -151,10 +151,10 @@
               </el-timeline-item>
             </el-timeline>
             </el-row>
-            <el-form-item label="提交人" prop="submitBy" v-show="publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
+            <el-form-item class="no_margin" label="提交人" prop="submitBy" v-show="publishInfoForm.optType === '待提交' || optTypeLabel === '驳回'">
               <span>{{publishInfoForm.submitBy}}</span>
             </el-form-item>
-            <el-form-item label="提交时间" prop="submitTime" v-show="publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
+            <el-form-item class="no_margin" label="提交时间" prop="submitTime" v-show="publishInfoForm.optType === '待提交' || optTypeLabel === '驳回'">
               <span>{{publishInfoForm.submitTime}}</span>
             </el-form-item>
           </el-form>
@@ -473,6 +473,9 @@ export default {
       this.workFlow = []
       if (this.$refs['publishDiaRef']) this.$refs['publishDiaRef'].resetFields()
       if (row) {
+        if (row.optType === '驳回') {
+          this.auditingInfo(row.ID)
+        }
         this.publishInfoForm.modelName = row.NAME
         this.publishInfoForm.modelId = row.ID
         this.publishInfoForm.modelState = row.modelState || '待提交'
@@ -2024,6 +2027,9 @@ export default {
   margin-bottom: 6px;
 }
 .manager .publish_dia .el-form-item {
+  margin-bottom: 18px;
+}
+.manager .publish_dia .no_margin.el-form-item {
   margin-bottom: 0;
 }
 .manager .publish_dia .el-form-item .el-form-item__content span {

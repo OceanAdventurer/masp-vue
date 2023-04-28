@@ -717,6 +717,7 @@
                     <div class="df-f3 hot-words">
                       <el-select
                         filterable
+                        collapse-tags
                         v-model="notHotWordsSearchValue"
                         placeholder="请选择"
                         multiple

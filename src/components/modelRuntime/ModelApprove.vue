@@ -536,7 +536,7 @@ export default {
 .model-approve-table-input .el-form--inline .el-form-item {
   margin-bottom: unset;
 }
-.model-approve .model-approve-table-input .el-form-item__content {
+.model-approve .model-approve-table-input >>> .el-form-item__content {
   vertical-align: middle;
 }
 .model-approve-table-input .el-button {

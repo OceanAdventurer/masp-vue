@@ -132,7 +132,7 @@
         <img src="../../assets/images/icon76.png" style="height:16px;width: 16px;">
       </el-button>
     </div> -->
-    <el-dialog title="任务详情"  :close-on-click-modal="false" :visible.sync="dialogVisible" width="52%" class='task_center'>
+    <el-dialog title="任务详情" :visible.sync="dialogVisible" width="52%" class='task_center'>
       <div style="position:absolute;top:65px;right: 18px;z-index: 1">
         <template>
           <el-input
