@@ -36,7 +36,7 @@
           <el-table-column prop="modelState" label="模型状态" width="90" align="left">
             <template slot-scope="scope">
               <div>
-                {{scope.row.modelState || '待提交'}}
+                {{scope.row.modelState === '待提交' ? scope.row.optType : scope.row.modelState !== '' ? scope.row.modelState : '待提交'}}
               </div>
             </template>
           </el-table-column>
