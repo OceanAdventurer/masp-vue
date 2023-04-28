@@ -88,9 +88,6 @@ export default {
   },
   mounted () {
     this.$bus.$on('password_management', () => {
-      this.$nextTick(() => {
-        this.$refs.form && this.$refs.form.clearValidate()
-      })
       this.ruleForm = {
         oldPassword: '',
         newPassword: '',
@@ -179,6 +176,12 @@ export default {
 /* .user_password .reset_password a {
   text-align: center;
 } */
+.user_password .el-form.demo-ruleForm {
+  overflow: hidden;
+}
+.user_password .el-form.demo-ruleForm .el-form-item {
+  margin-bottom: 22px;
+}
 </style>
 <style>
 .user_password .el-dialog__body {

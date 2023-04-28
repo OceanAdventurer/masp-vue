@@ -131,7 +131,7 @@
                 clearable
                 :maxlength="100"
                 :show-word-limit="true"
-                placeholder="请输入发布原因，有效期等信息"/>
+                placeholder="请输入备注，有效期等信息"/>
             </el-form-item>
             <el-row style='padding-top: 15px' v-if="workFlow.length > 0">
             <el-timeline style="padding:0 20px">
@@ -151,10 +151,10 @@
               </el-timeline-item>
             </el-timeline>
             </el-row>
-            <el-form-item class="no_margin" label="提交人" prop="submitBy" v-show="publishInfoForm.optType === '待提交' || optTypeLabel === '驳回'">
+            <el-form-item class="no_margin" label="提交人" prop="submitBy" v-show="publishInfoForm.modelState === '' || publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
               <span>{{publishInfoForm.submitBy}}</span>
             </el-form-item>
-            <el-form-item class="no_margin" label="提交时间" prop="submitTime" v-show="publishInfoForm.optType === '待提交' || optTypeLabel === '驳回'">
+            <el-form-item class="no_margin" label="提交时间" prop="submitTime" v-show="publishInfoForm.modelState === '' || publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
               <span>{{publishInfoForm.submitTime}}</span>
             </el-form-item>
           </el-form>

@@ -356,7 +356,7 @@ export default {
 </script>
 <style scoped>
 .airport-weather {
-  position: absolute;
+  /* position: absolute; */
   width: 100%;
   height: 100%;
 }
@@ -367,14 +367,15 @@ export default {
 }
 .airport-weather-table {
   position: relative;
-  width: calc(100vw - 204px);
+  width: 100%;
   height:100%;
-  margin-left: 12px;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 .airport-weather-table-input {
   position: relative;
   width: 100%;
-  height: 15%;
+  height: 90px;
   display: flex;
   justify-content: flex-start;
 }
@@ -399,19 +400,20 @@ export default {
 .airport-weather-table-info {
   position: relative;
   width: 100%;
-  height: 75%;
+  height: calc(100% - 132px);
 }
 
 .airport-weather-table-pagination {
   position: relative;
   width: 100%;
-  height: 10%;
+  height: 32px;
+  margin-top: 10px;
 }
 
 .el-dialog__wrapper /deep/ .el-dialog {
   margin-top: 10vh !important;
   height: 60%;
-  min-height: 600px;
+  min-height: 520px;
   width: 80%;
   min-width: 800px;
 }
@@ -419,11 +421,12 @@ export default {
   padding: 20px 20px 0 20px;
 }
 .el-dialog__wrapper /deep/ .el-dialog__body {
-  padding: 20px 20px;
+  padding: 0;
+  height: 100%;
+  width: 100%;
 }
 .el-dialog__wrapper /deep/ .airport-weather {
-  margin: 0 10px;
-  width: calc(100% - 60px);
+  width: 100%;
   height: calc(100% - 80px);
 }
 .el-dialog__wrapper /deep/ .airport-weather .airport-weather-table {

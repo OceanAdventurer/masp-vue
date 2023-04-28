@@ -378,7 +378,7 @@
                 <el-input type="password" placeholder="请输入密码 " v-model="userPass" @keyup.enter.native="login()" style="width: 81%;float: right"></el-input>
               </div>
               <div class="captcha">
-                <el-input v-model="verificationCode" placeholder="请输入验证码" class="captcha-input"></el-input>
+                <el-input v-model="verificationCode" placeholder="请输入验证码" class="captcha-input" @keyup.enter.native="login()"></el-input>
                 <img :src="verificationCodeImg" class="captcha-img" @click="getCode()">
               </div>
               <el-button type="primary" @click="login"  class="login_btn" @keyup.enter.native="login()">登 录</el-button>

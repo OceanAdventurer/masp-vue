@@ -520,7 +520,7 @@ export default {
 </script>
 <style scoped>
 .flight-weather {
-  position: absolute;
+  /* position: absolute; */
   width: 100%;
   height: 100%;
 }
@@ -531,9 +531,10 @@ export default {
 }
 .flight-weather-table {
   position: relative;
-  width: calc(100vw - 204px);
+  width: 100%;
   height:100%;
-  margin-left: 12px;
+  box-sizing: border-box;
+  padding: 0 10px;
 }
 .flight-weather-table-input {
   position: relative;

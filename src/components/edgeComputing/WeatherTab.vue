@@ -25,10 +25,10 @@
 <!--      </el-tab-pane>-->
 <!--    </el-tabs>-->
 <!--  </div>-->
-  <div v-if="showType === 'flight_weather'">
+  <div v-if="showType === 'flight_weather'" class="w100 h100">
     <FlightWeather></FlightWeather>
   </div>
-  <div v-else-if="showType === 'airport_weather'">
+  <div v-else-if="showType === 'airport_weather'" class="w100 h100">
     <AirportWeather></AirportWeather>
   </div>
   <div v-else></div>

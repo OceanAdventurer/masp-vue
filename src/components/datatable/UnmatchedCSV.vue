@@ -35,7 +35,7 @@ td .el-input__inner {
             </el-date-picker>
             </div>
           </el-form-item>
-          <el-form-item label="译码是否成功:" style="margin-bottom: 0px">
+          <!-- <el-form-item label="译码是否成功:" style="margin-bottom: 0px">
             <el-select v-model="form.HASCSV" clearable  filterable placeholder="" style="width:60px">
               <el-option
                 label="是"
@@ -46,7 +46,7 @@ td .el-input__inner {
                 value="false">
               </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="是否入库:" style="margin-bottom: 0px">
             <el-select v-model="form.HASETL" clearable  filterable placeholder="" style="width:60px">
               <el-option

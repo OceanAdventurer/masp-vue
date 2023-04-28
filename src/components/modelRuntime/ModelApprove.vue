@@ -389,6 +389,9 @@ export default {
       this.modelOpt.explain = ''
       this.modelOpt.userList = ''
       this.modelOpt[dialog] = true
+      this.$nextTick(() => {
+        this.$refs['modelOpt'] && this.$refs['modelOpt'].clearValidate()
+      })
     },
     modelConfirm (type, modelName, url, params) {
       this.$confirm('您确定要' + type + '模型【' + modelName + '】吗?', '提示', {
