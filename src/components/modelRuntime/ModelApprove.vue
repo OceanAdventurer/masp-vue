@@ -84,6 +84,7 @@
                placeholder="转办用户"
                clearable
                filterable
+               multiple
                :multiple-limit="20"
                style="width: 350px;"
             >
@@ -190,7 +191,7 @@ export default {
         modelName: '',
         title: '',
         explain: '',
-        userList: ''
+        userList: []
       },
       rules: {
         explain: [
@@ -430,7 +431,7 @@ export default {
       this.modelOpt.modelName = ''
       this.modelOpt.title = ''
       this.modelOpt.explain = ''
-      this.modelOpt.userList = ''
+      this.modelOpt.userList = []
     },
     dialogSubmit () {
       this.$refs['modelOpt'].validate(valid => {
@@ -438,7 +439,7 @@ export default {
           this.modelConfirm(this.modelOpt.title, this.modelOpt.modelName, this.modelOpt.url, {
             modelId: this.modelOpt.modelId,
             explain: this.modelOpt.explain,
-            userList: [this.modelOpt.userList]
+            userList: this.modelOpt.userList
           })
         }
       })
