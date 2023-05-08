@@ -251,7 +251,7 @@
       },
       // 从服务器加载映射数据
       remoteMethod (query) {
-        let para = query.length > 0 ? query.join(',') : ''
+        let para = typeof query === 'string' ? query : (query.join(',') || '')
         if (query) {
           this.loading = true
           setTimeout(() => {
@@ -266,8 +266,8 @@
               }
               if (data.length > 0) {
                 this.mappedArr = []
-                for (var obj of data) {
-                  this.mappedArr.push({ value: obj.ID, label: obj.NAME_IN_CSV })
+                for (let obj in data) {
+                  this.mappedArr.push({ value: data[obj].ID, label: data[obj].NAME_IN_CSV })
                 }
                 this.loading = false
               }
@@ -311,7 +311,7 @@
           h('span', {style: {display: 'block'}}, column.label.split(' ')[1])
         ])
       },
-        preview () {
+      preview () {
         if (!this.showTable) {
           this.showTable = true
         }
