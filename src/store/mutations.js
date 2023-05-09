@@ -63,6 +63,9 @@ const mutations = {
   },
   [types.PARAM_TWO_STATUS] (state, payload) {
     state.paramTwoStatus = payload
+  },
+  [types.MODEL_PAGE_TYPE] (state, payload) {
+    state.modelPageType = payload
   }
 }
 

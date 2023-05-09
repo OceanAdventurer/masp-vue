@@ -32,7 +32,8 @@ const state = {
     tableData: {} // 分析结果中表格详情数据
   },
   mainSubline: [],
-  paramTwoStatus: '' //分析参数数据状态
+  paramTwoStatus: '', //分析参数数据状态
+  modelPageType: '' // 模型是否可编辑
 }
 
 export default state

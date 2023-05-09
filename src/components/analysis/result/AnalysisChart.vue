@@ -1780,6 +1780,7 @@ if (tempAxisTwoTreeType === '3') {
       console.log('assemblyChartParams~~~~~~tempParams:', JSON.stringify(tempParams))
 
       let tempDisabledMenuObj = this.$store.state.isDisabledMenu
+      // !this.$store.state.modelPageType && tempDisabledMenuObj['analysis_chart_drillDown'] = false // 显示钻取菜单
       tempDisabledMenuObj['analysis_chart_drillDown'] = false // 显示钻取菜单
       this.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
     },
@@ -1811,6 +1812,7 @@ if (tempAxisTwoTreeType === '3') {
       this.chartParams = tempParams // 临时参数赋值
       // if (this.$store.state.analysisResultAllData.submitAnalysisParams.axisThreeTreeType === '') { // 三轴没有数据时才显示，目前不支持三轴
         let tempDisabledMenuObj = this.$store.state.isDisabledMenu
+        // !this.$store.state.modelPageType && tempDisabledMenuObj['analysis_chart_drillDown'] = false // 显示钻取菜单
         tempDisabledMenuObj['analysis_chart_drillDown'] = false // 显示钻取菜单
         this.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
       // }

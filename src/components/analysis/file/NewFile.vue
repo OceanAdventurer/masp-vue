@@ -115,7 +115,7 @@
                   </el-table-column>
                   -->
                   <el-table-column label="" width="50" align="center">
-                    <template slot-scope="scope" v-if="scope.row['type'] != 9999">
+                    <template slot-scope="scope" v-if="scope.row['type'] != 9999 && !stateType">
                       <div class="icon-delete tab-icon-set row-icon-group" @click.stop="filterRowDelete(scope.$index, filterConfigTableData)"></div>
                     </template>
                   </el-table-column>
@@ -123,7 +123,7 @@
               </div>
             </el-tab-pane>
             <el-tab-pane label="分类配置" name="classConfig" class="classConfig" style="width: 95%" v-if="analysisType === '航班分析'">
-              <el-form ref="form" :model="form" label-width="80px">
+              <el-form ref="form" :model="form" label-width="80px" :disabled='stateType ? true : false'>
                 <el-form-item label="分组选择" style="margin-top:20px">
                   <div class="class-axis-text" :style="currentAxisStyle === 'four' ? currentAxisStyleObj : ''" @click="selectCurrentAxis('four')">{{ classConfigAxisFourText }}</div>
                   <i class="el-icon-close" style="font-size: 13px;position: absolute;top: 9px;right: 15px;color:#C0C4CC" @click="clearCurrentAxisData('four')"></i>
@@ -226,10 +226,10 @@
                     <i slot="suffix" class="el-input__icon el-icon-close" @click="clearCurrentAxisData('one')" style="font-size: 20px;position: absolute;top: -3px;right: 45px;"></i>
                     <div class="visual-axis-line visual-axis-line-up"></div>
                   </div>
-                  <div class="icon-exchange tab-icon-set visual-icon-exchange" @click="changeVisualAxisValue"></div>
+                  <div class="icon-exchange tab-icon-set visual-icon-exchange"  @click="changeVisualAxisValue"></div>
                   <div class="df df-fe-r df-jc-fs df-ai-c mb10 w100 pos-r">
                     <div>{{visualConfigAxisTwoTextName}}</div>
-                    <div class="visual-axis-text" :style="currentAxisStyle === 'two' ? currentAxisStyleObj : ''" @click="selectCurrentAxis('two')">{{ visualConfigAxisTwoText }}</div>
+                    <div class="visual-axis-text" :style="currentAxisStyle === 'two' ? currentAxisStyleObj : ''" @click="selectCurrentAxis('two')" :disabled="stateType">{{ visualConfigAxisTwoText }}</div>
                     <i slot="suffix" class="el-input__icon el-icon-close" @click="clearCurrentAxisData('two')" style="font-size: 20px;position: absolute;top: -3px;right: 45px;"></i>
                     <div class="visual-axis-line visual-axis-line-down"></div>
                   </div>
@@ -284,13 +284,15 @@
                     <el-table-column label="操作" align="left" width="100">
                       <template slot-scope="scope">
                         <div class="row-icon-group">
-                          <div class="icon-delete tab-icon-set mr10" title="删除" @click.stop="tableConfigRowDelete(scope.$index, tableConfigData)"></div>
+                          <div class="icon-delete tab-icon-set mr10" title="删除" v-show="!stateType" @click.stop="tableConfigRowDelete(scope.$index, tableConfigData)"></div>
 
                           <div class="icon-pack-up tab-icon-set mr10" title="上移"
+                              v-show="!stateType"
                               :style="{ visibility: scope.$index === 0 ? 'hidden' : '' }"
                               @click.stop="moveUpRow(scope.$index, scope.row)">
                           </div>
                           <div class="icon-pack-an tab-icon-set mr10" title="下移"
+                              v-show="!stateType"
                               :style="{ visibility: scope.$index === (tableConfigData.length-1) ? 'hidden' : '' }"
                               @click.stop="moveDownRow(scope.$index, scope.row)">
                           </div>
@@ -317,6 +319,7 @@
                       placeholder="请输入新建分析名称"
                       v-model="fileNewName"
                       size="small"
+                      :disabled='stateType ? true : false'
                       @change="changeFileNewName">
                       <!--
                       @blur="blurFileNewName" -->
@@ -342,6 +345,7 @@
                     <el-input
                       placeholder="请选择事件库"
                       v-model="eventName"
+                      :disabled='stateType ? true : false'
                       readonly
                       size="small">
                     </el-input>
@@ -350,7 +354,7 @@
               </div>
 
               <!-- 筛选配置属性 -->
-              <div v-show="fileNewContentActiveName === 'filterConfig'">
+              <div v-show="!stateType && fileNewContentActiveName === 'filterConfig'">
                 <!-- 筛选配置属性中数据权限 -->
                 <div class="m20 df df-fd-c" v-show="currentFilterConfigRowAttr === 9999">
                   <div class="mb10 mt10">数据权限：</div>
@@ -782,7 +786,7 @@
                 </div>
               </div>
               <!-- 可视化配置属性-->
-              <div v-show="fileNewContentActiveName === 'visualConfig'">
+              <div v-show="!stateType && fileNewContentActiveName === 'visualConfig'">
                 <div class="m20 df df-fd-c df-jc-fs df-ai-fs">
                   <div class="df df-fd-r df-jc-fs df-ai-c w100">
                     <span class="chart-name">图表名称：</span>
@@ -977,7 +981,7 @@
                 </div>
               </div>
 
-              <div v-show="fileNewContentActiveName === 'visualConfigDhb'">
+              <div v-show="!stateType && fileNewContentActiveName === 'visualConfigDhb'">
                 <div class="m20 df df-fd-c">
                   <div class="df df-fd-r df-jc-sa df-ai-c df-f1 mt10">
                     <span class="df-f1">帧数：</span>
@@ -1066,7 +1070,7 @@
       </el-dialog>
     </div>
 
-    <div v-if="this.$util.isNotEmptyObject(this.$store.state.eventStoreData)" class="event-dialog">
+    <div v-if="this.$util.isNotEmptyObject(this.$store.state.eventStoreData) && !stateType" class="event-dialog">
       <el-dialog :close-on-click-modal="false" title="切换事件库" :visible.sync="dialogEventVisible" @open="openEventDialog">
         <div class="event-dialog-content">
           <div class="search-box">
@@ -1111,9 +1115,6 @@ export default {
     },
     analysisType: {
       type: String
-    },
-    stateType: {
-      type: String
     }
   },
   data () {
@@ -1127,6 +1128,7 @@ export default {
         exportGroupCount: '',
         checkedTimeZone: true
       },
+      stateType: '', // 页面是否可编辑
       pageSize: 10, // 每页显示条目数
       pagerCount: 11, // 页码按钮的数量
       totalCount: 0, // 总条目数
@@ -1642,6 +1644,7 @@ export default {
   },
   created () {
     this.getViewPowerData()
+    this.stateType = this.$store.state.modelPageType
   },
   computed: {
     dataPointYArr () {
@@ -2802,6 +2805,9 @@ export default {
     },
     clearCurrentAxisData (type) { // 清空选中当前轴的数据
       this.currentAxisStyle = '' // 清除选中轴的信息
+      if (this.stateType) {
+        return
+      }
       if (type === 'one') {
         this.visualConfigAxisOneText = ''
         this.visualConfigAxisOneValue = ''
@@ -2883,7 +2889,7 @@ export default {
         this.visualConfigCharts.setOption({
           title: {
             show: true,
-            text: this.visualConfigChartsName || '请输入图表名称',
+            text: this.visualConfigChartsName || this.stateType ? '' : '请输入图表名称',
             left: 'center',
             textStyle: {
               fontSize: 12
@@ -2936,7 +2942,7 @@ export default {
         this.visualConfigCharts.setOption({
           title: {
             show: true,
-            text: this.visualConfigChartsName || '请输入图表名称',
+            text: this.visualConfigChartsName || this.stateType ? '' : '请输入图表名称',
             left: 'center',
             textStyle: {
               fontSize: 12
@@ -2985,6 +2991,9 @@ export default {
       // window.onresize = this.visualConfigCharts.resize
     },
     changeVisualAxisValue () {
+      if (this.stateType) {
+        return
+      }
       // 可视化配置中轴1与轴2切换方法
       // 2018/12/18 轴1和轴2切换时，不进行为空校验
       let twoText = this.visualConfigAxisTwoText
@@ -3052,6 +3061,9 @@ export default {
       }
     },
     selectCurrentAxis (name) { // 选中某个轴
+      if (this.stateType) {
+        return
+      }
       console.log(name)
       this.currentAxisStyle = name
     },

@@ -318,7 +318,7 @@ export default {
     tableRowClassName ({row, rowIndex}) { // 表格行样式
       return 'table-row-class-name'
     },
-    managerRowView (row) { // 重新提交新建分析参数
+    managerRowView (row, type) { // 重新提交新建分析参数
       if (this.$util.isDefine(row.CONTENT) && this.$util.isNotEmptyObject(row.CONTENT)) {
         let flag = false
         if (row.CONTENT.filter.length > 0) {
@@ -340,7 +340,9 @@ export default {
           this.$message.error('参数信息有误，数据提交失败！')
         } else {
           this.$store.commit('ANALYSIS_PARAMS_ID', row.ID) // 保存生成的编号，fdv图表显示查询使用
-
+          if (type) {
+            this.managerTableData = []
+          }
           if (this.$util.isDefine(row.CONTENT.event_profile) && this.$util.isNotEmptyObject(row.CONTENT.event_profile)) {
             this.$store.commit('EVENT_STORE_DATA', row.CONTENT.event_profile)
           } else {
@@ -370,6 +372,7 @@ export default {
     },
     managerRowEdit (row, type) { // 重新编辑新建分析参数
       console.log('edit', row)
+      this.$store.commit('MODEL_PAGE_TYPE', type)
       if (this.$util.isDefine(row.CONTENT) && this.$util.isNotEmptyObject(row.CONTENT)) {
         this.$store.commit('ANALYSIS_PARAMS_ID', row.ID) // 保存生成的编号，fdv图表显示查询使用
 
@@ -387,7 +390,10 @@ export default {
       } else if (this.$util.isDefine(row.CONTENT.dhbParamObj) && this.$util.isNotEmptyObject(row.CONTENT.dhbParamObj)) {
         this.$bus.$emit('analysisAddTab', {enName: 'analysis_dhbcsdb', zhName: row.CONTENT.fileNewName, isClosable: true, parent: 'analysis_file', count: 0})
       } else {
-        this.$bus.$emit('analysisAddTab', {enName: 'analysis_file_new', zhName: row.CONTENT.fileNewName, isClosable: true, parent: 'analysis_file', count: 0, type: row.TYPE}, type)
+        this.$bus.$emit('analysisAddTab', {enName: 'analysis_file_new', zhName: row.CONTENT.fileNewName, isClosable: true, parent: 'analysis_file', count: 0, type: row.TYPE})
+        if (type) {
+          this.managerTableData = []
+        }
       }
       this.publicParmas = {}
     },
@@ -1052,9 +1058,9 @@ export default {
                 return item.NAME === this.publicParmas.modelName
               })
               if (this.publicParmas.type === 'view') {
-                this.managerRowEdit(row[0], 'view') // 编辑
+                this.managerRowEdit(row[0], 'view') // 查看配置页
               } else {
-                this.managerRowView(row[0], 'detail') // 查看
+                this.managerRowView(row[0], 'detail') // 查看图表页
               }
             }
           } else {
@@ -1729,8 +1735,7 @@ export default {
           } else {
             disabledMenuObj['analysis_chart_bar3D'] = true // 隐藏3d柱状菜单
           }
-
-          if (this.$util.isNotEmptyObject(tempAnalysisResultAllDataObj.barLinePieData) && !tempAnalysisResultAllDataObj.submitAnalysisParams.isSort) { // 只有柱状图和折线图才可以添加辅助线   TODO: 选择测量排序不显示添加辅助线
+          if (this.$util.isNotEmptyObject(tempAnalysisResultAllDataObj.barLinePieData) && !tempAnalysisResultAllDataObj.submitAnalysisParams.isSort && !this.$store.state.modelPageType) { // 只有柱状图和折线图才可以添加辅助线   TODO: 选择测量排序不显示添加辅助线
             disabledMenuObj['analysis_chart_subline'] = false // 显示添加辅助线菜单
           } else {
             disabledMenuObj['analysis_chart_subline'] = true // 隐藏添加辅助线菜单
@@ -1834,6 +1839,9 @@ export default {
               disabledMenuObj['analysis_view_fdv'] = true
               disabledMenuObj['analysis_view_export'] = true
               disabledMenuObj['analysis_view_template'] = true
+              disabledMenuObj['analysis_view_clean'] = true
+            }
+            if (this.$store.state.modelPageType) {
               disabledMenuObj['analysis_view_clean'] = true
             }
             this.$bus.$emit('closeAnalysisTabFun') // 关闭分析结果tab,数据切换时重新打开

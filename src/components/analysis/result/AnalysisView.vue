@@ -316,7 +316,7 @@
           </div>
 
           <div class="fdv-dialog-chart" @scroll.passive="getScroll($event)" id='resetScrollTop' v-show="showChartOrTable === 'chartTypeTab'">
-            <div class="delete-button" v-show="isShowDeleteButton">
+            <div class="delete-button" v-show="!stateType && isShowDeleteButton">
               <el-checkbox-group v-model="mergeParamList">
               <div class="item df df-fd-c"
                 v-for="(item, index) in fdvChartDataArr"
@@ -407,7 +407,7 @@
               @next-click="reloadGetFlightId">
             </el-pagination>
 
-            <el-button type="primary" @click="saveFdvChartName">保存</el-button>
+            <el-button type="primary" v-show='!stateType' @click="saveFdvChartName">保存</el-button>
             <el-button :disabled="exportBtnDisabled" @click.stop="exportFdvChartName">导出</el-button>
             <!-- <el-button icon="el-icon-download" circle type="mini" @click="saveImage('fdvChartInfo', 'dem')"></el-button> -->
           </div>
@@ -642,7 +642,8 @@ export default {
         matrixParaQ: [{ required: true, message: '请输入矩阵参数值', trigger: 'blur' }],
         matrixParaR: [{ required: true, message: '请输入矩阵参数值', trigger: 'blur' }],
         outliersHandling: [{ required: true, message: '请选择异常值处理方法', trigger: 'blur' }]
-      }
+      },
+      stateType: '' // 页面是否可编辑
     }
   },
   components: {
@@ -745,6 +746,9 @@ export default {
       let len = (parseInt(newVal) - parseInt(this.fdvDataZoomMinTime)) * this.flightRateValue
       this.fdvDialogTableDataList = tempArr.splice(parseInt(this.fdvDataZoomMinTime * this.flightRateValue), len)
     }
+  },
+  created () {
+    this.stateType = this.$store.state.modelPageType
   },
   mounted () {
     this.$nextTick(() => {
@@ -1326,10 +1330,13 @@ export default {
 
         that.getToExplorerValueHandle(getToExplorerValue)
         that.getLonpAndLatpHandle(getLonpAndLatp)
+        if (!that.stateType) {
+          tempDisabledMenuObj['analysis_view_clean'] = false // 启用按钮
+        }
         tempDisabledMenuObj['analysis_view_fdv'] = false // 启用按钮
         tempDisabledMenuObj['analysis_view_export'] = false // 启用按钮
         tempDisabledMenuObj['analysis_view_template'] = false // 启用按钮
-        tempDisabledMenuObj['analysis_view_clean'] = false // 启用按钮
+        // tempDisabledMenuObj['analysis_view_clean'] = false // 启用按钮
         that.$store.commit('IS_DISABLED_MENU', tempDisabledMenuObj) // 暂时存储需要修改二级菜单的值// 控制二级菜单
         // 控制二级菜单
         if (that.activeTabName === 'flightRecordView') {

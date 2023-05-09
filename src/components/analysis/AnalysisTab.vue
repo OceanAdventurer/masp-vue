@@ -25,7 +25,7 @@
           <Manager ref="manager"></Manager>
         </div>
         <div v-else-if="item.content === 'analysis_file_new' || item.content === 'analysis_event_file_new' || item.content === 'analysis_dhbcsdb'">
-          <NewFile ref="childnewfile" :contentType="item.content" :analysisType="item.type" :stateType="stateType"></NewFile>
+          <NewFile ref="childnewfile" :contentType="item.content" :analysisType="item.type"></NewFile>
         </div>
         <!-- <div v-else-if="item.content === 'event_store_result'">
           <EventStoreResult ref="eventStoreResult"></EventStoreResult>
@@ -73,7 +73,6 @@ export default {
       analysisChartType: 'bar', // 默认图表类型
       analysisChartTypeName: '柱状图',
       activeTabName: '',
-      stateType: '', // 页面状态，是否可编辑
       activeType: 'flightRecordView', // 分析结果默认激活的tab标签类型
       subActiveType: '',
       analysisHeaderToActiveName: { // 分析中点击图表、表格、视图对应分析结果中tab
@@ -114,10 +113,8 @@ export default {
       this.catalogNode = node
       this.parentId = data.ID // 点击编辑按钮跳转到分析参数页面需要的值
     })
-
-    this.$bus.$on('analysisAddTab', (obj, type = '') => { // 接收添加标签的事件
-      console.log('analysisAddTab--------: ', obj.enName, obj.zhName, obj.isClosable, obj.type)
-      this.stateType = type
+    this.$bus.$on('analysisAddTab', obj => { // 接收添加标签的事件
+      console.log('analysisAddTab--------: ', obj.enName, obj.zhName, obj.isClosable)
       if (obj.enName === 'tree_catalog_add') { // 添加目录
         // that.addNodeFun(this.catalogData, this.catalogNode, 'catalog')
         that.$refs.manager[0].addNodeFun(this.catalogData, this.catalogNode, 'catalog')
@@ -194,7 +191,6 @@ export default {
     this.$bus.$off('fpcFlightObjHandle')
     this.$bus.$off('analysisMenu')
     this.$bus.$off('analysis_view_clean_openDia')
-    this.stateType = ''
   },
   watch: {
     analysisTabsValue (newVal, oldVal) {

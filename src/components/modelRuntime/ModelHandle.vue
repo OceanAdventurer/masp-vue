@@ -223,7 +223,7 @@ export default {
         treeNode: row.treeNode,
         treeName: row.treeName,
         name: row.modelName,
-        type: 'detail'
+        type: 'view'
       })
     },
     showOptInfo (row) {
@@ -237,9 +237,6 @@ export default {
         if (res.data.length > 0) {
           res.data.sort((a, b) => { return a.optTime > b.optTime })
         }
-        console.log('====================================')
-        console.log(res.data, 'res.data--test')
-        console.log('====================================')
         this.modelOptList.dataList = res.data
         this.modelOptList.modelOptDialog = true
         this.$store.commit('HIDE_LOADING', '拼命加载中！')

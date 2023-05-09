@@ -559,7 +559,7 @@ export default {
         let userInfo = JSON.parse(window.sessionStorage.getItem('DSAP-userInfo')) || {}
         const {menuList = []} = userInfo
         let approve = menuList.find(item => item.URL === 'approve')
-        if (approve.ID && this.approve > 0) {
+        if (approve && approve.ID && this.approve > 0) {
           this.openNavMenuItem('runtimeManage', {}, true)
         } else {
           this.openNavMenuItem('runtimeManage')
