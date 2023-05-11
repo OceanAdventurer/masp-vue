@@ -114,7 +114,7 @@
     </el-dialog>
 
     <el-dialog :close-on-click-modal="false" title="操作记录" class="model-opt-list-dialog" :visible.sync="modelOptList.modelOptDialog" @close='closeOptListDialog'>
-      <el-timeline style="padding:0 20px;max-height:300px;overflow:auto">
+      <el-timeline :reverse='true' style="padding:0 20px;max-height:300px;overflow:auto">
         <!-- :icon="workFlow.length < 2 ? '' : activity.optTypeLabel === '驳回' ? 'el-icon-error' : 'el-icon-success'" -->
         <el-timeline-item
           v-for="(activity, index) in modelOptList.dataList"
@@ -362,7 +362,7 @@ export default {
         method: 'post',
         params: { modelId: row.modelId }
       }).then(res => {
-        this.modelOptList.dataList = res.data
+        this.modelOptList.dataList = res.data || []
         this.modelOptList.modelOptDialog = true
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
       }).catch(res => {

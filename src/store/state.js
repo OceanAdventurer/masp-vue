@@ -33,7 +33,9 @@ const state = {
   },
   mainSubline: [],
   paramTwoStatus: '', //分析参数数据状态
-  modelPageType: '' // 模型是否可编辑
+  modelPageType: '', // 模型是否可编辑
+  isHasPermission: 'N', // 是否有航司权限
+  analysisType: '' // 当前模型分析类型
 }
 
 export default state

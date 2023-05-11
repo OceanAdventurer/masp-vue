@@ -192,7 +192,7 @@ export default {
 </script>
 <style scoped>
 .sensitive_flight .el-form {
-  margin: 20px 20px 0;
+  margin: 5px 20px 0;
 }
 .sensitive_flight .el-form .airport {
   margin-left: 20px;
@@ -202,7 +202,6 @@ export default {
 }
 .sensitive_flight .el-form .airport .el-form-item div.el-form-item__content .el-input{
   width: 45%;
-
 }
 .h10 {
   height: 10%;
@@ -212,5 +211,10 @@ export default {
 }
 .w30 {
   width: 30%;
+}
+</style>
+<style>
+.sensitive_flight .el-form .el-form-item {
+  margin-bottom: 15px;
 }
 </style>

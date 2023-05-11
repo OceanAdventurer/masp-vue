@@ -234,10 +234,7 @@ export default {
         method: 'post',
         params: { modelId: row.modelId }
       }).then(res => {
-        if (res.data.length > 0) {
-          res.data.sort((a, b) => { return a.optTime > b.optTime })
-        }
-        this.modelOptList.dataList = res.data
+        this.modelOptList.dataList = res.data || []
         this.modelOptList.modelOptDialog = true
         this.$store.commit('HIDE_LOADING', '拼命加载中！')
       }).catch(res => {

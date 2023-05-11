@@ -132,9 +132,6 @@ export default {
         }
       })
     },
-    resetForm (formName) {
-      this.$refs[formName].resetFields()
-    },
     resetPassword () {
       this.$confirm('此操作将重置密码, 是否继续?', '提示', {
         confirmButtonText: '确定',

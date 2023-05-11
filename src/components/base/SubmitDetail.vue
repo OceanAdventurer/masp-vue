@@ -111,8 +111,11 @@ export default {
     // })
     this.$bus.$on('submit_details', () => {
       this.dialogVisible = true
-      this.queryTableInfo()
-      this.getTypeList()
+      this.$nextTick(() => {
+        this.$refs.filtersRef && this.$refs.filtersRef.resetFields()
+        this.queryTableInfo()
+        this.getTypeList()
+      })
     })
   },
   methods: {
@@ -175,9 +178,7 @@ export default {
       return (list.find(item => item.code === value) && list.find(item => item.code === value).name) || '-'
     }
   },
-  destroyed () {
-    this.$refs['filtersForm'].resetFields()
-  }
+  destroyed () {}
 }
 </script>
 

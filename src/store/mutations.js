@@ -66,6 +66,12 @@ const mutations = {
   },
   [types.MODEL_PAGE_TYPE] (state, payload) {
     state.modelPageType = payload
+  },
+  [types.IS_HAS_PERMISSION] (state, payload) {
+    state.isHasPermission = payload
+  },
+  [types.ANALYSIS_TYPE] (state, payload) {
+    state.analysisType = payload
   }
 }
 

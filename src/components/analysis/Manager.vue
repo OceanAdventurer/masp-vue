@@ -99,10 +99,10 @@
     <div class="publish_dia">
       <el-dialog :close-on-click-modal="false" :title="(publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回') ? '提交审核' : '审批详情'" :visible.sync="publishDiaShow">
         <div class="publish_dialog_content" style="max-height: 350px;overflow: auto">
-          <el-form ref="publishDiaRef" :model= "publishInfoForm" :rules="publishInfoRules" label-width="80px" label-position='right'>
+          <el-form ref="publishDiaRef" :model= "publishInfoForm" :rules="publishInfoRules" label-width="90px" label-position='right'>
             <el-row>
               <el-col :span='12'>
-                <el-form-item label="分析名称" prop="modelName" width='350'>
+                <el-form-item label="分析名称：" prop="modelName" width='350'>
                   <el-input v-model="publishInfoForm.modelName" disabled  v-if="publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'"></el-input>
                   <span v-else>{{publishInfoForm.modelName}}</span>
                 </el-form-item>
@@ -110,7 +110,7 @@
             </el-row>
             <el-row>
               <el-col :span='12'>
-                <el-form-item label="模型分类" prop="categoryType">
+                <el-form-item label="模型分类：" prop="categoryType">
                   <el-select v-model="publishInfoForm.categoryType" v-if="publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
                     <el-option
                       v-for="item in typeList"
@@ -124,7 +124,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-form-item label="备注" prop="explain" v-show="publishInfoForm.modelState ==='待提交' || optTypeLabel === '驳回'">
+            <el-form-item label="备注：" class='explain' prop="explain" v-show="publishInfoForm.modelState ==='待提交' || optTypeLabel === '驳回'">
               <el-input type="textarea"
                 :rows="3"
                 v-model.trim="publishInfoForm.explain"
@@ -151,10 +151,10 @@
               </el-timeline-item>
             </el-timeline>
             </el-row>
-            <el-form-item class="no_margin" label="提交人" prop="submitBy" v-show="publishInfoForm.modelState === '' || publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
+            <el-form-item class="no_margin" label="提交人：" prop="submitBy" v-show="publishInfoForm.modelState === '' || publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
               <span>{{publishInfoForm.submitBy}}</span>
             </el-form-item>
-            <el-form-item class="no_margin" label="提交时间" prop="submitTime" v-show="publishInfoForm.modelState === '' || publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
+            <el-form-item class="no_margin" label="提交时间：" prop="submitTime" v-show="publishInfoForm.modelState === '' || publishInfoForm.modelState === '待提交' || optTypeLabel === '驳回'">
               <span>{{publishInfoForm.submitTime}}</span>
             </el-form-item>
           </el-form>
@@ -319,6 +319,7 @@ export default {
       return 'table-row-class-name'
     },
     managerRowView (row, type) { // 重新提交新建分析参数
+      this.$store.commit('ANALYSIS_TYPE', row.TYPE)
       if (this.$util.isDefine(row.CONTENT) && this.$util.isNotEmptyObject(row.CONTENT)) {
         let flag = false
         if (row.CONTENT.filter.length > 0) {
@@ -372,6 +373,7 @@ export default {
     },
     managerRowEdit (row, type) { // 重新编辑新建分析参数
       console.log('edit', row)
+      this.$store.commit('ANALYSIS_TYPE', row.TYPE)
       this.$store.commit('MODEL_PAGE_TYPE', type)
       if (this.$util.isDefine(row.CONTENT) && this.$util.isNotEmptyObject(row.CONTENT)) {
         this.$store.commit('ANALYSIS_PARAMS_ID', row.ID) // 保存生成的编号，fdv图表显示查询使用
@@ -1830,6 +1832,7 @@ export default {
             this.$bus.$emit('analysisAddTab', {enName: 'fpc_result', zhName: '多航班参数对比结果', isClosable: true, parent: 'fpc_result_chart'})
           } else {
             this.$bus.$emit('closeDhbcsdbTabFun')
+            this.$store.commit('IS_HAS_PERMISSION', tempAnalysisResultAllDataObj.flightInfoData.ishaspermission)
             if (tempAnalysisResultAllDataObj.flightInfoData.ishaspermission === 'Y') {
               disabledMenuObj['analysis_view_fdv'] = false
               disabledMenuObj['analysis_view_export'] = false
@@ -2154,6 +2157,9 @@ export default {
 .publish_dia .publish_dialog_content .el-card .el-card__body {
   padding: 10px 20px;
   font-size: 12px;
+}
+.publish_dia .publish_dialog_content .explain .el-form-item__content {
+  margin-right: 20px;
 }
 .publish_dia .el-dialog__wrapper .el-dialog__header .el-dialog__title {
   font-size: 14px;

@@ -228,10 +228,10 @@ export const menuData = {
       { disabledImgUrl: require('assets/images/icon12_0.png'), showImgUrl: require('assets/images/icon12_1.png'), zhName: '导出', enName: 'analysis_grid_export', isShow: true, isDisabled: true, parent: 'analysis_grid', isDropdown: false, dropdownItem: [] }
     ],
     analysis_view: [ // 分析-飞行记录视图
-      { disabledImgUrl: require('assets/images/icon132_0.png'), showImgUrl: require('assets/images/icon132_1.png'), zhName: '工程参数视图', enName: 'analysis_view_fdv', isShow: true, isDisabled: false, parent: 'analysis_view', isDropdown: false, dropdownItem: [] },
-      { disabledImgUrl: require('assets/images/icon12_0.png'), showImgUrl: require('assets/images/icon12_1.png'), zhName: '全参导出', enName: 'analysis_view_export', isShow: true, isDisabled: false, parent: 'analysis_view', isDropdown: false, dropdownItem: [] },
-      { disabledImgUrl: require('assets/images/template_01.png'), showImgUrl: require('assets/images/template.png'), zhName: '工程参数视图模版', enName: 'analysis_view_template', isShow: true, isDisabled: false, parent: 'analysis_view', isDropdown: false, dropdownItem: [] },
-      { disabledImgUrl: require('assets/images/data_clean_01.png'), showImgUrl: require('assets/images/data_clean.png'), zhName: '参数清洗', enName: 'analysis_view_clean', isShow: true, isDisabled: false, parent: 'analysis_view', isDropdown: false, dropdownItem: [] }
+      { disabledImgUrl: require('assets/images/icon132_0.png'), showImgUrl: require('assets/images/icon132_1.png'), zhName: '工程参数视图', enName: 'analysis_view_fdv', isShow: true, isDisabled: true, parent: 'analysis_view', isDropdown: false, dropdownItem: [] },
+      { disabledImgUrl: require('assets/images/icon12_0.png'), showImgUrl: require('assets/images/icon12_1.png'), zhName: '全参导出', enName: 'analysis_view_export', isShow: true, isDisabled: true, parent: 'analysis_view', isDropdown: false, dropdownItem: [] },
+      { disabledImgUrl: require('assets/images/template_01.png'), showImgUrl: require('assets/images/template.png'), zhName: '工程参数视图模版', enName: 'analysis_view_template', isShow: true, isDisabled: true, parent: 'analysis_view', isDropdown: false, dropdownItem: [] },
+      { disabledImgUrl: require('assets/images/data_clean_01.png'), showImgUrl: require('assets/images/data_clean.png'), zhName: '参数清洗', enName: 'analysis_view_clean', isShow: true, isDisabled: true, parent: 'analysis_view', isDropdown: false, dropdownItem: [] }
     ],
     analysis_table: [ // 分析-表格详情
       { disabledImgUrl: require('assets/images/icon12_0.png'), showImgUrl: require('assets/images/icon12_1.png'), zhName: '导出', enName: 'analysis_table_export', isShow: true, isDisabled: false, parent: 'analysis_table', isDropdown: false, dropdownItem: [] },
@@ -254,7 +254,7 @@ export const menuData = {
     fpc_result_view: [ // 分析-飞行记录视图
       { disabledImgUrl: require('assets/images/icon132_0.png'), showImgUrl: require('assets/images/icon132_1.png'), zhName: '工程参数视图', enName: 'analysis_view_fdv', isShow: true, isDisabled: false, parent: 'analysis_view', isDropdown: false, dropdownItem: [] },
       { disabledImgUrl: require('assets/images/icon12_0.png'), showImgUrl: require('assets/images/icon12_1.png'), zhName: '全参导出', enName: 'analysis_view_export', isShow: true, isDisabled: false, parent: 'analysis_view', isDropdown: false, dropdownItem: [] },
-      { disabledImgUrl: require('assets/images/icon124.png'), showImgUrl: require('assets/images/icon124.png'), zhName: '工程参数视图模版', enName: 'analysis_view_template', isShow: true, isDisabled: false, parent: 'analysis_view', isDropdown: false, dropdownItem: [] }
+      { disabledImgUrl: require('assets/images/template_01.png'), showImgUrl: require('assets/images/template.png'), zhName: '工程参数视图模版', enName: 'analysis_view_template', isShow: true, isDisabled: false, parent: 'analysis_view', isDropdown: false, dropdownItem: [] }
     ],
     fpc_result_grid: [
       { disabledImgUrl: require('assets/images/icon12_0.png'), showImgUrl: require('assets/images/icon12_1.png'), zhName: '导出', enName: 'fpc_result_grid_export', isShow: true, isDisabled: true, parent: 'fpc_result_grid', isDropdown: false, dropdownItem: [] }

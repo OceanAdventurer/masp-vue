@@ -63,7 +63,7 @@
 <template>
   <div class="container h100">
     <div style="width: 100%;height:48px">
-      <el-input v-model="keywords" placeholder="请输入关键字搜索1" size="small"
+      <el-input v-model="keywords" placeholder="请输入关键字搜索" size="small"
                 @keyup.enter.native="searchTwoDimesional()" style="float: right;margin: 8px 10px;width: 200px;font-size: 12px;">
         <i class="el-icon-search el-input__icon"
            slot="suffix"

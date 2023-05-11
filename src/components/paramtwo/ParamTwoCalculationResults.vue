@@ -130,7 +130,7 @@
          执行结果：
        </div>
        <div style="margin-top: 10px;">
-         <el-input readonly="readonly" type="input" size="small"    placeholder="执行结果" v-model="data.result">
+         <el-input readonly="readonly" type="input" size="small" placeholder="执行结果" v-model="data.result">
          </el-input>
        </div>
     </div>
@@ -293,10 +293,15 @@
             }
           }
         ).then(response => {
-          if (response.data[0].value) {
-            this.data.result = response.data[0].value
+          if (response.data[0].value.length) {
+            if (typeof response.data[0].value === 'string') {
+              this.data.result = response.data[0].value
+            } else {
+              this.data.result = response.data[0].value.join(',')
+            }
           } else {
-            this.data.result = response.data
+            this.data.result = ''
+            this.$message.info('执行结果为空')
           }
         }).catch(response => {
         })

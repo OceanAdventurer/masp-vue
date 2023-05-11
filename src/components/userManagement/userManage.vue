@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container class='user_manage'>
       <el-dialog
         title="系统切换"
         :visible.sync="systemSwitching"
@@ -114,7 +114,7 @@
               </el-input> -->
               <div style="clear: both"></div>
           </div>
-          <div style="height:71%;padding:0 10px">
+          <div style="height:calc(100% - 184px);padding:0 10px">
               <el-table
                 :data="referenceData"
                 :row-style="{height:'38px'}"
@@ -142,7 +142,7 @@
                 </el-table-column>
             </el-table>
           </div>
-          <div style="float:right;margin:20px 0px">
+          <div style="float:right;margin:8px 0px">
             <el-pagination
             background
             @size-change="handleSizeChange"
@@ -539,15 +539,16 @@ export default {
 .el-menu--popup-right-start{
     margin-left: 12px !important;
   }
-.el-menu-vertical-msap:not(.el-menu--collapse) {
+.user_manage .el-menu-vertical-msap:not(.el-menu--collapse) {
   width: 180px;
-  height: calc(100% - 15px);
+  /* height: calc(100% - 15px); */
+  height: 100%;
   min-height: 300px;
-
   margin-bottom: 0;
   overflow: hidden;
   background-color: #2a436f;
   color: #fff;
+  padding-top: 0;
 }
 
 .el-dropdown-menu__item--divided:before,

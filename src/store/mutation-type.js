@@ -19,3 +19,5 @@ export const ANAVT_HIDE_MENU = 'ANAVT_HIDE_MENU'
 export const ANAVT_DISABLED_MENU = 'ANAVT_DISABLED_MENU'
 export const PARAM_TWO_STATUS = 'PARAM_TWO_STATUS'
 export const MODEL_PAGE_TYPE = 'MODEL_PAGE_TYPE'
+export const IS_HAS_PERMISSION = 'IS_HAS_PERMISSION' // 是否有航司权限
+export const ANALYSIS_TYPE = 'ANALYSIS_TYPE' // 是否有航司权限

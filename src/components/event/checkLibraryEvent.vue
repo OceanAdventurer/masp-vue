@@ -146,6 +146,14 @@
   }
 </style>
 <style>
+  .check_library_event .binding .el-radio__label {
+    display: inline-block;
+    word-break: break-all;
+    white-space: pre-wrap;
+    vertical-align: text-top;
+    line-height: 18px;
+    width: 95%;
+  }
   .el-step__title.is-process {
     color: #c0c4cc;
     font-weight: 100;
@@ -198,7 +206,7 @@
 
 </style>
 <template>
-  <div style="width: 100%;height: 100%">
+  <div class='check_library_event' style="width: 100%;height: 100%">
     <div style=" border-bottom: solid 1px #DDDDDD;height: 100%;">
     <!-- <div style=" border-bottom: solid 1px #DDDDDD;height: 100%;position:relative"> -->
       <div class="binding">

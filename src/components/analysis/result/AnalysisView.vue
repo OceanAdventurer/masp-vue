@@ -916,6 +916,8 @@ export default {
                 type: 'success',
                 message: '操作成功!'
               })
+            } else {
+              this.$message.error(res.data.message)
             }
           }).catch(err => {
             this.$store.commit('HIDE_LOADING', '加载完毕')
@@ -1284,19 +1286,22 @@ export default {
     },
     getCompnentAllHandle () {
       let tempDisabledMenuObj = this.$store.state.isDisabledMenu
+      const flag = this.$store.state.analysisType === '航班分析'
+      tempDisabledMenuObj['analysis_view_fdv'] = true // 禁用按钮
+      tempDisabledMenuObj['analysis_view_export'] = true // 禁用按钮
+      tempDisabledMenuObj['analysis_view_template'] = true // 禁用按钮
+      tempDisabledMenuObj['analysis_view_clean'] = true // 禁用按钮
+      this.$store.commit('IS_DISABLED_MENU', tempDisabledMenuObj) // 暂时存储需要修改二级菜单的值
       if (!this.$util.isDefine(this.currentFlightId)) {
-        tempDisabledMenuObj['analysis_view_fdv'] = true // 禁用按钮
-        tempDisabledMenuObj['analysis_view_export'] = true // 禁用按钮
-        tempDisabledMenuObj['analysis_view_template'] = true // 禁用按钮
-        tempDisabledMenuObj['analysis_view_clean'] = true // 禁用按钮
-        this.$store.commit('IS_DISABLED_MENU', tempDisabledMenuObj) // 暂时存储需要修改二级菜单的值
         // 控制二级菜单
-        if (this.activeTabName === 'flightRecordView') {
-          this.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, tempDisabledMenuObj) // 修改头部显示效果
-        } else if (this.activeTabName === '2dChart') {
-          this.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
-        } else if (this.activeTabName === 'tableDetail') {
-          this.$bus.$emit('openHeaderMenuItem', 'analysis_table', {}, tempDisabledMenuObj) // 修改头部显示效果
+        if (flag) {
+          if (this.activeTabName === 'flightRecordView') {
+            this.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, tempDisabledMenuObj) // 修改头部显示效果
+          } else if (this.activeTabName === '2dChart') {
+            this.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
+          } else if (this.activeTabName === 'tableDetail') {
+            this.$bus.$emit('openHeaderMenuItem', 'analysis_table', {}, tempDisabledMenuObj) // 修改头部显示效果
+          }
         }
         this.$message({
           type: 'warning',
@@ -1330,21 +1335,27 @@ export default {
 
         that.getToExplorerValueHandle(getToExplorerValue)
         that.getLonpAndLatpHandle(getLonpAndLatp)
-        if (!that.stateType) {
-          tempDisabledMenuObj['analysis_view_clean'] = false // 启用按钮
+        const lonpAndLatp = that.$util.isNotEmptyObject(getLonpAndLatp.data.result.data)
+        const toExplorerValue = that.$util.isNotEmptyObject(getToExplorerValue.data.result.data)
+        const isHasPermission = that.$store.state.isHasPermission
+        if (isHasPermission === 'Y' && lonpAndLatp && toExplorerValue) {
+          tempDisabledMenuObj['analysis_view_fdv'] = false // 启用按钮
+          tempDisabledMenuObj['analysis_view_export'] = false // 启用按钮
+          tempDisabledMenuObj['analysis_view_template'] = false // 启用按钮
+          if (!that.stateType) {
+            tempDisabledMenuObj['analysis_view_clean'] = false // 启用按钮
+          }
         }
-        tempDisabledMenuObj['analysis_view_fdv'] = false // 启用按钮
-        tempDisabledMenuObj['analysis_view_export'] = false // 启用按钮
-        tempDisabledMenuObj['analysis_view_template'] = false // 启用按钮
-        // tempDisabledMenuObj['analysis_view_clean'] = false // 启用按钮
         that.$store.commit('IS_DISABLED_MENU', tempDisabledMenuObj) // 暂时存储需要修改二级菜单的值// 控制二级菜单
         // 控制二级菜单
-        if (that.activeTabName === 'flightRecordView') {
-          that.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, tempDisabledMenuObj) // 修改头部显示效果
-        } else if (that.activeTabName === '2dChart') {
-          that.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
-        } else if (that.activeTabName === 'tableDetail') {
-          that.$bus.$emit('openHeaderMenuItem', 'analysis_table', {}, tempDisabledMenuObj) // 修改头部显示效果
+        if (flag) {
+          if (that.activeTabName === 'flightRecordView') {
+            that.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, tempDisabledMenuObj) // 修改头部显示效果
+          } else if (that.activeTabName === '2dChart') {
+            that.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
+          } else if (that.activeTabName === 'tableDetail') {
+            that.$bus.$emit('openHeaderMenuItem', 'analysis_table', {}, tempDisabledMenuObj) // 修改头部显示效果
+          }
         }
         that.exploreData = getToExplorerValue.data.result.data
         that.exploreTimeData = getToExplorerValueByTime.data.result.data
@@ -1352,18 +1363,15 @@ export default {
       })).catch(err => {
         // 请求失败
         that.$store.commit('HIDE_LOADING', '拼命加载中！') // 隐藏加载框
-        tempDisabledMenuObj['analysis_view_fdv'] = true // 禁用按钮
-        tempDisabledMenuObj['analysis_view_export'] = true // 禁用按钮
-        tempDisabledMenuObj['analysis_view_template'] = true // 禁用按钮
-        tempDisabledMenuObj['analysis_view_clean'] = true // 禁用按钮
-        that.$store.commit('IS_DISABLED_MENU', tempDisabledMenuObj) // 暂时存储需要修改二级菜单的值// 控制二级菜单
         // 控制二级菜单
-        if (that.activeTabName === 'flightRecordView') {
-          that.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, tempDisabledMenuObj) // 修改头部显示效果
-        } else if (that.activeTabName === '2dChart') {
-          that.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
-        } else if (that.activeTabName === 'tableDetail') {
-          that.$bus.$emit('openHeaderMenuItem', 'analysis_table', {}, tempDisabledMenuObj) // 修改头部显示效果
+        if (flag) {
+          if (that.activeTabName === 'flightRecordView') {
+            that.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, tempDisabledMenuObj) // 修改头部显示效果
+          } else if (that.activeTabName === '2dChart') {
+            that.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
+          } else if (that.activeTabName === 'tableDetail') {
+            that.$bus.$emit('openHeaderMenuItem', 'analysis_table', {}, tempDisabledMenuObj) // 修改头部显示效果
+          }
         }
         that.flightChart = ''
         // that.$message.error('请求响应失败，请稍后重试！')
@@ -1840,6 +1848,7 @@ export default {
           let tempPageSize = response.data.result.data.pageSize // 航班总数
           let tempAnalysisResultAllDataObj = this.$store.state.analysisResultAllData // 临时存储store中存放的分析结果数据
           if (this.$util.isDefine(tempFlightInfoData) && this.$util.isNotEmptyObject(tempFlightInfoData) && this.$util.isDefine(tempPageSize)) {
+            tempFlightInfoData.file_no = tempFlightInfoData.file_no ? Number(tempFlightInfoData.file_no) : ''
             this.currentFlightInfoData = tempFlightInfoData // 赋值当前的航班信息
             console.log('赋值当前的航班信息')
             // this.fdvSearchTreeData()
@@ -3769,10 +3778,10 @@ export default {
     min-width: 20px;
   }
   .analysisView .view-pagination .el-pagination {
-    height: 35px;
+    /* height: 35px; */
     margin-top: 15px;
     display: flex;
-    overflow-x: auto;
+    /* overflow-x: auto; */
   }
   .analysisView .view-pagination .el-pagination .el-pagination__editor {
     width: 32px;
@@ -4038,7 +4047,7 @@ export default {
 }
 .fdv-dialog-right {
   position: relative;
-  width: 78%;
+  width: 79%;
   height: 100%;
   margin: 0 auto;
 }
@@ -4140,7 +4149,7 @@ export default {
 }
 
 .toolbar {
-  margin: 10px 10px;
+  margin: 10px 0px;
   box-sizing: border-box;
 
   /* align-self: flex-end; */
@@ -4172,13 +4181,13 @@ export default {
 
 .time-box .icon {
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   border-radius: 10px;
   font-size: 12px;
   color: #FFFFFF;
   text-align: center;
-  line-height: 20px;
+  line-height: 15px;
 }
 .time-box .icon.q {
   background: #74C881;
@@ -4189,7 +4198,7 @@ export default {
 
 .time-title {
   display: block;
-  margin: 0 10px;
+  margin: 0 5px;
 }
 
 .time-box .time-btns {
@@ -4226,7 +4235,7 @@ export default {
   background-color: transparent !important;
 }
 .caiyang-rate >>> .el-slider__runway {
-  margin: 12px 0;
+  margin: 8px 0;
 }
 
 .caiyang-rate .marks-text {

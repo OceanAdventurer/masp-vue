@@ -7,7 +7,7 @@ let setWatermark = (str1, str2) => {
   }
   let can = document.createElement('canvas')
   // 设置canvas画布大小
-  can.width = 190
+  can.width = 260
   can.height = 80
   let cans = can.getContext('2d')
   cans.rotate(-20 * Math.PI / 180) // 水印旋转角度
@@ -15,13 +15,13 @@ let setWatermark = (str1, str2) => {
   cans.fillStyle = '#666666'
   cans.textAlign = 'center'
   cans.textBaseline = 'Middle'
-  cans.fillText(str1, can.width / 3, can.height) // 水印在画布的位置x，y轴
-  cans.fillText(str2, can.width / 2, can.height + 22)
+  cans.fillText(str1, can.width / 2, can.height) // 水印在画布的位置x，y轴
+  cans.fillText(str2, can.width / 2, can.height + 18)
   let div = document.createElement('div')
   div.id = id
   div.style.pointerEvents = 'none'
   div.style.top = '90px'
-  div.style.left = '0px'
+  div.style.left = '120px'
   div.style.opacity = '0.15'
   div.style.position = 'fixed'
   div.style.zIndex = '100000'

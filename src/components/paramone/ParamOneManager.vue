@@ -713,6 +713,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.$store.commit('SHOW_LOADING', '加载中...')
         this.$axios.get('/apm/deleteGp', {params: {id: data.ID}}).then(response => {
           var retData = response.data
           if (retData['status']) {
@@ -733,8 +734,10 @@ export default {
             } else {
               this.$message.error(retData.message)
             }
+            this.$store.commit('HIDE_LOADING', '加载中！')
           }
         }).catch(response => {
+          this.$store.commit('HIDE_LOADING', '加载中！')
         })
       })
       })
@@ -753,11 +756,13 @@ export default {
         }
         if (data) {
           this.fileNewTreeArr = data.data
-          this.expandedKeys = this.checked
+          this.expandedKeys = [this.checked]
         } else {
           this.treeLoading = false
         }
+        this.$store.commit('HIDE_LOADING', '加载中！')
       }).catch(response => {
+        this.$store.commit('HIDE_LOADING', '加载中！')
         this.treeLoading = false
       })
     },
@@ -918,6 +923,7 @@ export default {
       }
       paramStr = this.$qs.stringify(paramStr)
       // 保存节点到数据库
+      this.$store.commit('SHOW_LOADING', '加载中...')
       this.$axios.post(url, paramStr).then((response) => {
         var dataRes = response.data
         if (dataRes.status === '0') {
@@ -954,7 +960,9 @@ export default {
         } else {
           this.$message.error(response.data.message)
         }
+        this.$store.commit('HIDE_LOADING', '加载中！')
       }).catch(response => {
+        this.$store.commit('HIDE_LOADING', '加载中！')
       })
     },
     // 取消处于编辑中的新增节点
@@ -1275,8 +1283,6 @@ export default {
       hideMenuObj.paramOne_edit_suanfa = false
       hideMenuObj.paramOne_clear_suanfa = false
       hideMenuObj.paramOne_file_remove = false
-      hideMenuObj.paramOne_edit_suanfa = false
-      hideMenuObj.paramOne_clear_suanfa = false
       this.$bus.$emit('openHeaderMenuItem', 'paramOne_file', hideMenuObj, {}) // 修改二级菜单是否显示
     },
     // 点击子节点开启 按钮，并禁用编辑清空按钮
@@ -1316,15 +1322,11 @@ export default {
         disabledMenuObj.paramOne_edit_suanfa = false
         disabledMenuObj.paramOne_clear_suanfa = false
         disabledMenuObj.paramOne_file_remove = false
-        disabledMenuObj.paramOne_edit_suanfa = false
-        disabledMenuObj.paramOne_clear_suanfa = false
       } else {
         disabledMenuObj.paramOne_add_suanfa = true
         disabledMenuObj.paramOne_edit_suanfa = false
         disabledMenuObj.paramOne_clear_suanfa = true
         disabledMenuObj.paramOne_file_remove = true
-        disabledMenuObj.paramOne_edit_suanfa = false
-        disabledMenuObj.paramOne_clear_suanfa = true
       }
       this.hideMenuObj = hideMenuObj
       this.disabledMenuObj = disabledMenuObj
