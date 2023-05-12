@@ -70,7 +70,6 @@ import TreeBase from 'components/base/TreeBase'
         iconOtherShow: false, // 自定义节点图标
         iconShow: true, // 树节点过滤图标
         searchShow: true, // 树节点搜索框
-        showDescription: false,
         filterText: ''
       }
     },
@@ -89,7 +88,7 @@ import TreeBase from 'components/base/TreeBase'
         }
       }
     },
-    props: ['creatorId', 'twoDimensionId', 'isLinkParam', 'isCurrentUser', 'treeType', 'showScript'],
+    props: ['creatorId', 'twoDimensionId', 'isLinkParam', 'isCurrentUser', 'treeType', 'showScript', 'showDescription'],
     created () {
     },
     mounted () {
@@ -124,7 +123,7 @@ import TreeBase from 'components/base/TreeBase'
       },
       // 初始化树
       getTree (url, param) {
-        this.showDescription = false // 默认不显示说明
+        this.$bus.$emit('updateShowDescription', false)
         if (this.isCurrentUser && !this.isLinkParam) { // 有权限才执行
           this.treeLoading = true
           this.$axios.get(url, {params: param}).then(response => {
@@ -174,16 +173,16 @@ import TreeBase from 'components/base/TreeBase'
       },
       // 点击子节点击事件 加载中间及右侧数据
       handleNodeClick (data, node, nodeCommpent) {
-        this.showDescription = false
+        this.$bus.$emit('updateShowDescription', false)
         if (data.NAME !== null) {
           if (data['CHILDREN']) { // 点击父节点
             this.$emit('getTreenodeData1', data)
           } else {
             if (data.DESCRIPTION) {
               this.$refs.descri_text.textContent = data.DESCRIPTION
-              this.showDescription = true
+              this.$bus.$emit('updateShowDescription', true)
             } else {
-              this.showDescription = false
+              this.$bus.$emit('updateShowDescription', false)
             }
             this.$emit('getTreenodeData1', data)
           }

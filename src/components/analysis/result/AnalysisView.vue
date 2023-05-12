@@ -1285,24 +1285,24 @@ export default {
       })
     },
     getCompnentAllHandle () {
-      let tempDisabledMenuObj = this.$store.state.isDisabledMenu
-      const flag = this.$store.state.analysisType === '航班分析'
-      tempDisabledMenuObj['analysis_view_fdv'] = true // 禁用按钮
-      tempDisabledMenuObj['analysis_view_export'] = true // 禁用按钮
-      tempDisabledMenuObj['analysis_view_template'] = true // 禁用按钮
-      tempDisabledMenuObj['analysis_view_clean'] = true // 禁用按钮
-      this.$store.commit('IS_DISABLED_MENU', tempDisabledMenuObj) // 暂时存储需要修改二级菜单的值
+      // let tempDisabledMenuObj = this.$store.state.isDisabledMenu
+      // const flag = this.$store.state.analysisType === '航班分析'
+      // tempDisabledMenuObj['analysis_view_fdv'] = true // 禁用按钮
+      // tempDisabledMenuObj['analysis_view_export'] = true // 禁用按钮
+      // tempDisabledMenuObj['analysis_view_template'] = true // 禁用按钮
+      // tempDisabledMenuObj['analysis_view_clean'] = true // 禁用按钮
+      // this.$store.commit('IS_DISABLED_MENU', tempDisabledMenuObj) // 暂时存储需要修改二级菜单的值
       if (!this.$util.isDefine(this.currentFlightId)) {
-        // 控制二级菜单
-        if (flag) {
-          if (this.activeTabName === 'flightRecordView') {
-            this.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, tempDisabledMenuObj) // 修改头部显示效果
-          } else if (this.activeTabName === '2dChart') {
-            this.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
-          } else if (this.activeTabName === 'tableDetail') {
-            this.$bus.$emit('openHeaderMenuItem', 'analysis_table', {}, tempDisabledMenuObj) // 修改头部显示效果
-          }
-        }
+        // // 控制二级菜单
+        // if (flag) {
+        //   if (this.activeTabName === 'flightRecordView') {
+        //     this.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, tempDisabledMenuObj) // 修改头部显示效果
+        //   } else if (this.activeTabName === '2dChart') {
+        //     this.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
+        //   } else if (this.activeTabName === 'tableDetail') {
+        //     this.$bus.$emit('openHeaderMenuItem', 'analysis_table', {}, tempDisabledMenuObj) // 修改头部显示效果
+        //   }
+        // }
         this.$message({
           type: 'warning',
           message: '没有航班号，暂时无法查询数据！'
@@ -1335,28 +1335,28 @@ export default {
 
         that.getToExplorerValueHandle(getToExplorerValue)
         that.getLonpAndLatpHandle(getLonpAndLatp)
-        const lonpAndLatp = that.$util.isNotEmptyObject(getLonpAndLatp.data.result.data)
-        const toExplorerValue = that.$util.isNotEmptyObject(getToExplorerValue.data.result.data)
-        const isHasPermission = that.$store.state.isHasPermission
-        if (isHasPermission === 'Y' && lonpAndLatp && toExplorerValue) {
-          tempDisabledMenuObj['analysis_view_fdv'] = false // 启用按钮
-          tempDisabledMenuObj['analysis_view_export'] = false // 启用按钮
-          tempDisabledMenuObj['analysis_view_template'] = false // 启用按钮
-          if (!that.stateType) {
-            tempDisabledMenuObj['analysis_view_clean'] = false // 启用按钮
-          }
-        }
-        that.$store.commit('IS_DISABLED_MENU', tempDisabledMenuObj) // 暂时存储需要修改二级菜单的值// 控制二级菜单
-        // 控制二级菜单
-        if (flag) {
-          if (that.activeTabName === 'flightRecordView') {
-            that.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, tempDisabledMenuObj) // 修改头部显示效果
-          } else if (that.activeTabName === '2dChart') {
-            that.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
-          } else if (that.activeTabName === 'tableDetail') {
-            that.$bus.$emit('openHeaderMenuItem', 'analysis_table', {}, tempDisabledMenuObj) // 修改头部显示效果
-          }
-        }
+        // const lonpAndLatp = that.$util.isNotEmptyObject(getLonpAndLatp.data.result.data)
+        // const toExplorerValue = that.$util.isNotEmptyObject(getToExplorerValue.data.result.data)
+        // const isHasPermission = that.$store.state.isHasPermission
+        // if (isHasPermission === 'Y' && lonpAndLatp && toExplorerValue) {
+        //   tempDisabledMenuObj['analysis_view_fdv'] = false // 启用按钮
+        //   tempDisabledMenuObj['analysis_view_export'] = false // 启用按钮
+        //   tempDisabledMenuObj['analysis_view_template'] = false // 启用按钮
+        //   if (!that.stateType) {
+        //     tempDisabledMenuObj['analysis_view_clean'] = false // 启用按钮
+        //   }
+        // }
+        // that.$store.commit('IS_DISABLED_MENU', tempDisabledMenuObj) // 暂时存储需要修改二级菜单的值// 控制二级菜单
+        // // 控制二级菜单
+        // if (flag) {
+        //   if (that.activeTabName === 'flightRecordView') {
+        //     that.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, tempDisabledMenuObj) // 修改头部显示效果
+        //   } else if (that.activeTabName === '2dChart') {
+        //     that.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
+        //   } else if (that.activeTabName === 'tableDetail') {
+        //     that.$bus.$emit('openHeaderMenuItem', 'analysis_table', {}, tempDisabledMenuObj) // 修改头部显示效果
+        //   }
+        // }
         that.exploreData = getToExplorerValue.data.result.data
         that.exploreTimeData = getToExplorerValueByTime.data.result.data
         that.$store.commit('HIDE_LOADING', '拼命加载中！') // 隐藏加载框
@@ -1364,15 +1364,15 @@ export default {
         // 请求失败
         that.$store.commit('HIDE_LOADING', '拼命加载中！') // 隐藏加载框
         // 控制二级菜单
-        if (flag) {
-          if (that.activeTabName === 'flightRecordView') {
-            that.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, tempDisabledMenuObj) // 修改头部显示效果
-          } else if (that.activeTabName === '2dChart') {
-            that.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
-          } else if (that.activeTabName === 'tableDetail') {
-            that.$bus.$emit('openHeaderMenuItem', 'analysis_table', {}, tempDisabledMenuObj) // 修改头部显示效果
-          }
-        }
+        // if (flag) {
+        //   if (that.activeTabName === 'flightRecordView') {
+        //     that.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, tempDisabledMenuObj) // 修改头部显示效果
+        //   } else if (that.activeTabName === '2dChart') {
+        //     that.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, tempDisabledMenuObj) // 修改头部显示效果
+        //   } else if (that.activeTabName === 'tableDetail') {
+        //     that.$bus.$emit('openHeaderMenuItem', 'analysis_table', {}, tempDisabledMenuObj) // 修改头部显示效果
+        //   }
+        // }
         that.flightChart = ''
         // that.$message.error('请求响应失败，请稍后重试！')
         console.log('getCompnentAllHandle##@@##:  ' + err.message)

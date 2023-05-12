@@ -102,11 +102,11 @@
       // 点击节点获取工程参数点击事件的值
       getGongChengParamObj (v) {
         if (!this.searchDisabled) {
-          this.showDescription = false
+          this.$bus.$emit('updateShowDescription', false)
           if (!v['CHILDREN']) { // 如果是子节点则 赋值显示说明
             // 有说明则显示说明
             if (v['DESCRIPTION']) {
-              this.showDescription = true
+              this.$bus.$emit('updateShowDescription', true)
               this.$refs.descri_text.textContent = v['DESCRIPTION']
             }
             // 赋值
@@ -119,10 +119,10 @@
       // 单击系统函数获取到data
       getSystemFunctionObj (data) {
         if (!this.searchDisabled) {
-          this.showDescription = false
+          this.$bus.$emit('updateShowDescription', false)
           if (!data['CHILDREN']) { // 如果是子节点则 赋值、显示说明
             if (data.METHOD_DESCRIPTION) { // 有说明显示说明
-              this.showDescription = true
+              this.$bus.$emit('updateShowDescription', true)
               this.$refs.descri_text.textContent = data.METHOD_DESCRIPTION
             }
             // 赋值
@@ -132,7 +132,7 @@
         }
       },
       tabHandleClick () {
-        this.showDescription = false
+        this.$bus.$emit('updateShowDescription', false)
       }
     }
   }

@@ -939,6 +939,9 @@ export default {
         this.getNextActiveStep3()
       }
     }
+    this.$bus.$on('updateShowDescription', val => {
+      this.showDescription = val
+    })
   },
   methods: {
     // 获取等级设置

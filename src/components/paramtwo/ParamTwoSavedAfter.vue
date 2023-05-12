@@ -821,6 +821,9 @@
     // paramManagerData 返回到edit页面用
     props: ['showSelectLibraryParam', 'paramManagerObj', 'scriptType1', 'backProfileCatalogId', 'saveReturnTwoDimensionId1', 'twoDimensionName1', 'libraryIds', 'edit', 'page', 'linkParam', 'isCurrentUser1', 'nowTreeData', 'nowTreeNode'], // saveReturnTwoDimensionId1保存弹框后返回的参数id twoDimensionName保存弹框中的参数名
     mounted () {
+      this.$bus.$on('updateShowDescription', val => {
+        this.showDescription = val
+      })
       this.clearData() //清空原来的数据
       this.selectBindingMappingPage = false
       this.addFenXiSuanFaPage = false
