@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showType === 'airRoute_track'">
+  <div style="width:100%;height:100%" v-if="showType === 'airRoute_track'">
     <FlightTrack></FlightTrack>
   </div>
   <div v-else></div>
