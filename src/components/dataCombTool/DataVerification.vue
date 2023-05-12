@@ -45,15 +45,32 @@
             </el-table>
           </div>
         <div class="detail">
-          <div>
-            <p>{{frequencyForm.paramName[0]}}详情</p>
+          <!-- <div> -->
+            <!-- <p></p>
             <p>最大值：{{max}}</p>
             <p>最小值：{{min}}</p>
             <p>中位值：{{mid}}</p>
-            <p>平均值：{{avg}}</p>
-          </div>
+            <p>平均值：{{avg}}</p> -->
+            <h6>{{frequencyForm.paramName[0]}}详情</h6>
+            <el-table
+              :row-style="{height:'30px'}"
+              :cell-style="{padding:'0px'}"
+              :header-row-style="{height:'30px'}"
+              :data="flightDetailList"
+              border
+              class="nums_list">
+              <el-table-column label="属性" prop='name' width="50"></el-table-column>
+              <el-table-column label="值" prop='value'></el-table-column>
+            </el-table>
+          <!-- </div> -->
             <h6>众数信息：</h6>
-            <el-table :data="multyList" border class="nums_list">
+            <el-table
+              :row-style="{height:'30px'}"
+              :cell-style="{padding:'0px'}"
+              :header-row-style="{height:'30px'}"
+              :data="multyList"
+              border
+              class="nums_list">
               <el-table-column label="值" prop='label'></el-table-column>
               <el-table-column label="次数" prop='value' width="50">
               </el-table-column>
@@ -118,7 +135,9 @@
             :data="frequencyData"
             :key='toggleIndex'
             :row-class-name="tableRowClass"
-            :max-height="tableHeight">
+            :max-height="tableHeight"
+            stripe
+            >
             <el-table-column
               label="时间"
               width="150">
@@ -190,6 +209,12 @@ export default {
       mid: null, // 中位值
       min: null, // 最小值
       multyList: [], // 众数信息
+      flightDetailList: [
+        {label: 'avg', name: '平均值', value: null},
+        {label: 'max', name: '最大值', value: null},
+        {label: 'mid', name: '中间值', value: null},
+        {label: 'min', name: '最小值', value: null}
+      ],
       frequencyData: [], // 频率表格数据
       flightTableData: [], // 航班数据
       rowKey: '',
@@ -231,14 +256,20 @@ export default {
       return 'table-row-class'
     },
     renderHistory () {
-      let storageQuery = JSON.parse(Cookies.get('storageQuery')) // 查询条件参数记录
-      const {startRowIndex, endRowIndex, parameterName} = storageQuery
+      let storageQuery = JSON.parse(Cookies.get('storageQuery') || '{}') // 查询条件参数记录
+      const {startRowIndex=500, endRowIndex=1000, parameterName=''} = storageQuery || {}
       let storageLibVal = Cookies.get('storageLibVal') // 版本库参数记录
-      this.filtersForm.modelId = storageLibVal
-      this.frequencyForm.startLine = startRowIndex
-      this.frequencyForm.endLine = endRowIndex
-      this.frequencyForm.paramName = parameterName.split() || []
-      this.queryTableInfo()
+      if (storageLibVal) {
+        this.filtersForm.modelId = storageLibVal
+      }
+      this.frequencyForm = {
+        startLine: startRowIndex,
+        endLine: endRowIndex,
+        paramName: parameterName ? parameterName.split(',') : []
+      }
+      if (this.frequencyForm.paramName.length) {
+        this.queryTableInfo()
+      }
     },
     async remoteMethod (query) {
       if (this.filtersForm.modelId) {
@@ -298,6 +329,7 @@ export default {
       this.multyList = []
       this.tableHeader = []
       this.frequencyData = []
+      this.flightDetailList = []
     },
     async checkDetail (row) { // 查询数据
       if (row) {
@@ -327,20 +359,30 @@ export default {
               this.frequencyData = []
               return
             }
-            const {avg = 0, max = 0, mid = 0, min = 0, thickestValue1 = '',
+            const {avg, max, mid, min, thickestValue1 = '',
             thickestValue2 = '', thickestValue3 = '', thickestValue4 = '',
             thickestValue5 = ''} = data
-            this.avg = avg
-            this.max = max
-            this.mid = mid
-            this.min = min
+            const detailObj = {avg, max, mid, min}
+            for (let detail in detailObj) {
+              this.flightDetailList.forEach(item => {
+                if (item.label === detail) {
+                  item.value = detailObj[detail]
+                }
+              })
+            }
+            // this.avg = avg
+            // this.max = max
+            // this.mid = mid
+            // this.min = min
             let dataList = [thickestValue1, thickestValue2, thickestValue3, thickestValue4, thickestValue5]
             let multyList = []
-            dataList.forEach((item, index) => {
-              multyList.push({
-                label: this.getLabel(item, ':'),
-                value: this.getValue(item, ':')
-              })
+            dataList.forEach(item => {
+              if (item) {
+                multyList.push({
+                  label: this.getLabel(item, ':'),
+                  value: this.getValue(item, ':')
+                })
+              }
             })
             this.multyList = multyList
             this.startRowIndex = this.frequencyForm.startLine
@@ -497,8 +539,11 @@ export default {
   margin-top: 0;
 }
 .data_verification .flight_info .detail h6 {
-  margin-top: 48px;
-  margin-bottom: 10px;
+  margin-top: 26px;
+  margin-bottom: 8px;
+}
+.data_verification .flight_info .detail h6:first-child {
+  margin-top: 0;
 }
 .data_verification .flight_info .detail .style span {
   display: inline-block;
