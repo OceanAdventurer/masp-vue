@@ -1165,7 +1165,7 @@
           let index = 0
           let objData = {}
           this.relyonArr = {}
-          for (var i = 0; i < arr.length; i++) {
+          for (let i = 0; i < arr.length; i++) {
             let str = arr[i].versionLibrary
             this.$axios(
             {
@@ -1178,11 +1178,15 @@
             }
           ).then(response => {
               index++ // 执行的次数
-              for (let item in response.data) {
-                if (item === 'script') {
-                  this.scriptContent = response.data[item]
-                } else {
-                  objData[item] = response.data[item]
+              if (!Object.keys(response.data).length) {
+                objData[str] = `参数异常`
+              } else {
+                for (let item in response.data) {
+                  if (item === 'script') {
+                    this.scriptContent = response.data[item]
+                  } else {
+                    objData[item] = response.data[item]
+                  }
                 }
               }
               // 执行的次数和 数组的长度一样 说明已经全部执行完毕，此时给 relyonArr赋值
