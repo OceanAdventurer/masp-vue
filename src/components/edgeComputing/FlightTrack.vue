@@ -25,8 +25,8 @@
               label-position
             >
               <!-- 机场 -->
-              <el-form-item label="机场" prop="airport_value">
-                <el-select v-model="flight_procedure.airport_value" filterable placeholder="请输机场名称">
+              <el-form-item label="机场" prop="airport_value" >
+                <el-select v-model="flight_procedure.airport_value" filterable clearable placeholder="请输机场名称">
                   <el-option
                     v-for="item in restaurants"
                     :key="item.code"
@@ -351,7 +351,7 @@
               <el-button type="primary" @click="submitForm('ruleForm')"
                 >查询</el-button
               >
-              <el-button type="success" @click="coverage_cancel"
+              <el-button type="primary" @click="coverage_cancel"
                 >取消</el-button
               >
             </div>
@@ -601,7 +601,7 @@
                 >
                   撤销预览</el-button
                 >
-                <el-button class="save" type="success" @click="save_btn('save')"
+                <el-button class="save" type="primary" @click="save_btn('save')"
                   >上传</el-button
                 >
               </div>
@@ -736,7 +736,7 @@
                       >查看
                     </el-button>
                     <el-button
-                      v-show=" scope.row.stateName === '修正成功' ? false:true"
+                      v-show=" scope.row.state === 'end' || scope.row.state === 'start' ? false:true"
                       type="text"
                       @click="Track_correction(scope.row)"
                       >修正航迹
@@ -837,17 +837,13 @@ var wkx = require('wkx')
 export default {
   data () {
     return {
-      PathImage: '/DSAP/',
+      PathImage: '/DSAP',
       irportTableloading: false,
       flight_procedureLoading: false,
       track_track_procedureLoading: false,
       onthreshold_procedureLoading: false,
       image1,
-      // keyName: 'CC-COOKIE',
-        // keyValue: '080C07B89D30878A286368A08180187093F451634AB3DBBB3AD8CDA5F3E44CCE9301514A41C24CBD',
       proxyUri: '/air-route/proxy',
-      // proxyUri: '/hky-api',
-      proxyUriUpload: '/air-route/proxy-upload',
       proxyInd: '/api/indicators',
       // 飞行航段飞行显示与隐藏
       flight_procedure_right: false,
@@ -870,13 +866,9 @@ export default {
       // 公钥
       sm2Token:
         'ba445861979b2d86cb921d38a4a0546db866bcd1574aaaa748132938d6d546a34fdb60df4823cda21b529810eac5d1f0b558e759d9a0110b63549d79ad4fb453756bff215b4f343debd5fd6c16f89e754385d44754099412e39cac649c0acd6eefa64e7bf499c5c20713b64193ef41578917607fa7c8ca00554ba7c4ca2597ae841753370ac4958219383836f46ffb4bd173b20cd63c0db0f803f0b69f2a00a54b8a9954575bec102f6e523f00224c2b202443fed3055415',
-      headers: {
-        tenant: '0000',
-        token: sessionStorage.getItem('token')
-      }, // 增加请求头
       list: '',
       // 某个机场对应的文件地址
-      // 飞行程序 对应的 数据 ↓
+      // 飞行程序 对应的 数据
       restaurants: [],
       // 飞行程序 form表单
       flight_procedure: {
@@ -1239,7 +1231,8 @@ export default {
     },
 
     menuBar_btn1 () {
-      this.flight_procedure_right = false
+      $('.flight_procedure_right').hide()
+      // this.flight_procedure_right = false
     },
 
     MapBox () {
@@ -2288,6 +2281,7 @@ export default {
           method: 'post',
           data: data
         }).then((res) => {
+          this.onthreshold_procedureLoading = false
           var list = res.data.data
           if (STAR.length > 0) {
             var arr = []
@@ -2387,7 +2381,6 @@ export default {
               }
             })
           }
-          this.onthreshold_procedureLoading = false
         })
       }
     },
@@ -2642,7 +2635,7 @@ export default {
                 'circle-radius': 6,
                 'circle-color': '#FFA048'
               },
-              'minzoom': 6
+              'minzoom': 12
               // "maxzoom": 18,
             })
             routeMap[fileNoTemp] = {
@@ -3971,10 +3964,10 @@ export default {
             $('#marker_list' + item).remove()
             $('.flight_procedure_right').hide()
             this.flight_procedure_right = false
-            this.$message.success('清除成功')
             this.track_fileId = []
           })
         }
+        this.$message.success('清除成功')
       }
       that.STAR_list.forEach((item, index) => {
         if (item.STAR_LIST.length > 0) {
@@ -4536,6 +4529,10 @@ export default {
   position: relative;
   width: 100%;
   height: 10%;
+}
+
+/deep/.el-select-dropdown{
+  width: 0px !important;
 }
 
 </style>
