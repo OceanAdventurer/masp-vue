@@ -48,7 +48,7 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 5px 0;
-  width: 19%;
+  /* width: 19%; */
 }
 .el-radio-button__orig-radio:checked+.el-radio-button__inner {
   color: #fff;

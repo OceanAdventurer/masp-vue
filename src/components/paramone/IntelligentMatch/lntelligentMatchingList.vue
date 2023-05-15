@@ -29,7 +29,7 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 5px 0;
-  width: 19%;
+  /* width: 19%; */
 }
 .el-radio-button__orig-radio:checked+.el-radio-button__inner {
   color: #fff;
@@ -82,7 +82,6 @@ td [class*=" el-icon-"], [class^=el-icon-] {
       <el-form-item label="推荐绑定方式："  label-width="130px" style="width: 45%;float: right;">
         <el-select v-model="bindingWay" placeholder="请选择" size="mini" multiple style="width: 65%">
           <el-option
-            v-if="item.value !== 'MANUAL_MATCH'"
             v-for="item in libraryList"
             :key="item.value"
             :label="item.label"
@@ -95,7 +94,7 @@ td [class*=" el-icon-"], [class^=el-icon-] {
       </el-form-item>
       <el-table :data="tableData"  :header-row-style="headerRowStyle" :header-cell-style="{height:'38px'}" border
                 @selection-change="selectionChange"   @row-click="rowClick" :row-class-name="tableRowClassName"
-                :row-style="{height:'35px'}" :cell-style="{padding:'5px'}" height="85%">
+                :row-style="{height:'35px'}" :cell-style="{padding:'5px'}" height="calc(100% - 76px)">
         <el-table-column  type="selection"  width="55"></el-table-column>
         <el-table-column prop="mdName" label="原始参数名"  width="200"></el-table-column>
         <el-table-column prop="description" label="原始参数描述"></el-table-column>
@@ -111,7 +110,7 @@ td [class*=" el-icon-"], [class^=el-icon-] {
                 :loading="loading"
                 filterable clearable
                 v-model="scope.row.gpName"  placeholder="请选择" size="mini">
-                <el-option    v-for="item in searchGpList"  :key="item.GPID"  :label="item.GPNAME"  :value="item.GPNAME">  </el-option>
+                <el-option v-for="item in searchGpList"  :key="item.GPID"  :label="item.GPNAME"  :value="item.GPNAME">  </el-option>
               </el-select>
             </div>
             <div v-else> {{scope.row.gpName}}</div>
@@ -130,7 +129,7 @@ td [class*=" el-icon-"], [class^=el-icon-] {
           </div>
         </el-table-column>
       </el-table>
-      <div class="content_page_pag" style="display:flex;flex-direction:row;align-items: center;float: right;height: 10%;">
+      <div class="content_page_pag" style="display:flex;flex-direction:row;align-items: center;float: right;height: 32px;margin-top:6px">
         <el-pagination
           background
           @size-change="changePageSize"
@@ -694,10 +693,16 @@ export default {
     },
     similarityTypeSelect () {
       this.$axios.get('/paramSimilarity/similarityTypeSelect', {params: {}}).then(response => {
-        this.libraryList = response.data
-        for (let i = 0; i < this.libraryList.length; i++) {
-          this.libraryListMap[this.libraryList[i]['value']] = this.libraryList[i]['label']
+        this.libraryList = []
+        for (let i = 0; i < response.data.length; i++) {
+          this.libraryListMap[response.data[i]['value']] = response.data[i]['label']
         }
+        let list = JSON.parse(JSON.stringify(response.data))
+        list.forEach(item => {
+          if (item.value !== 'MANUAL_MATCH') {
+            this.libraryList.push(item)
+          }
+        })
       }).catch(response => {
       })
     },
