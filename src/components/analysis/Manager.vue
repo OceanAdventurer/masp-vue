@@ -1857,7 +1857,7 @@ export default {
             } else if (this.$store.state.submitNewFileTabActive === 'analysis_table') {
               this.$bus.$emit('openHeaderMenuItem', 'analysis_table', {}, disabledMenuObj) // 修改头部显示效果
             } else if (this.$store.state.submitNewFileTabActive === 'analysis_view') {
-              this.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, {}) // 修改头部显示效果
+              this.$bus.$emit('openHeaderMenuItem', 'analysis_view', {}, disabledMenuObj) // 修改头部显示效果
             } else {
               this.$bus.$emit('openHeaderMenuItem', 'analysis_chart', {}, disabledMenuObj) // 修改头部显示效果
             }
