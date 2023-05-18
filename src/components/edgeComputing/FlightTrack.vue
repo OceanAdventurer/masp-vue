@@ -68,7 +68,8 @@
                 </el-button>
               </el-form-item>
               <!-- 进场跑道 -->
-              <el-form-item label="进场跑道">
+              <div style="height:320px;overflow-y:scroll;">
+                <el-form-item label="进场跑道">
                 <el-checkbox
                   v-model="checkAll_STAR"
                   :indeterminate="isIndeterminate_STAR"
@@ -230,6 +231,7 @@
                   </el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
+              </div>
               <el-form-item>
                 <el-button type="primary" @click="onthreshold" v-loading.fullscreen.lock="onthreshold_procedureLoading">查询</el-button>
               </el-form-item>
@@ -287,7 +289,7 @@
                 </el-form-item>
               </el-form>
             </div>
-            <div class="remove_title">请先移除图片后在进行下一步操作</div>
+            <div class="remove_title">请先移除图片后再进行下一步操作</div>
             <div class="irportTable">
               <el-table
                 :data="airport_data"
@@ -2196,6 +2198,11 @@ export default {
           }
           this.track_track_procedureLoading = false
         })
+      } else {
+        this.$message({
+          message: '请先进行飞行程序查询后，在选择跑道查询',
+          type: 'warning'
+        })
       }
     },
 
@@ -2381,6 +2388,11 @@ export default {
               }
             })
           }
+        })
+      } else {
+        this.$message({
+          message: '请先查询跑道，在选择进场/离场/进近/程序进行查看！',
+          type: 'warning'
         })
       }
     },
@@ -4524,6 +4536,9 @@ export default {
     margin-left: 0 !important;
   }
 }
+.mapboxgl-ctrl-logo{
+  display: none;
+}
 
 .flight-weather-table-pagination {
   position: relative;
@@ -4531,8 +4546,12 @@ export default {
   height: 10%;
 }
 
-/deep/.el-select-dropdown{
+.el-select-dropdown{
   width: 0px !important;
+}
+
+.el-form-item {
+    margin-bottom: 22px !important;
 }
 
 </style>

@@ -132,7 +132,6 @@ export default {
     },
     getList () {
       this.$store.commit('SHOW_LOADING', '正在加载数据，请稍等！')
-      // 起飞时间
       this.form.logTimeStart = ''
       this.form.logTimeEnd = ''
       if (this.logTime && this.logTime.length === 2) {
