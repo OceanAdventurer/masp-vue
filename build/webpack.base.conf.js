@@ -26,6 +26,9 @@ module.exports = {
   entry: { // webpack入口文件
     app: './src/main.js'
   },
+  externals: {
+    mapboxgl: 'mapboxgl'
+  },
   output: { // webpack输出路径和命名规则
     path: config.build.assetsRoot, // 输出的目标文件夹路径
     filename: '[name].js', // 输出bundle文件命名格式

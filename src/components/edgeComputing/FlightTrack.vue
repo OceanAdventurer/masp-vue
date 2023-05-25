@@ -531,6 +531,7 @@
                 class="upload-demo"
                 :action=" PathImage + proxyUri +'/api/file/attachment/upload' "
                 accept=".png"
+                on-error="errorTip"
                 :on-success="handleAvatarSuccess"
                 :data="{ bizType: 'casts-approach_figure' }"
                 :file-list="fileList"
@@ -817,11 +818,11 @@
 <script>
 import Qs from 'qs'
 import $ from 'jquery'
-import mapboxgl from 'mapbox-gl'
+import mapboxgl from 'mapboxgl'
 import * as turf from '@turf/turf'
 import image0 from '@/assets/images/feiji.png'
 import image1 from '@/assets/images/delete.png'
-import 'mapbox-gl/dist/mapbox-gl.css'
+// import 'mapbox-gl/dist/mapbox-gl.css'
 // sm2加密
 const sm2 = require('sm-crypto').sm2
 // 1 - C1C3C2，0 - C1C2C3，默认为1
@@ -3020,6 +3021,9 @@ export default {
       this.save.fileUrl = res.data.url
       // 移除表单校验
       // this.$refs['uploadElement'].clearValidate();
+    },
+    errorTip () {
+      console.log('errorTip---test')
     },
     // 图片信息上传按钮
     save_btn (formName) {
