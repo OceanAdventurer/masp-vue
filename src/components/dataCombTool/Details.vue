@@ -11,6 +11,7 @@
               @change='queryTableInfo'
               filterable
               multiple
+              clearable
               placeholder="请选择版本库"
             >
               <el-option
